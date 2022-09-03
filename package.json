@@ -6,11 +6,13 @@
     "apps/*",
     "packages/*"
   ],
+  "license": "MIT",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "trunk check",
-    "lint:fix": "trunk fmt"
+    "test": "turbo run test",
+    "format": "trunk fmt",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -29,12 +31,17 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "pnpm@7.9.5",
+  "packageManager": "npm@8.11.0",
   "repository": "dotindustries/bouncer",
   "author": "nadilas <janos@dot.industries>",
   "auto": {
     "plugins": [
-      "npm",
+      [
+        "npm",
+        {
+          "monorepoChangelog": true
+        }
+      ],
       "all-contributors",
       "conventional-commits",
       "first-time-contributor",

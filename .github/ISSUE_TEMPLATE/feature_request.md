@@ -1,9 +1,9 @@
 ---
 name: 🌈 Feature request
 about: Suggest an amazing new idea for this project
-title: ''
+title: ""
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 ## Feature Request

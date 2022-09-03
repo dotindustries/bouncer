@@ -1,6 +1,6 @@
 # Reusable workflow for code analysis; to eject, you can replace this file with
 # https://github.com/ryansonshine/ryansonshine/blob/main/.github/workflows/codeql-analysis.yml
-name: 'CodeQL'
+name: "CodeQL"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [main]
   schedule:
-    - cron: '36 7 * * 6'
+    - cron: "36 7 * * 6"
 
 jobs:
   analyze:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript']
+        language: ["javascript"]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more:
         # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
