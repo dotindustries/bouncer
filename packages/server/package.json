@@ -1,0 +1,51 @@
+{
+  "name": "@dotinc/bouncer-server",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "keywords": [
+    "saas",
+    "seat",
+    "manager",
+    "license",
+    "subscription",
+    "typescript"
+  ],
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "jsdelivr": "dist/bundle.min.js",
+  "unpkg": "dist/bundle.min.js",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc && tsc-alias",
+    "postbuild": "npm run rollup && npm run prepare-packages && npm run prepare-dist",
+    "rollup": "rollup -c tools/rollup.config.js",
+    "prepare-packages": "node tools/prepare-package.js",
+    "prepare-dist": "node tools/prepare-dist.js",
+    "prepare": "npm run build",
+    "clean": "rimraf -r dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotindustries/bouncer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dotindustries/bouncer/issues"
+  },
+  "homepage": "https://github.com/dotindustries/bouncer",
+  "dependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.79.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tsc-alias": "^1.7.0",
+    "typescript": "^4.8.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
