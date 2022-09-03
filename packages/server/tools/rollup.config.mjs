@@ -1,9 +1,13 @@
 import resolve from "@rollup/plugin-node-resolve";
 import path from "path";
+import { fileURLToPath } from "url";
 import { terser } from "rollup-plugin-terser";
 
-const { entryPoints, entryPointPaths } = require("./entry-points");
-const packageJson = require("../package.json");
+import { entryPoints, entryPointPaths } from "./entry-points.mjs";
+import packageJson from "../package.json" assert { type: "json" };
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dependencies = Object.keys(packageJson.dependencies || {});
 const devDependencies = Object.keys(packageJson.devDependencies || {});

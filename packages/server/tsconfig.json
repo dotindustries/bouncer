@@ -4,10 +4,10 @@
     "module": "ES2022",
     "moduleResolution": "NodeNext",
     "strict": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "declaration": true,
-    "sourceMap": true,
     "declarationMap": true,
+    "sourceMap": true,
     "importHelpers": true,
     "removeComments": true,
     "esModuleInterop": true,
@@ -21,6 +21,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "importsNotUsedAsValues": "error",
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"]
