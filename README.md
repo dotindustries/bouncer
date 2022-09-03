@@ -1,6 +1,4 @@
-# Turborepo starter
-
-This is an official pnpm starter turborepo.
+# Bouncer Turborepo
 
 ## What's inside?
 
@@ -8,21 +6,12 @@ This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes th
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `api`: a [Next.js](https://nextjs.org) app
+- `demo`: another [Next.js](https://nextjs.org) app with trpc
+- `demo-trpc`: another [Next.js](https://nextjs.org) app without trpc
+- `server`: the server library shared by both `api` and `demo` applications
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
@@ -61,13 +50,6 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 pnpm dlx turbo link
 ```
 
-## Useful Links
+## Stats
 
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+![Alt](https://repobeats.axiom.co/api/embed/c3b8451ebcba56c2ec20dee352aefb9f45746ead.svg "Repobeats analytics image")
