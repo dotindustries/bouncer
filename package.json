@@ -12,10 +12,11 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
+    "@trunkio/launcher": "^1.2.1",
     "auto": "^10.37.4",
-    "eslint-config-custom": "workspace:*",
     "prettier": "latest",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typescript": "^4.8.2"
   },
   "engines": {
     "node": ">=14.0.0"
