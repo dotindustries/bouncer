@@ -18,6 +18,11 @@ interface Database {
 }
 
 export const queryBuilder = new Kysely<Database>({
+  // dialect: new PlanetScaleDialect({
+  //     host: '<host>',
+  //     username: '<user>',
+  //     password: '<password>',
+  //   }),
   dialect: {
     createAdapter() {
       return new MysqlAdapter();
