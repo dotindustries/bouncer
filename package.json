@@ -11,14 +11,18 @@
     "dev": "turbo run dev --parallel",
     "lint": "trunk check",
     "lint:fix": "trunk fmt"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@auto-it/all-contributors": "^10.37.4",
     "@auto-it/conventional-commits": "^10.37.4",
     "@auto-it/first-time-contributor": "^10.37.4",
     "@trunkio/launcher": "^1.2.1",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "auto": "^10.37.4",
     "prettier": "latest",
+    "husky": "8.0.1",
     "turbo": "latest",
     "typescript": "^4.8.2"
   },
