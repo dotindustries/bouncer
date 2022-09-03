@@ -9,9 +9,13 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint"
+    "lint": "trunk check",
+    "lint:fix": "trunk fmt"
   },
   "devDependencies": {
+    "@auto-it/all-contributors": "^10.37.4",
+    "@auto-it/conventional-commits": "^10.37.4",
+    "@auto-it/first-time-contributor": "^10.37.4",
     "@trunkio/launcher": "^1.2.1",
     "auto": "^10.37.4",
     "prettier": "latest",
