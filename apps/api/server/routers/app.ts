@@ -5,6 +5,6 @@ import { seatsRouter } from "./seats";
 
 export const app = ctx.nextApp();
 
-app.use("/api", seatsRouter);
-app.use("/api", configRouter);
-app.use("/api", subscriptionsRouter);
+app.use("/api/v1", seatsRouter);
+app.use("/api/v1", configRouter);
+app.use("/api/v1", subscriptionsRouter);

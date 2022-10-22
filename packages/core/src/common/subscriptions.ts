@@ -1,4 +1,4 @@
-import { api } from "zodios-api-shorthand";
+import { api } from "../utils/shorthand";
 import { z } from "zod";
 import { seatingConfiguration } from "./config";
 
@@ -88,20 +88,20 @@ export const validateSubscriptionPatch = (
 
 export const subscriptionApi = api({
   "GET subscriptionById": {
-    path: "/v1/subscriptions/:subscriptionId",
+    path: "/subscriptions/:subscriptionId",
     response: subscription,
   },
   "GET subscriptions": {
-    path: "/v1/subscriptions",
+    path: "/subscriptions",
     response: z.array(subscription),
   },
   "PATCH subscriptionById": {
-    path: "/v1/subscriptions/:subscriptionId",
+    path: "/subscriptions/:subscriptionId",
     body: subscription,
     response: subscription,
   },
   "POST subscription": {
-    path: "/v1/subscriptions/:subscriptionId",
+    path: "/subscriptions/:subscriptionId",
     body: subscription,
     response: subscription,
   },

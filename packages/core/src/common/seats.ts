@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "zodios-api-shorthand";
+import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
@@ -54,11 +54,11 @@ export type SeatsByIdInput = z.infer<typeof seatByIdInput>;
 
 export const seatsApi = api({
   "GET seatById": {
-    path: "/v1/subscriptions/:subscriptionId/seats/:seatId",
+    path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: seat,
   },
   "GET seats": {
-    path: "/v1/subscriptions/:subscriptionId/seats",
+    path: "/subscriptions/:subscriptionId/seats",
     queries: {
       user_id: z.string(),
       user_email: z.string(),
@@ -66,30 +66,30 @@ export const seatsApi = api({
     response: seats,
   },
   "GET userSeat": {
-    path: "/v1/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
+    path: "/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
     response: seat,
   },
   "PATCH userOccupant": {
-    path: "/v1/subscriptions/:subscriptionId/seats/:seatId",
+    path: "/subscriptions/:subscriptionId/seats/:seatId",
     body: user,
     response: seat,
   },
   "POST redeemSeat": {
-    path: "/v1/subscriptions/:subscriptionId/seats/:seatId/redeem",
+    path: "/subscriptions/:subscriptionId/seats/:seatId/redeem",
     body: user,
     response: seat,
   },
   "DELETE releaseSeat": {
-    path: "/v1/subscriptions/:subscriptionId/seats/:seatId",
+    path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: noContentResult,
   },
   "POST requestSeat": {
-    path: "/v1/subscriptions/:subscriptionId/seats/:seatId/request",
+    path: "/subscriptions/:subscriptionId/seats/:seatId/request",
     body: user,
     response: seat,
   },
   "POST reserveSeat": {
-    path: "/v1/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
+    path: "/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
     body: reservation,
     response: seat,
   },

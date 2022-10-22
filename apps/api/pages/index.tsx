@@ -6,47 +6,52 @@ import { ZodiosHooks } from "@zodios/react";
 import styles from "../styles/Home.module.css";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { userApi } from "@dotinc/bouncer-core";
+import { seatsApi } from "@dotinc/bouncer-core";
 
 const queryClient = new QueryClient();
-const userClientApi = new Zodios("/api", userApi);
-const userClientHooks = new ZodiosHooks("users", userClientApi);
+const seatsClientApi = new Zodios("/api", seatsApi);
+const userClientHooks = new ZodiosHooks("users", seatsClientApi);
 
 const Users = () => {
   const [count, setCount] = useState(1);
   const {
-    data: users,
+    data: seats,
     error,
     isLoading,
     invalidate,
-  } = userClientHooks.useGetUsers();
-  const { mutate } = userClientHooks.useMutation("post", "/users", undefined, {
-    onSuccess: () => invalidate(),
-  });
+  } = userClientHooks.useGetSeats();
+  const { mutate } = userClientHooks.useMutation(
+    "post",
+    "/subscriptions/:subscriptionId/seats/:seatId/request",
+    undefined,
+    {
+      onSuccess: () => invalidate(),
+    }
+  );
   if (isLoading) {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <div>{JSON.stringify(error)}</div>;
+    return <pre>{JSON.stringify(error, null, "  ")}</pre>;
   }
 
   return (
     <div>
       <button
         onClick={() => {
-          mutate({
-            tenant_id: `tenant${count}`,
-            user_name: `user${count}`,
-            email: `user${count}@test.com`,
-          });
+          // mutate({
+          //   tenant_id: `tenant${count}`,
+          //   user_name: `user${count}`,
+          //   email: `user${count}@test.com`,
+          // });
           setCount((prev) => prev + 1);
         }}
       >
         Add User
       </button>
-      {users?.map((user) => (
-        <div key={user.user_id}>
-          {user.user_name} - {user.email}
+      {seats?.map((seat) => (
+        <div key={seat.seat_id}>
+          {seat.seat_type} - {seat.occupant?.email}
         </div>
       ))}
     </div>
