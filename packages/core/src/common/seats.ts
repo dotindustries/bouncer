@@ -1,22 +1,28 @@
 import { z } from "zod";
-
-const user = z.object({
-  user_id: z.string().nullable(),
-  user_name: z.string().nullable(),
-  tenant_id: z.string().nullable(),
-  email: z.string().nullable(),
-});
-
-export type User = z.infer<typeof user>;
+import type { Subscription } from "./subscriptions";
+import { user } from "./users";
 
 const reservation = z.object({
-  user_id: z.string().nullable(),
-  tenant_id: z.string().nullable(),
-  email: z.string().nullable(),
+  // Reservation ([user_id] and [tenant_id]) or [email] is required.
+  identifier: z.union([
+    z.object({
+      user_id: z.string().nullable(),
+      tenant_id: z.string().nullable(),
+    }),
+    z.object({
+      email: z.string().nullable(),
+    }),
+  ]),
   invite_url: z.string().nullable(),
 });
 
 export type Reservation = z.infer<typeof reservation>;
+
+export const validateReservation = (inSubscription: Subscription) => {
+  if (inSubscription.state != "active") return;
+  `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+    `seats can be reserved only in ['active'] subscriptions.`;
+};
 
 const seat = z.object({
   seat_id: z.string().nullable(),

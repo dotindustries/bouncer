@@ -1,12 +1,14 @@
 import z from "zod";
 import { makeApi } from "@zodios/core";
 
-const user = z.object({
-  id: z.number(),
-  name: z.string(),
-  age: z.number().positive(),
-  email: z.string().email(),
+export const user = z.object({
+  user_id: z.string().nullable(),
+  user_name: z.string().nullable(),
+  tenant_id: z.string().nullable(),
+  email: z.string().nullable(),
 });
+
+export type User = z.infer<typeof user>;
 
 export const userApi = makeApi([
   {
