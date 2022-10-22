@@ -21,9 +21,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: node_modules
-          key: npm-deps-${{ hashFiles('package-lock.json') }}
+          key: npm-deps-${{ hashFiles('pnpm-lock.json') }}
           restore-keys: |
-            npm-deps-${{ hashFiles('package-json.json') }}
+            npm-deps-${{ hashFiles('pnpm-json.json') }}
 
       - name: Create Release
         env:
