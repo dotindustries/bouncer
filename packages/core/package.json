@@ -24,7 +24,6 @@
     "rollup": "rollup -c tools/rollup.config.mjs",
     "prepare-packages": "node tools/prepare-package.mjs",
     "prepare-dist": "node tools/prepare-dist.mjs",
-    "prepare": "npm run build",
     "clean": "rimraf -r dist"
   },
   "repository": {
@@ -39,6 +38,7 @@
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
     "@zodios/core": "10.1.0",
+    "axios": "0.27.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
