@@ -1,2 +1,2 @@
-export * from "@src/common/index.js";
-export * from "@src/db/index.js";
+export * from '~/common'
+export * from '~/db'

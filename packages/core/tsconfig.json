@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "ES2022",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "strict": true,
     "skipLibCheck": true,
     "declaration": true,
@@ -14,7 +14,6 @@
     "pretty": true,
     "newLine": "lf",
     "outDir": "dist",
-    "rootDir": "src",
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -24,7 +23,7 @@
     "importsNotUsedAsValues": "error",
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"]
+      "~/*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts"]
