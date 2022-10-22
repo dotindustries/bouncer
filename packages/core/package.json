@@ -33,7 +33,8 @@
   "dependencies": {
     "@zodios/core": "10.2.0",
     "axios": "1.1.3",
-    "zod": "^3.19.1"
+    "zod": "^3.19.1",
+    "zodios-api-shorthand": "^1.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.3.0",

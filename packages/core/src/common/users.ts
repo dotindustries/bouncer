@@ -42,7 +42,7 @@ export const userApi = makeApi([
       {
         name: "user",
         type: "Body",
-        schema: user.omit({ id: true }),
+        schema: user.omit({ user_id: true }),
       },
     ],
     response: user,

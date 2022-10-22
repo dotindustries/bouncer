@@ -40,6 +40,7 @@ importers:
       '@types/react-dom': 18.0.6
       '@zodios/core': 10.1.0
       '@zodios/express': 10.0.5
+      '@zodios/openapi': ^10.3.0
       '@zodios/react': 10.0.1
       axios: 0.27.2
       eslint: 8.23.0
@@ -56,6 +57,7 @@ importers:
       '@types/express': 4.17.13
       '@zodios/core': 10.1.0_axios@0.27.2+zod@3.19.1
       '@zodios/express': 10.0.5_rmjrtxmcjtqslmtzcg6yhjeluu
+      '@zodios/openapi': 10.3.0_rmjrtxmcjtqslmtzcg6yhjeluu
       '@zodios/react': 10.0.1_unjposqn7a5iai5dwkwkfbw73m
       axios: 0.27.2
       express: 4.18.1
@@ -84,10 +86,12 @@ importers:
       tsup: ^6.3.0
       typescript: ^4.8.4
       zod: ^3.19.1
+      zodios-api-shorthand: ^1.0.0
     dependencies:
       '@zodios/core': 10.2.0_axios@1.1.3+zod@3.19.1
       axios: 1.1.3
       zod: 3.19.1
+      zodios-api-shorthand: 1.0.0_axios@1.1.3
     devDependencies:
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.1
       '@types/express': 4.17.14
@@ -1174,6 +1178,16 @@ packages:
       zod: 3.19.1
     dev: false
 
+  /@zodios/core/9.4.0_axios@1.1.3+zod@3.19.1:
+    resolution: {integrity: sha512-AYRtFXTNiUWTyyj+zw2Kb9CERpqhdWDipHH4PvjTbGCbR7CvxFo7hChIKJ+Si+iyRzqj8hy+3zoa+H/blruj8Q==}
+    peerDependencies:
+      axios: ^0.x || ^1.0.0
+      zod: ^3.x
+    dependencies:
+      axios: 1.1.3
+      zod: 3.19.1
+    dev: false
+
   /@zodios/express/10.0.5_rmjrtxmcjtqslmtzcg6yhjeluu:
     resolution: {integrity: sha512-EAHe30Zux1Y2WlsfaKryrBUBqONzjRAQ/tXxWjG3py5IjXjHOOoVkDTpqEVe2uBMCBk5l65V7Ob/VeF31iAPIQ==}
     peerDependencies:
@@ -1182,6 +1196,18 @@ packages:
     dependencies:
       '@zodios/core': 10.1.0_axios@0.27.2+zod@3.19.1
       zod: 3.19.1
+    dev: false
+
+  /@zodios/openapi/10.3.0_rmjrtxmcjtqslmtzcg6yhjeluu:
+    resolution: {integrity: sha512-DkNtpI/byqM29WO0aUdOIWqe4+91SG2ZhXQLhBZzL2ZtF7iTHbd9UaRkZl4Xx1B6rqNAXB3VOhnhg6CZiIuSew==}
+    peerDependencies:
+      '@zodios/core': ^10.x
+      zod: ^3.x
+    dependencies:
+      '@zodios/core': 10.1.0_axios@0.27.2+zod@3.19.1
+      openapi-types: 12.0.2
+      zod: 3.19.1
+      zod-to-json-schema: 3.18.1_zod@3.19.1
     dev: false
 
   /@zodios/react/10.0.1_unjposqn7a5iai5dwkwkfbw73m:
@@ -4029,6 +4055,10 @@ packages:
       mimic-fn: 2.1.0
     dev: true
 
+  /openapi-types/12.0.2:
+    resolution: {integrity: sha512-GuTo7FyZjOIWVhIhQSWJVaws6A82sWIGyQogxxYBYKZ0NBdyP2CYSIgOwFfSB+UVoPExk/YzFpyYitHS8KVZtA==}
+    dev: false
+
   /optionator/0.9.1:
     resolution: {integrity: sha512-74RlY5FCnhq4jRxVUPKDaRwrVNXMqsGsiW6AJw4XK8hmtm10wC0ypZBLw5IIp85NZMr91+qd1RvvENwg7jjRFw==}
     engines: {node: '>= 0.8.0'}
@@ -5157,6 +5187,10 @@ packages:
       yn: 3.1.1
     dev: true
 
+  /ts-toolbelt/9.6.0:
+    resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
+    dev: false
+
   /tsc-alias/1.7.0:
     resolution: {integrity: sha512-n/K6g8S7Ec7Y/A2Z77Ikp2Uv1S1ERtT63ni69XV4W1YPT4rnNmz8ItgIiJYvKfFnKfqcZQ81UPjoKpMTxaC/rg==}
     hasBin: true
@@ -5355,7 +5389,6 @@ packages:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /typical/4.0.0:
     resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
@@ -5626,6 +5659,25 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /zod-to-json-schema/3.18.1_zod@3.19.1:
+    resolution: {integrity: sha512-YFP4dAZR2GHDkTOZL7E7p2E3/yoUZeB5RD797JEpJTyh/L+9WvIK/tEMuF+MhzDPhQWXlkSugxmO8nbdXjJKYA==}
+    peerDependencies:
+      zod: ^3.18.0
+    dependencies:
+      zod: 3.19.1
+    dev: false
+
   /zod/3.19.1:
     resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
+
+  /zodios-api-shorthand/1.0.0_axios@1.1.3:
+    resolution: {integrity: sha512-0Q/qwAJHP8nnnDojMMpMpZAysNFbVq6lMXJjvp8xuE+XSE+z6CpG7xDIhbIa2VdC93LFy44fX4Q9wNFElkPiwA==}
+    dependencies:
+      '@zodios/core': 9.4.0_axios@1.1.3+zod@3.19.1
+      ts-toolbelt: 9.6.0
+      typescript: 4.8.4
+      zod: 3.19.1
+    transitivePeerDependencies:
+      - axios
     dev: false

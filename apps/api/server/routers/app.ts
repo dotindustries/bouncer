@@ -1,5 +1,5 @@
 import { ctx } from "../context";
-import { userRouter } from "./users";
+import { seatsRouter } from "./seats";
 
 export const app = ctx.nextApp();
-app.use("/api", userRouter);
+app.use("/api", seatsRouter);

@@ -4,9 +4,9 @@ import Image from "next/image";
 import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
 import styles from "../styles/Home.module.css";
-import { userApi } from "../common/api";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { userApi } from "@dotinc/bouncer-core";
 
 const queryClient = new QueryClient();
 const userClientApi = new Zodios("/api", userApi);
@@ -35,8 +35,8 @@ const Users = () => {
       <button
         onClick={() => {
           mutate({
-            name: `user${count}`,
-            age: count,
+            tenant_id: `tenant${count}`,
+            user_name: `user${count}`,
             email: `user${count}@test.com`,
           });
           setCount((prev) => prev + 1);
@@ -45,8 +45,8 @@ const Users = () => {
         Add User
       </button>
       {users?.map((user) => (
-        <div key={user.id}>
-          {user.name} - {user.email}
+        <div key={user.user_id}>
+          {user.user_name} - {user.email}
         </div>
       ))}
     </div>
