@@ -17,7 +17,7 @@ userRouter.get("/users", (req, res) => {
 });
 
 userRouter.get("/users/:id", (req, res, next) => {
-  const user = users.find((u) => u.id === req.params.id);
+  const user = users.find((u) => u.id === parseInt(req.params.id));
   if (!user) {
     return res.status(404).json({
       error: {
