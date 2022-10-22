@@ -1,3 +1,4 @@
+import { userApi } from "@dotinc/bouncer-core";
 import { ctx } from "../context";
 
 const users = [
