@@ -2,9 +2,9 @@ import z from "zod";
 import { makeApi } from "@zodios/core";
 
 export const user = z.object({
-  user_id: z.string().nullable(),
+  user_id: z.string(),
   user_name: z.string().nullable(),
-  tenant_id: z.string().nullable(),
+  tenant_id: z.string(),
   email: z.string().nullable(),
 });
 

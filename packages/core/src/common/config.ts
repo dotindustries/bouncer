@@ -1,3 +1,4 @@
+import { api } from "zodios-api-shorthand";
 import { z } from "zod";
 
 export const seatingConfiguration = z.object({
@@ -53,3 +54,14 @@ export const publisherConfiguration = z.object({
 });
 
 export type PublisherConfiguration = z.infer<typeof publisherConfiguration>;
+
+export const configApi = api({
+  "GET publisherConfiguration": {
+    path: "/v1/publisher/:publisherId/configuration",
+    response: publisherConfiguration,
+  },
+  "PUT publisherConfiguration": {
+    path: "/v1/publisher/:publisherId/configuration",
+    response: publisherConfiguration,
+  },
+});
