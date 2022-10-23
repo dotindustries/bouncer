@@ -1,5 +1,29 @@
 # (Sun Oct 23 2022)
 
+#### 🚀 Enhancement
+
+- `@dotinc/bouncer-core@0.3.0`, `@dotinc/bouncer-sql@0.3.0`
+  - feat: add sqlite migration provider to sql package ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-sql@0.3.0`
+  - feat: add sqlite migrations to db instance ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- `@dotinc/bouncer-sql@0.3.0`
+  - fix: filter seats to subscription id as well ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- chore: update lock file ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
+# (Sun Oct 23 2022)
+
 :tada: This release contains work from new contributors! :tada:
 
 Thanks for all your work!
