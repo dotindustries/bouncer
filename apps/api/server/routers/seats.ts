@@ -37,7 +37,7 @@ seatsRouter.get("/subscriptions/:subscriptionId/seats", async (req, res) => {
   if (typeof req.params.subscriptionId === "number") {
     return res.status(400).json({
       code: 400,
-      message: "invalid ids",
+      message: "invalid subscription id",
     });
   }
 

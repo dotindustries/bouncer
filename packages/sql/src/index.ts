@@ -78,7 +78,7 @@ export const createDatabase = (args: KyselyConfig): Repository => {
       };
       return seat;
     },
-    getSeats: async (_subscriptionId, byUserId, byEmail) => {
+    getSeats: async (subscriptionId, byUserId, byEmail) => {
       const q = db
         .selectFrom("seats")
         .leftJoin("seat_occupants", "seat_occupants.seat_id", "seats.seat_id")
@@ -104,12 +104,14 @@ export const createDatabase = (args: KyselyConfig): Repository => {
           "seat_reservations.tenant_id as reservation_tenant_id",
           "seat_reservations.user_id as reservation_user_id",
         ]) // explicitly select the non-nullable seat_id to make typescript happy
-        .selectAll();
-      q.where("expires_utc", "is", null).orWhere(
-        "expires_utc",
-        ">",
-        new Date()
-      );
+        .selectAll()
+        .where("seats.subscription_id", "=", subscriptionId)
+        .where((qb) =>
+          qb
+            .where("expires_utc", "is", null)
+            .orWhere("expires_utc", ">", new Date())
+        );
+
       if (byUserId) {
         q.where((qb) =>
           qb
