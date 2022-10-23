@@ -76,15 +76,15 @@ export const createPlanetscaleRepository = (
   };
 };
 
-export const planetscaleMiddleware = (url: string): ZodiosPlugin => {
+export const planetscalePlugin = (
+  dbConfig: PlanetScaleDialectConfig
+): ZodiosPlugin => {
   return {
     name: "planetscale",
     request: async (_, config) => {
       return {
         ...config,
-        repo: createPlanetscaleRepository({
-          url,
-        }),
+        repo: createPlanetscaleRepository(dbConfig),
       };
     },
   };
