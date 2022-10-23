@@ -1,7 +1,4 @@
-import {
-  planetscalePlugin,
-  createPlanetscaleRepository,
-} from "@dotinc/bouncer-planetscale";
+import { createPlanetscaleRepository } from "@dotinc/bouncer-planetscale";
 import { ctx } from "../context";
 import { subscriptionsRouter } from "./subscriptions";
 import { configRouter } from "./config";
