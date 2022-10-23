@@ -1,6 +1,6 @@
 {
   "name": "@dotinc/bouncer-sql",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "private": false,
   "keywords": [
@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "@dotinc/bouncer-core": "^0.1.0",
+    "@dotinc/bouncer-core": "^0.2.0",
     "kysely": "^0.22.0"
   },
   "devDependencies": {
