@@ -28,6 +28,7 @@ seatsRouter.get(
         id: req.params.seatId,
       });
     }
+
     return res.status(200).json(seat);
   }
 );
