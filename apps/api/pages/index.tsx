@@ -19,7 +19,7 @@ const Users = () => {
     error,
     isLoading,
     invalidate,
-  } = userClientHooks.useGetSeats();
+  } = userClientHooks.useSeats();
   const { mutate } = userClientHooks.useMutation(
     "post",
     "/subscriptions/:subscriptionId/seats/:seatId/request",
