@@ -1,5 +1,3 @@
-import { createSqliteRepository } from "@dotinc/bouncer-sql";
-import Database from "better-sqlite3";
 import { ctx } from "../context";
 import { subscriptionsRouter } from "./subscriptions";
 import { configRouter } from "./config";
@@ -10,14 +8,17 @@ export const app = ctx.nextApp();
 // TODO: middleware that adds the user to the context
 // app.use(userMiddleware);
 
-app.use((req, _, next) => {
-  req.repo = createSqliteRepository({
-    database: new Database("bouncer.db", { verbose: console.log }),
-  });
-  return next({
-    req,
-  });
-});
+// TODO: any middleware causes 500... wtf?
+// app.use((req, _, next) => {
+//   req.repo = createSqliteRepository({
+//     database: sqlite,
+//     onCreateConnection: async () => console.log("connected to database"),
+//   });
+
+//   return next({
+//     req,
+//   });
+// });
 
 // TODO: load appropriate backend and it's vars from environment
 // if (env.planetscale_database_url) {

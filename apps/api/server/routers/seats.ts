@@ -1,5 +1,6 @@
 import { ctx } from "./../context";
 import { seatsApi } from "@dotinc/bouncer-core";
+import { repo } from "../db";
 
 export const seatsRouter = ctx.router(seatsApi);
 
@@ -16,7 +17,7 @@ seatsRouter.get(
       });
     }
 
-    const seat = await req.repo.getSeat(
+    const seat = await repo.getSeat(
       req.params.seatId,
       req.params.subscriptionId
     );
@@ -31,8 +32,21 @@ seatsRouter.get(
   }
 );
 
-seatsRouter.get("/subscriptions/:subscriptionId/seats", (req, res) => {
-  res.status(200).json([]);
+seatsRouter.get("/subscriptions/:subscriptionId/seats", async (req, res) => {
+  if (typeof req.params.subscriptionId === "number") {
+    return res.status(400).json({
+      code: 400,
+      message: "invalid ids",
+    });
+  }
+
+  const seats = await repo.getSeats(
+    req.params.subscriptionId,
+    req.query.user_id ?? undefined,
+    req.query.user_email ?? undefined
+  );
+
+  return res.status(200).json(seats);
 });
 
 seatsRouter.get(

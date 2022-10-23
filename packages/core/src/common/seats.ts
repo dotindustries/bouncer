@@ -86,15 +86,32 @@ export const seatsApi = makeApi([
       {
         name: "user_id",
         type: "Query",
-        schema: z.string(),
+        schema: z.string().optional(),
       },
       {
         name: "user_email",
         type: "Query",
-        schema: z.string(),
+        schema: z.string().optional(),
       },
     ],
     response: seats,
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default", // default status code will be used if error is not 404
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
   },
   {
     alias: "userSeat",

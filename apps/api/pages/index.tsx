@@ -9,8 +9,8 @@ import { useState } from "react";
 import { seatsApi } from "@dotinc/bouncer-core";
 
 const queryClient = new QueryClient();
-const seatsClientApi = new Zodios("/api", seatsApi);
-const userClientHooks = new ZodiosHooks("users", seatsClientApi);
+const seatsClientApi = new Zodios("/api/v1", seatsApi);
+const userClientHooks = new ZodiosHooks("seats", seatsClientApi);
 
 const Users = () => {
   const [count, setCount] = useState(1);
@@ -19,7 +19,11 @@ const Users = () => {
     error,
     isLoading,
     invalidate,
-  } = userClientHooks.useSeats();
+  } = userClientHooks.useSeats({
+    params: {
+      subscriptionId: "asdf",
+    },
+  });
   const { mutate } = userClientHooks.useMutation(
     "post",
     "/subscriptions/:subscriptionId/seats/:seatId/request",

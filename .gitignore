@@ -34,3 +34,4 @@ yarn-error.log*
 
 .env
 lerna-debug.log
+apps/api/bouncer.db
