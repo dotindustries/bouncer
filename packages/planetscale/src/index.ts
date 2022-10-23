@@ -58,7 +58,7 @@ export const createPlanetscaleRepository = (
 
   return {
     getSeat: async (seatId, subscriptionId) => {
-      const row = await db
+      const seat = await db
         .selectFrom("Seats")
         .leftJoin("SeatOccupants", "SeatOccupants.seat_id", "Seats.seat_id")
         .leftJoin(
@@ -66,11 +66,12 @@ export const createPlanetscaleRepository = (
           "SeatReservations.seat_id",
           "Seats.seat_id"
         )
+        .select("Seats.seat_id") // explicitly select the non-nullable seat_id to make typescript happy
         .selectAll()
         .where("seat_id", "=", seatId)
         .where("subscription_id", "=", subscriptionId)
         .executeTakeFirst();
-      return row;
+      return seat;
     },
   };
 };

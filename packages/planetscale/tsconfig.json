@@ -20,6 +20,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noErrorTruncation": true,
     "importsNotUsedAsValues": "error",
     "baseUrl": ".",
     "paths": {
