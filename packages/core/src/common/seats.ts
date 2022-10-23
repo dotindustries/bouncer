@@ -1,7 +1,7 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 // TODO: PR for shorthand to add typed makeErrors?
-import { api } from "../utils/shorthand";
+// import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
@@ -54,7 +54,7 @@ const seatByIdInput = z.object({
 
 export type SeatsByIdInput = z.infer<typeof seatByIdInput>;
 
-const seatsApiWithErrors = makeApi([
+export const seatsApi = makeApi([
   {
     method: "get",
     alias: "seatById",
@@ -103,33 +103,62 @@ const seatsApiWithErrors = makeApi([
     response: seat,
     parameters: [],
   },
-]);
-
-const short = api({
-  "PATCH userOccupant": {
+  {
+    alias: "userOccupant",
+    method: "post",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
-    body: user,
+    parameters: [
+      {
+        name: "user",
+        type: "Body",
+        schema: user,
+      },
+    ],
     response: seat,
   },
-  "POST redeemSeat": {
+  {
+    alias: "redeemSeat",
+    method: "post",
     path: "/subscriptions/:subscriptionId/seats/:seatId/redeem",
-    body: user,
+    parameters: [
+      {
+        name: "user",
+        type: "Body",
+        schema: user,
+      },
+    ],
     response: seat,
   },
-  "DELETE releaseSeat": {
+  {
+    alias: "releaseSeat",
+    method: "delete",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: noContentResult,
   },
-  "POST requestSeat": {
+  {
+    alias: "requestSeat",
+    method: "post",
     path: "/subscriptions/:subscriptionId/seats/:seatId/request",
-    body: user,
+    parameters: [
+      {
+        name: "user",
+        type: "Body",
+        schema: user,
+      },
+    ],
     response: seat,
   },
-  "POST reserveSeat": {
+  {
+    alias: "reserveSeat",
+    method: "post",
     path: "/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
-    body: reservation,
+    parameters: [
+      {
+        name: "reservation",
+        type: "Body",
+        schema: reservation,
+      },
+    ],
     response: seat,
   },
-});
-
-const seatsApi = seatsApiWithErrors.concat(short);
+]);
