@@ -41,7 +41,6 @@ importers:
       '@types/swagger-ui-react': ^4.11.0
       '@zodios/core': 10.1.0
       '@zodios/express': 10.0.5
-      '@zodios/openapi': ^10.3.0
       '@zodios/react': 10.0.1
       axios: 0.27.2
       eslint: 8.23.0
@@ -62,7 +61,6 @@ importers:
       '@types/express': 4.17.13
       '@zodios/core': 10.1.0_axios@0.27.2+zod@3.19.1
       '@zodios/express': 10.0.5_rmjrtxmcjtqslmtzcg6yhjeluu
-      '@zodios/openapi': 10.3.0_rmjrtxmcjtqslmtzcg6yhjeluu
       '@zodios/react': 10.0.1_unjposqn7a5iai5dwkwkfbw73m
       axios: 0.27.2
       express: 4.18.1
@@ -88,7 +86,10 @@ importers:
       '@rollup/plugin-node-resolve': ^13.3.0
       '@types/express': ^4.17.14
       '@zodios/core': 10.2.0
+      '@zodios/openapi': ^10.3.0
+      atlassian-openapi: ^1.0.17
       axios: 1.1.3
+      openapi-merge: ^1.3.2
       rimraf: ^3.0.2
       rollup: ^2.79.0
       rollup-plugin-terser: ^7.0.2
@@ -99,11 +100,14 @@ importers:
       zod: ^3.19.1
     dependencies:
       '@zodios/core': 10.2.0_axios@1.1.3+zod@3.19.1
+      '@zodios/openapi': 10.3.0_e2j5nqnftm3vhmwywtmerxrdsi
       axios: 1.1.3
+      openapi-merge: 1.3.2
       zod: 3.19.1
     devDependencies:
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.1
       '@types/express': 4.17.14
+      atlassian-openapi: 1.0.17
       rimraf: 3.0.2
       rollup: 2.79.1
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
@@ -1269,13 +1273,13 @@ packages:
       zod: 3.19.1
     dev: false
 
-  /@zodios/openapi/10.3.0_rmjrtxmcjtqslmtzcg6yhjeluu:
+  /@zodios/openapi/10.3.0_e2j5nqnftm3vhmwywtmerxrdsi:
     resolution: {integrity: sha512-DkNtpI/byqM29WO0aUdOIWqe4+91SG2ZhXQLhBZzL2ZtF7iTHbd9UaRkZl4Xx1B6rqNAXB3VOhnhg6CZiIuSew==}
     peerDependencies:
       '@zodios/core': ^10.x
       zod: ^3.x
     dependencies:
-      '@zodios/core': 10.1.0_axios@0.27.2+zod@3.19.1
+      '@zodios/core': 10.2.0_axios@1.1.3+zod@3.19.1
       openapi-types: 12.0.2
       zod: 3.19.1
       zod-to-json-schema: 3.18.1_zod@3.19.1
@@ -1524,6 +1528,12 @@ packages:
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
+
+  /atlassian-openapi/1.0.17:
+    resolution: {integrity: sha512-8aW0Xgl9mVdL9dCABSZAvCayMPyh6uVu86UzOat8Kc1qDMUtXn2OxcwDsJfm/qCtBSeZ+GE/PkFxx3ZRIp3hFg==}
+    dependencies:
+      jsonpointer: 5.0.1
+      urijs: 1.19.11
 
   /author-regex/1.0.0:
     resolution: {integrity: sha512-KbWgR8wOYRAPekEmMXrYYdc7BRyhn2Ftk7KWfMUnQ43hFdojWEFRxhhRUm3/OFEdPa1r0KAvTTg9YQK57xTe0g==}
@@ -3837,6 +3847,10 @@ packages:
     engines: {'0': node >= 0.2.0}
     dev: true
 
+  /jsonpointer/5.0.1:
+    resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
+    engines: {node: '>=0.10.0'}
+
   /jsx-ast-utils/3.3.3:
     resolution: {integrity: sha512-fYQHZTZ8jSfmWZ0iyzfwiU4WDX4HpHbMCZ3gPlWYiCl3BoeOTsqKBqnTVfH2rYT7eP5c3sVbeSPHnnJOaTrWiw==}
     engines: {node: '>=4.0'}
@@ -4343,6 +4357,14 @@ packages:
     dependencies:
       mimic-fn: 2.1.0
     dev: true
+
+  /openapi-merge/1.3.2:
+    resolution: {integrity: sha512-qRWBwPMiKIUrAcKW6lstMPKpFEWy32dBbP1UjHH9jlWgw++2BCqOVbsjO5Wa4H1Ll3c4cn+lyi4TinUy8iswzw==}
+    dependencies:
+      atlassian-openapi: 1.0.17
+      lodash: 4.17.21
+      ts-is-present: 1.2.2
+    dev: false
 
   /openapi-types/12.0.2:
     resolution: {integrity: sha512-GuTo7FyZjOIWVhIhQSWJVaws6A82sWIGyQogxxYBYKZ0NBdyP2CYSIgOwFfSB+UVoPExk/YzFpyYitHS8KVZtA==}
@@ -5704,6 +5726,10 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
+  /ts-is-present/1.2.2:
+    resolution: {integrity: sha512-cA5MPLWGWYXvnlJb4TamUUx858HVHBsxxdy8l7jxODOLDyGYnQOllob2A2jyDghGa5iJHs2gzFNHvwGJ0ZfR8g==}
+    dev: false
+
   /ts-node/10.9.1_jcmx33t3olsvcxopqdljsohpme:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -6035,6 +6061,9 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /urijs/1.19.11:
+    resolution: {integrity: sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==}
 
   /url-join/4.0.1:
     resolution: {integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==}
