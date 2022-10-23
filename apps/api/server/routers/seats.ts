@@ -23,7 +23,7 @@ seatsRouter.get(
     if (!seat) {
       return res.status(404).json({
         code: 400,
-        message: "invalid ids",
+        message: `Seat [${req.params.seatId} at ${req.params.subscriptionId}] not found.`,
         id: req.params.seatId,
       });
     }
