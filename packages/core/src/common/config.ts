@@ -36,6 +36,7 @@ export const productConfiguration = z.object({
 export type ProductConfiguration = z.infer<typeof productConfiguration>;
 
 export const publisherConfiguration = z.object({
+  publisher_id: z.string(),
   product_name: z.string(),
   publisher_name: z.string(),
   home_page_url: z.string().nullable(),
