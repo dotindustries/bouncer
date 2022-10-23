@@ -1,6 +1,6 @@
 {
   "name": "bouncer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -16,18 +16,20 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@auto-it/all-contributors": "^10.37.4",
-    "@auto-it/conventional-commits": "^10.37.4",
-    "@auto-it/first-time-contributor": "^10.37.4",
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
-    "@trunkio/launcher": "^1.2.1",
+    "@auto-it/npm": "^10.37.6",
+    "@auto-it/all-contributors": "^10.37.6",
+    "@auto-it/conventional-commits": "^10.37.6",
+    "@auto-it/first-time-contributor": "^10.37.6",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@trunkio/launcher": "^1.2.2",
     "@types/node": "^18.11.3",
-    "auto": "^10.37.4",
+    "auto": "^10.37.6",
+    "lerna": "^6.0.1",
     "husky": "8.0.1",
     "prettier": "latest",
     "turbo": "latest",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   },
   "engines": {
     "node": ">=14.0.0"

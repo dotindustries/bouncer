@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "@dotinc/bouncer-core": "workspace:*",
+    "@dotinc/bouncer-core": "*",
     "kysely": "^0.22.0"
   },
   "devDependencies": {
