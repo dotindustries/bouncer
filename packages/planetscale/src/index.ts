@@ -11,6 +11,7 @@ export const createPlanetscaleRepository = (
 ): Repository => {
   return createDatabase({
     dialect: new PlanetScaleDialect(config),
+    log: ["query", "error"],
   });
 };
 

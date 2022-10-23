@@ -211,5 +211,6 @@ export const createDatabase = (args: KyselyConfig): Repository => {
 export const createSqliteRepository = (config: SqliteDialectConfig) => {
   return createDatabase({
     dialect: new SqliteDialect(config),
+    log: ["query", "error"],
   });
 };
