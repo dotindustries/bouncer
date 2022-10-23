@@ -105,7 +105,7 @@ export const seatsApi = makeApi([
   },
   {
     alias: "userOccupant",
-    method: "post",
+    method: "patch",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     parameters: [
       {
