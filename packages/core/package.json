@@ -2,7 +2,7 @@
   "name": "@dotinc/bouncer-core",
   "version": "0.1.0",
   "description": "",
-  "private": true,
+  "private": false,
   "keywords": [
     "saas",
     "seat",
