@@ -1,4 +1,6 @@
+import { makeApi } from "@zodios/core";
 import { z } from "zod";
+// TODO: PR for shorthand to add typed makeErrors?
 import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
@@ -28,7 +30,7 @@ export const validateReservation = (inSubscription: Subscription) => {
 };
 
 export const seat = z.object({
-  seat_id: z.string().nullable(),
+  seat_id: z.string(),
   subscription_id: z.string().nullable(),
   occupant: user.nullable(),
   seating_strategy_name: z.string().nullable(),
@@ -52,23 +54,58 @@ const seatByIdInput = z.object({
 
 export type SeatsByIdInput = z.infer<typeof seatByIdInput>;
 
-export const seatsApi = api({
-  "GET seatById": {
+const seatsApiWithErrors = makeApi([
+  {
+    method: "get",
+    alias: "seatById",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: seat,
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default", // default status code will be used if error is not 404
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
   },
-  "GET seats": {
+  {
+    method: "get",
+    alias: "seats",
     path: "/subscriptions/:subscriptionId/seats",
-    queries: {
-      user_id: z.string(),
-      user_email: z.string(),
-    },
+    parameters: [
+      {
+        name: "user_id",
+        type: "Query",
+        schema: z.string(),
+      },
+      {
+        name: "user_email",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
     response: seats,
   },
-  "GET userSeat": {
+  {
+    alias: "userSeat",
+    method: "get",
     path: "/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
     response: seat,
+    parameters: [],
   },
+]);
+
+const short = api({
   "PATCH userOccupant": {
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     body: user,
@@ -94,3 +131,5 @@ export const seatsApi = api({
     response: seat,
   },
 });
+
+const seatsApi = seatsApiWithErrors.concat(short);

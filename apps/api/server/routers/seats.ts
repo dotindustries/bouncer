@@ -3,18 +3,33 @@ import { seatsApi } from "@dotinc/bouncer-core";
 
 export const seatsRouter = ctx.router(seatsApi);
 
-seatsRouter.get("/subscriptions/:subscriptionId/seats/:seatId", (req, res) => {
-  //   const user = users.find((u) => u.id === req.params.id);
-  //   if (!user) {
-  //     return res.status(404).json({
-  //       error: {
-  //         code: 404,
-  //         message: "User not found",
-  //       },
-  //     });
-  //   }
-  //   return res.status(200).json(user);
-});
+seatsRouter.get(
+  "/subscriptions/:subscriptionId/seats/:seatId",
+  async (req, res) => {
+    if (
+      typeof req.params.seatId === "number" ||
+      typeof req.params.subscriptionId === "number"
+    ) {
+      return res.status(400).json({
+        code: 400,
+        message: "invalid ids",
+      });
+    }
+
+    const seat = await req.repo.getSeat(
+      req.params.seatId,
+      req.params.subscriptionId
+    );
+    if (!seat) {
+      return res.status(404).json({
+        code: 400,
+        message: "invalid ids",
+        id: req.params.seatId,
+      });
+    }
+    return res.status(200).json(seat);
+  }
+);
 
 seatsRouter.get("/subscriptions/:subscriptionId/seats", (req, res) => {
   res.status(200).json([]);

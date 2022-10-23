@@ -22,7 +22,7 @@ export const seatingConfiguration = z.object({
 
 export type SeatingConfiguration = z.infer<typeof seatingConfiguration>;
 
-export const turnstileConfiguration = z.object({
+export const productConfiguration = z.object({
   on_access_denied_url: z.string().nullable(),
   on_access_granted_url: z.string(),
   on_no_seat_available_url: z.string().nullable(),
@@ -33,10 +33,10 @@ export const turnstileConfiguration = z.object({
   on_no_subscriptions_found_url: z.string().nullable(),
 });
 
-export type TurnstileConfiguration = z.infer<typeof turnstileConfiguration>;
+export type ProductConfiguration = z.infer<typeof productConfiguration>;
 
 export const publisherConfiguration = z.object({
-  turnstile_name: z.string(),
+  product_name: z.string(),
   publisher_name: z.string(),
   home_page_url: z.string().nullable(),
   contact_page_url: z.string().nullable(),
@@ -50,7 +50,7 @@ export const publisherConfiguration = z.object({
   mona_subscription_is_being_configured: z.boolean(),
   is_setup_complete: z.boolean(),
   default_seating_config: seatingConfiguration,
-  turnstile_config: turnstileConfiguration,
+  product_config: productConfiguration,
 });
 
 export type PublisherConfiguration = z.infer<typeof publisherConfiguration>;

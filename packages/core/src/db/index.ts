@@ -1,5 +1,5 @@
-export interface SeatsTable {
-  seatId: number;
-  subscriptionId: number;
-  value: string | null;
+import type { Seat } from "./../common/seats";
+
+export interface Repository {
+  getSeat(seatId: string, subscriptionId: string): Promise<Seat | undefined>;
 }
