@@ -1,6 +1,5 @@
 import { ctx } from "./../context";
 import { seatsApi } from "@dotinc/bouncer-core";
-import { repo } from "../db";
 
 export const seatsRouter = ctx.router(seatsApi);
 
@@ -17,7 +16,7 @@ seatsRouter.get(
       });
     }
 
-    const seat = await repo.getSeat(
+    const seat = await req.repo.getSeat(
       req.params.seatId,
       req.params.subscriptionId
     );
@@ -41,7 +40,7 @@ seatsRouter.get("/subscriptions/:subscriptionId/seats", async (req, res) => {
     });
   }
 
-  const seats = await repo.getSeats(
+  const seats = await req.repo.getSeats(
     req.params.subscriptionId,
     req.query.user_id ?? undefined,
     req.query.user_email ?? undefined

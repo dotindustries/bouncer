@@ -2,40 +2,19 @@ import { ctx } from "../context";
 import { subscriptionsRouter } from "./subscriptions";
 import { configRouter } from "./config";
 import { seatsRouter } from "./seats";
+import { repo } from "../db";
 
 export const app = ctx.nextApp();
 
 // TODO: middleware that adds the user to the context
 // app.use(userMiddleware);
 
-// TODO: any middleware causes 500... wtf?
-// app.use((req, _, next) => {
-//   req.repo = createSqliteRepository({
-//     database: sqlite,
-//     onCreateConnection: async () => console.log("connected to database"),
-//   });
+// repository middleware
+app.use((req, _, next) => {
+  req.repo = repo;
 
-//   return next({
-//     req,
-//   });
-// });
-
-// TODO: load appropriate backend and it's vars from environment
-// if (env.planetscale_database_url) {
-// app.use((req, _, next) => {
-//   req.repo = createPlanetscaleRepository({
-//     url: "env.database_url",
-//   });
-//   return next({
-//     req,
-//   });
-// });
-// app.use(
-//   planetscalePlugin({
-//     url: "env.database_url",
-//   })
-// );
-// }
+  return next(); // passing arg hits http-500
+});
 
 app.use("/api/v1", seatsRouter);
 app.use("/api/v1", configRouter);
