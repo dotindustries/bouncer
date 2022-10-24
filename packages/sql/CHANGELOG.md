@@ -1,3 +1,20 @@
+# v0.3.0 (Sun Oct 23 2022)
+
+#### 🚀 Enhancement
+
+- feat: add sqlite migration provider to sql package ([@nadilas](https://github.com/nadilas))
+- feat: add sqlite migrations to db instance ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: filter seats to subscription id as well ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.2.0 (Sun Oct 23 2022)
 
 #### 🚀 Enhancement
