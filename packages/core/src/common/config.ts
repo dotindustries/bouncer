@@ -1,5 +1,6 @@
-import { api } from "../utils/shorthand";
+import { makeApi } from "@zodios/core";
 import { z } from "zod";
+import { error, error404 } from "./shared";
 
 export const seatingConfiguration = z.object({
   defaultLowSeatWarningLevelPercent: z.number(),
@@ -56,13 +57,46 @@ export const publisherConfiguration = z.object({
 
 export type PublisherConfiguration = z.infer<typeof publisherConfiguration>;
 
-export const configApi = api({
-  "GET publisherConfiguration": {
+export const configApi = makeApi([
+  {
+    method: "get",
+    alias: "publisherConfigurationById",
+    path: "/publisher/:publisherId/configuration",
+    response: publisherConfiguration,
+    errors: [
+      {
+        status: 404,
+        schema: error404,
+      },
+      {
+        status: "default", // default status code will be used if error is not 404
+        schema: error,
+      },
+    ],
+  },
+  {
+    method: "get",
+    alias: "publisherConfigurations",
+    path: "/publisher",
+    response: z.array(publisherConfiguration),
+  },
+  {
+    method: "put",
+    alias: "updatePublisherConfiguration",
     path: "/publisher/:publisherId/configuration",
     response: publisherConfiguration,
   },
-  "PUT publisherConfiguration": {
+  {
+    method: "post",
+    alias: "publisherConfiguration",
     path: "/publisher/:publisherId/configuration",
+    parameters: [
+      {
+        name: "publisherConfiguration",
+        schema: publisherConfiguration,
+        type: "Body",
+      },
+    ],
     response: publisherConfiguration,
   },
-});
+]);

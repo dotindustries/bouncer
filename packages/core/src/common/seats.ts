@@ -1,5 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
+import { error, error404 } from "./shared";
 // TODO: PR for shorthand to add typed makeErrors?
 // import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
@@ -63,18 +64,11 @@ export const seatsApi = makeApi([
     errors: [
       {
         status: 404,
-        schema: z.object({
-          code: z.number(),
-          message: z.string(),
-          id: z.number().or(z.string()),
-        }),
+        schema: error404,
       },
       {
         status: "default", // default status code will be used if error is not 404
-        schema: z.object({
-          code: z.number(),
-          message: z.string(),
-        }),
+        schema: error,
       },
     ],
   },

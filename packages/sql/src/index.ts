@@ -4,7 +4,11 @@ import {
   SqliteDialect,
   SqliteDialectConfig,
 } from "kysely";
-import type { Seat, Repository } from "@dotinc/bouncer-core";
+import type {
+  Seat,
+  Repository,
+  PublisherConfiguration,
+} from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -17,6 +21,57 @@ export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
 
   return {
+    getPublisher: async (publisherId) => {
+      const row = await db
+        .selectFrom("publishers")
+        .innerJoin("seating_config", "publisher_id", "publisher_id")
+        .innerJoin("product_config", "publisher_id", "publisher_id")
+        .selectAll()
+        .select("publishers.publisher_id")
+        .where("publisher_id", "=", publisherId)
+        .executeTakeFirst();
+
+      if (!row) return undefined;
+
+      const pc: PublisherConfiguration = {
+        publisher_id: row.publisher_id,
+        product_name: row.product_name,
+        publisher_name: row.publisher_name,
+        home_page_url: row.home_page_url,
+        contact_page_url: row.contact_page_url,
+        privacy_notice_page_url: row.privacy_notice_page_url,
+        contact_sales_email: row.contact_sales_email,
+        contact_sales_url: row.contact_sales_url,
+        contact_support_email: row.contact_support_email,
+        contact_support_url: row.contact_support_url,
+        mona_base_storage_url: row.mona_base_storage_url,
+        mona_subscription_state: row.mona_subscription_state,
+        mona_subscription_is_being_configured:
+          row.mona_subscription_is_being_configured,
+        is_setup_complete: row.is_setup_complete,
+        default_seating_config: {
+          defaultLowSeatWarningLevelPercent:
+            row.defaultLowSeatWarningLevelPercent,
+          seating_strategy_name: row.seating_strategy_name,
+          low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+          limited_overflow_seating_enabled:
+            row.limited_overflow_seating_enabled,
+          seat_reservation_expiry_in_days: row.seat_reservation_expiry_in_days,
+          default_seat_expiry_in_days: row.default_seat_expiry_in_days,
+        },
+        product_config: {
+          on_access_denied_url: row.on_access_denied_url,
+          on_access_granted_url: row.on_access_granted_url,
+          on_no_seat_available_url: row.on_no_seat_available_url,
+          on_subscription_not_ready_url: row.on_subscription_not_ready_url,
+          on_subscription_canceled_url: row.on_subscription_canceled_url,
+          on_subscription_suspended_url: row.on_subscription_suspended_url,
+          on_subscription_not_found_url: row.on_subscription_not_found_url,
+          on_no_subscriptions_found_url: row.on_no_subscriptions_found_url,
+        },
+      };
+      return pc;
+    },
     getSeat: async (seatId, subscriptionId) => {
       const row = await db
         .selectFrom("seats")
