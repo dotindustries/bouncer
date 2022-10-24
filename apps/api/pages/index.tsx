@@ -6,28 +6,31 @@ import { ZodiosHooks } from "@zodios/react";
 import styles from "../styles/Home.module.css";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { seatsApi } from "@dotinc/bouncer-core";
+import { seatsApi, configApi } from "@dotinc/bouncer-core";
 
 const queryClient = new QueryClient();
 const seatsClientApi = new Zodios("/api/v1", seatsApi);
+const configClientApi = new Zodios("/api/v1", configApi);
 const userClientHooks = new ZodiosHooks("seats", seatsClientApi);
+const configClientHooks = new ZodiosHooks("config", configClientApi);
 
 const Users = () => {
   const [count, setCount] = useState(1);
   const {
-    data: seats,
+    data: publisherConfigurations,
     error,
     isLoading,
     invalidate,
-  } = userClientHooks.useSeats({
-    params: {
-      subscriptionId: "asdf",
-    },
-  });
+  } = configClientHooks.usePublisherConfigurations();
   const { mutate } = userClientHooks.useMutation(
     "post",
     "/subscriptions/:subscriptionId/seats/:seatId/request",
-    undefined,
+    {
+      params: {
+        subscriptionId: "<your subscription id>",
+        seatId: "<your seat id>",
+      },
+    },
     {
       onSuccess: () => invalidate(),
     }
@@ -53,9 +56,9 @@ const Users = () => {
       >
         Add User
       </button>
-      {seats?.map((seat) => (
-        <div key={seat.seat_id}>
-          {seat.seat_type} - {seat.occupant?.email}
+      {publisherConfigurations?.map((publisherConfig) => (
+        <div key={publisherConfig.publisher_id}>
+          <pre>{JSON.stringify(publisherConfig, null, "  ")}</pre>
         </div>
       ))}
     </div>

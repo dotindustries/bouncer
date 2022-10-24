@@ -5,6 +5,7 @@ export interface Repository {
   getPublisher(
     publisherId: string
   ): Promise<PublisherConfiguration | undefined>;
+  getPublishers(): Promise<PublisherConfiguration[]>;
   getSeat(seatId: string, subscriptionId: string): Promise<Seat | undefined>;
   getSeats(
     subscriptionId: string,

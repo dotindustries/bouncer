@@ -23,6 +23,10 @@ configRouter.get("/publisher/:publisherId/configuration", async (req, res) => {
   return pc;
 });
 
-configRouter.get("/publisher", (req, res) => {});
+configRouter.get("/publisher", async (req, res) => {
+  const pcs = await repo.getPublishers();
+
+  return res.status(200).json(pcs);
+});
 
 configRouter.put("/publisher/:publisherId/configuration", (req, res) => {});
