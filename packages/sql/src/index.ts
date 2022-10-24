@@ -24,17 +24,16 @@ export const createRepository = (args: KyselyConfig): Repository => {
     getPublisher: async (publisherId) => {
       const row = await db
         .selectFrom("publishers")
-        .innerJoin("seating_config", "publisher_id", "publisher_id")
-        .innerJoin("product_config", "publisher_id", "publisher_id")
+        .innerJoin("seating_config", "seating_config.publisher_id", "id")
+        .innerJoin("product_config", "product_config.publisher_id", "id")
         .selectAll()
-        .select("publishers.publisher_id")
-        .where("publisher_id", "=", publisherId)
+        .where("id", "=", publisherId)
         .executeTakeFirst();
 
       if (!row) return undefined;
 
       const pc: PublisherConfiguration = {
-        publisher_id: row.publisher_id,
+        id: row.id,
         product_name: row.product_name,
         publisher_name: row.publisher_name,
         home_page_url: row.home_page_url,
@@ -75,14 +74,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
     getPublishers: async () => {
       const rows = await db
         .selectFrom("publishers")
-        .innerJoin("seating_config", "publisher_id", "publisher_id")
-        .innerJoin("product_config", "publisher_id", "publisher_id")
+        .innerJoin("seating_config", "seating_config.publisher_id", "id")
+        .innerJoin("product_config", "product_config.publisher_id", "id")
         .selectAll()
-        .select("publishers.publisher_id")
         .execute();
 
       return rows.map((row) => ({
-        publisher_id: row.publisher_id,
+        id: row.id,
         product_name: row.product_name,
         publisher_name: row.publisher_name,
         home_page_url: row.home_page_url,

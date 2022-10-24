@@ -14,11 +14,11 @@ export type PublisherConfigTable = Omit<
 >;
 
 export type SeatingConfigTable = SeatingConfiguration & {
-  publisher_id: Pick<PublisherConfiguration, "publisher_id">;
+  publisher_id: Pick<PublisherConfiguration, "id">;
 };
 
 export type ProductConfigTable = ProductConfiguration & {
-  publisher_id: Pick<PublisherConfiguration, "publisher_name">;
+  publisher_id: Pick<PublisherConfiguration, "id">;
 };
 
 export type SeatTable = Omit<Seat, "reservation" | "occupant">;
