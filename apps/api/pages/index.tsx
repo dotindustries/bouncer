@@ -14,7 +14,7 @@ const configClientApi = new Zodios("/api/v1", configApi);
 const userClientHooks = new ZodiosHooks("seats", seatsClientApi);
 const configClientHooks = new ZodiosHooks("config", configClientApi);
 
-const Users = () => {
+const Publishers = () => {
   const [count, setCount] = useState(1);
   const {
     data: publisherConfigurations,
@@ -57,7 +57,7 @@ const Users = () => {
         Add User
       </button>
       {publisherConfigurations?.map((publisherConfig) => (
-        <div key={publisherConfig.publisher_id}>
+        <div key={publisherConfig.id}>
           <pre>{JSON.stringify(publisherConfig, null, "  ")}</pre>
         </div>
       ))}
@@ -70,12 +70,12 @@ const Home: NextPage = () => {
     <QueryClientProvider client={queryClient}>
       <div className={styles.container}>
         <Head>
-          <title>Zodios Example App</title>
-          <meta name="description" content="Zodios app" />
+          <title>Bouncer</title>
+          <meta name="description" content="SaaS seat management service" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <h1>Users</h1>
-        <Users />
+        <h1>Publishers</h1>
+        <Publishers />
       </div>
     </QueryClientProvider>
   );
