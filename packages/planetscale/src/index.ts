@@ -4,12 +4,14 @@ import {
   PlanetScaleDialectConfig,
 } from "kysely-planetscale";
 import type { ZodiosPlugin } from "@zodios/core";
-import { createDatabase } from "@dotinc/bouncer-sql";
+import { createRepository as createBaseRepository } from "@dotinc/bouncer-sql";
 
-export const createPlanetscaleRepository = (
+export { migrateToLatest } from "./migration";
+
+export const createRepository = (
   config: PlanetScaleDialectConfig
 ): Repository => {
-  return createDatabase({
+  return createBaseRepository({
     dialect: new PlanetScaleDialect(config),
     log: ["query", "error"],
   });
@@ -23,7 +25,7 @@ export const planetscalePlugin = (
     request: async (_, config) => {
       return {
         ...config,
-        repo: createPlanetscaleRepository(dbConfig),
+        repo: createRepository(dbConfig),
       };
     },
   };

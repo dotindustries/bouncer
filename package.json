@@ -23,7 +23,7 @@
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@trunkio/launcher": "^1.2.2",
-    "@types/node": "^18.11.3",
+    "@types/node": "^18.11.4",
     "auto": "^10.37.6",
     "lerna": "^6.0.1",
     "husky": "8.0.1",

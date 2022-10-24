@@ -11,7 +11,7 @@ importers:
       '@commitlint/cli': ^17.1.2
       '@commitlint/config-conventional': ^17.1.0
       '@trunkio/launcher': ^1.2.2
-      '@types/node': ^18.11.3
+      '@types/node': ^18.11.4
       auto: ^10.37.6
       husky: 8.0.1
       lerna: ^6.0.1
@@ -19,15 +19,15 @@ importers:
       turbo: latest
       typescript: ^4.8.4
     devDependencies:
-      '@auto-it/all-contributors': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/conventional-commits': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/first-time-contributor': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/npm': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/all-contributors': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/conventional-commits': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/first-time-contributor': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/npm': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       '@commitlint/cli': 17.1.2
       '@commitlint/config-conventional': 17.1.0
       '@trunkio/launcher': 1.2.2
-      '@types/node': 18.11.3
-      auto: 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@types/node': 18.11.4
+      auto: 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       husky: 8.0.1
       lerna: 6.0.1
       prettier: 2.7.1
@@ -40,7 +40,6 @@ importers:
       '@dotinc/bouncer-planetscale': ^0.2.0
       '@dotinc/bouncer-sql': ^0.2.0
       '@tanstack/react-query': 4.12.0
-      '@types/better-sqlite3': ^7.6.2
       '@types/express': 4.17.13
       '@types/node': 18.7.13
       '@types/react': 18.0.17
@@ -50,7 +49,6 @@ importers:
       '@zodios/express': 10.0.5
       '@zodios/react': 10.0.1
       axios: 0.27.2
-      better-sqlite3: ^7.6.2
       eslint: 8.23.0
       eslint-config-next: 12.2.5
       express: 4.18.1
@@ -73,7 +71,6 @@ importers:
       '@zodios/express': 10.0.5_rmjrtxmcjtqslmtzcg6yhjeluu
       '@zodios/react': 10.0.1_unjposqn7a5iai5dwkwkfbw73m
       axios: 0.27.2
-      better-sqlite3: 7.6.2
       express: 4.18.1
       next: 12.2.5_biqbaboplfbrettd7655fr4n2y
       next-swagger-doc: 0.3.6_76griab3n6npynrdo5jzljdd4u
@@ -83,7 +80,6 @@ importers:
       swagger-ui-react: 4.15.0_biqbaboplfbrettd7655fr4n2y
       zod: 3.19.1
     devDependencies:
-      '@types/better-sqlite3': 7.6.2
       '@types/node': 18.7.13
       '@types/react': 18.0.17
       '@types/react-dom': 18.0.6
@@ -162,7 +158,9 @@ importers:
   packages/sql:
     specifiers:
       '@dotinc/bouncer-core': ^0.2.0
+      '@types/better-sqlite3': ^7.6.2
       '@types/express': ^4.17.14
+      better-sqlite3: ^7.6.2
       cuid: ^2.1.8
       kysely: ^0.22.0
       rimraf: ^3.0.2
@@ -171,9 +169,11 @@ importers:
       typescript: ^4.8.4
     dependencies:
       '@dotinc/bouncer-core': link:../core
+      better-sqlite3: 7.6.2
       cuid: 2.1.8
       kysely: 0.22.0
     devDependencies:
+      '@types/better-sqlite3': 7.6.2
       '@types/express': 4.17.14
       rimraf: 3.0.2
       tsc-alias: 1.7.0
@@ -214,11 +214,11 @@ packages:
       z-schema: 4.2.4
     dev: false
 
-  /@auto-it/all-contributors/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/all-contributors/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-3Y+rI44VG2GHqb4G3houTOk2e5dzRMiQY05pzgzuNzl7DyBNbImzkvUKptFd9du0hfVftw8iVJBEMkKtyzeBlw==}
     dependencies:
       '@auto-it/bot-list': 10.37.6
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       '@octokit/rest': 18.12.0
       all-contributors-cli: 6.19.0
       anymatch: 3.1.2
@@ -243,10 +243,10 @@ packages:
     engines: {node: '>=10.x'}
     dev: true
 
-  /@auto-it/conventional-commits/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/conventional-commits/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-IJvKrEST7iOlKsohTPgSDkKLTRBF+5RD8arAXc7ZV9QMI9A/BmyoaMhj8uh9wt5QuSpNmw2C3EJWldbvmu695Q==}
     dependencies:
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       array.prototype.flatmap: 1.3.0
       conventional-changelog-core: 4.2.4
       conventional-changelog-preset-loader: 2.3.4
@@ -264,7 +264,7 @@ packages:
       - typescript
     dev: true
 
-  /@auto-it/core/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/core/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-XfQq+DmUAg7hXSwq0KxOCGyPLlri8hJoEAp3QDaAa42CSnM5A5oZ67VaL7D/mFcSPDYK8o3w69mQfwcmOENjBA==}
     peerDependencies:
       typescript: '*'
@@ -307,7 +307,7 @@ packages:
       tapable: 2.2.1
       terminal-link: 2.1.1
       tinycolor2: 1.4.2
-      ts-node: 10.9.1_lw7q66ikwuedwcorwkk4v6trsa
+      ts-node: 10.9.1_6hf6ijjdmrvgn4gwd23tocsh2m
       tslib: 2.1.0
       type-fest: 0.21.3
       typescript: 4.8.4
@@ -321,11 +321,11 @@ packages:
       - supports-color
     dev: true
 
-  /@auto-it/first-time-contributor/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/first-time-contributor/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-+weXEHUaXSBJfLmI5F7MZKUPrRvQM8Fr+e2lCcDW4ChyfR2YE70/wv9e3oxenZp9Ed0pHN7THH718O9Tz4GtHw==}
     dependencies:
       '@auto-it/bot-list': 10.37.6
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       array.prototype.flatmap: 1.3.0
       endent: 2.1.0
       tslib: 2.1.0
@@ -339,10 +339,10 @@ packages:
       - typescript
     dev: true
 
-  /@auto-it/npm/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/npm/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-18CpaX3YfpJ6vwONYEBy9ORiPGplrtQ30pzRtDpKZzHin5wakdOyPd1P5lWeZBmCQCyiszdRteeQsXzFbaSuoQ==}
     dependencies:
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       '@auto-it/package-json-utils': 10.37.6
       await-to-js: 3.0.0
       endent: 2.1.0
@@ -373,11 +373,11 @@ packages:
       parse-github-url: 1.0.2
     dev: true
 
-  /@auto-it/released/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/released/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-988nCdYApyzKwZx6W6lHNHS9aEw9xLFbfDcTWrSKUOChjT8yDcGadDDXVhj3M0uhHojr8jXKbrRATEPyEeTDlg==}
     dependencies:
       '@auto-it/bot-list': 10.37.6
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       deepmerge: 4.2.2
       fp-ts: 2.13.1
       io-ts: 2.2.19_fp-ts@2.13.1
@@ -391,10 +391,10 @@ packages:
       - typescript
     dev: true
 
-  /@auto-it/version-file/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /@auto-it/version-file/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-BO7f1bWrUFkhp7RwwmkegBUc/VwJrIlQQaFm7l/cc5IGZ7DL0rPap8UbytSL3aWV9YzoZpqgWNj2KPRGvwguag==}
     dependencies:
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       fp-ts: 2.13.1
       io-ts: 2.2.19_fp-ts@2.13.1
       semver: 7.3.8
@@ -2245,6 +2245,10 @@ packages:
   /@types/node/18.11.3:
     resolution: {integrity: sha512-fNjDQzzOsZeKZu5NATgXUPsaFaTxeRgFXoosrHivTl8RGeV733OLawXsGfEk9a8/tySyZUyiZ6E8LcjPFZ2y1A==}
 
+  /@types/node/18.11.4:
+    resolution: {integrity: sha512-BxcJpBu8D3kv/GZkx/gSMz6VnTJREBj/4lbzYOQueUOELkt8WrO6zAcSPmp9uRPEW/d+lUO8QK0W2xnS1hEU0A==}
+    dev: true
+
   /@types/node/18.7.13:
     resolution: {integrity: sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==}
     dev: true
@@ -2743,15 +2747,15 @@ packages:
     engines: {node: '>=0.8'}
     dev: true
 
-  /auto/10.37.6_lw7q66ikwuedwcorwkk4v6trsa:
+  /auto/10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m:
     resolution: {integrity: sha512-zMLsXz/WPqSlNVlY6g1GlFyhow+x//htR2QwWYSxB4DvAFNggXnK6aRqJ1DrcjhtUAPL2ngw5hHHrCgHvyvAaw==}
     engines: {node: '>=10.x'}
     hasBin: true
     dependencies:
-      '@auto-it/core': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/npm': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/released': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
-      '@auto-it/version-file': 10.37.6_lw7q66ikwuedwcorwkk4v6trsa
+      '@auto-it/core': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/npm': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/released': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
+      '@auto-it/version-file': 10.37.6_6hf6ijjdmrvgn4gwd23tocsh2m
       await-to-js: 3.0.0
       chalk: 4.1.2
       command-line-application: 0.10.1
@@ -8394,6 +8398,37 @@ packages:
     resolution: {integrity: sha512-cA5MPLWGWYXvnlJb4TamUUx858HVHBsxxdy8l7jxODOLDyGYnQOllob2A2jyDghGa5iJHs2gzFNHvwGJ0ZfR8g==}
     dev: false
 
+  /ts-node/10.9.1_6hf6ijjdmrvgn4gwd23tocsh2m:
+    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 18.11.4
+      acorn: 8.8.0
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 4.8.4
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: true
+
   /ts-node/10.9.1_jcmx33t3olsvcxopqdljsohpme:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -8414,37 +8449,6 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 14.18.32
-      acorn: 8.8.0
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 4.8.4
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
-
-  /ts-node/10.9.1_lw7q66ikwuedwcorwkk4v6trsa:
-    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 18.11.3
       acorn: 8.8.0
       acorn-walk: 8.2.0
       arg: 4.1.3

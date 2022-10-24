@@ -6,10 +6,14 @@ import {
 } from "kysely";
 import type { Seat, Repository } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
+import SqliteDatabase, {
+  Database as BetterSqlite3Database,
+} from "better-sqlite3";
 
+export * from "./schema";
 export { sqliteMigrateToLatest } from "./migration";
 
-export const createDatabase = (args: KyselyConfig): Repository => {
+export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
 
   return {
@@ -164,8 +168,14 @@ export const createDatabase = (args: KyselyConfig): Repository => {
   };
 };
 
+export const createSqliteDatabase = (
+  filepath: string
+): BetterSqlite3Database => {
+  return new SqliteDatabase(filepath, { verbose: console.log });
+};
+
 export const createSqliteRepository = (config: SqliteDialectConfig) => {
-  return createDatabase({
+  return createRepository({
     dialect: new SqliteDialect(config),
     log: ["query", "error"],
   });
