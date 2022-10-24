@@ -1,3 +1,25 @@
+# (Mon Oct 24 2022)
+
+#### 🚀 Enhancement
+
+- `@dotinc/bouncer-core@0.4.0`, `@dotinc/bouncer-sql@0.4.0`
+  - feat: publisherConfigurations route ([@nadilas](https://github.com/nadilas))
+  - feat: publisherConfigurationById route ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-planetscale@0.4.0`, `@dotinc/bouncer-sql@0.4.0`
+  - feat: add planetscale migration ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- `@dotinc/bouncer-core@0.4.0`, `@dotinc/bouncer-planetscale@0.4.0`, `@dotinc/bouncer-sql@0.4.0`
+  - chore: upgrade deps and clean old deps ([@nadilas](https://github.com/nadilas))
+  - chore: merge changelog ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # (Sun Oct 23 2022)
 
 #### 🚀 Enhancement

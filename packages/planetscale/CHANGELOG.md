@@ -1,3 +1,20 @@
+# v0.4.0 (Mon Oct 24 2022)
+
+#### 🚀 Enhancement
+
+- feat: add planetscale migration ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- chore: upgrade deps and clean old deps ([@nadilas](https://github.com/nadilas))
+- chore: merge changelog ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.2.0 (Sun Oct 23 2022)
 
 #### 🚀 Enhancement
