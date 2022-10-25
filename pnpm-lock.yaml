@@ -45,6 +45,7 @@ importers:
       '@types/react': 18.0.22
       '@types/react-dom': 18.0.7
       '@types/swagger-ui-react': ^4.11.0
+      '@vercel/analytics': ^0.1.1
       '@zodios/core': 10.3.1
       '@zodios/express': 10.3.2
       '@zodios/react': 10.3.3
@@ -67,6 +68,7 @@ importers:
       '@dotinc/bouncer-sql': link:../../packages/sql
       '@tanstack/react-query': 4.13.0_biqbaboplfbrettd7655fr4n2y
       '@types/express': 4.17.14
+      '@vercel/analytics': 0.1.1_react@18.2.0
       '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
       '@zodios/express': 10.3.2_dolxl6uwrmlaxbcgzb76xvlfiu
       '@zodios/react': 10.3.3_ptr64sl3a3bsmwsbohxbfotdba
@@ -2296,6 +2298,14 @@ packages:
       '@typescript-eslint/types': 5.40.1
       eslint-visitor-keys: 3.3.0
     dev: true
+
+  /@vercel/analytics/0.1.1_react@18.2.0:
+    resolution: {integrity: sha512-34on7YtVt/yT8+QX7c5K2bcKYXnax06sQiK2PUdlQ1ABg5699mPdLGOSpS1gF//kR1s9oig4MCJ+N9nOjpaS6g==}
+    peerDependencies:
+      react: ^16.8||^17||^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@yarnpkg/lockfile/1.1.0:
     resolution: {integrity: sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==}
