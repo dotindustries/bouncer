@@ -117,6 +117,89 @@ export const createRepository = (args: KyselyConfig): Repository => {
         },
       }));
     },
+    updatePublisher: async (update) => {
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .updateTable("publishers")
+          .set({
+            product_name: update.product_name,
+            publisher_name: update.publisher_name,
+            home_page_url: update.home_page_url,
+            contact_page_url: update.contact_page_url,
+            privacy_notice_page_url: update.privacy_notice_page_url,
+            contact_sales_email: update.contact_sales_email,
+            contact_sales_url: update.contact_sales_url,
+            contact_support_email: update.contact_support_email,
+            contact_support_url: update.contact_support_url,
+            mona_base_storage_url: update.mona_base_storage_url,
+            mona_subscription_state: update.mona_subscription_state,
+            mona_subscription_is_being_configured:
+              update.mona_subscription_is_being_configured,
+            is_setup_complete: update.is_setup_complete,
+          })
+          .where("id", "=", update.id)
+          .executeTakeFirst();
+
+        if (up.numUpdatedRows !== 1n)
+          throw new Error(
+            `Failed to update publisher configuration: [${update.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const prodConfig = await db
+          .updateTable("product_config")
+          .set({
+            on_access_denied_url: update.product_config.on_access_denied_url,
+            on_access_granted_url: update.product_config.on_access_granted_url,
+            on_no_seat_available_url:
+              update.product_config.on_no_seat_available_url,
+            on_no_subscriptions_found_url:
+              update.product_config.on_no_subscriptions_found_url,
+            on_subscription_canceled_url:
+              update.product_config.on_subscription_canceled_url,
+            on_subscription_not_found_url:
+              update.product_config.on_subscription_not_found_url,
+            on_subscription_not_ready_url:
+              update.product_config.on_subscription_not_ready_url,
+            on_subscription_suspended_url:
+              update.product_config.on_subscription_suspended_url,
+          })
+          .where("publisher_id", "=", update.id)
+          .executeTakeFirst();
+
+        if (prodConfig.numUpdatedRows !== 1n)
+          throw new Error(
+            `Failed to update publisher configuration: [${update.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const seatingConfig = await db
+          .updateTable("seating_config")
+          .set({
+            default_seat_expiry_in_days:
+              update.default_seating_config.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              update.default_seating_config.defaultLowSeatWarningLevelPercent,
+            limited_overflow_seating_enabled:
+              update.default_seating_config.limited_overflow_seating_enabled,
+            low_seat_warning_level_pct:
+              update.default_seating_config.low_seat_warning_level_pct,
+            seat_reservation_expiry_in_days:
+              update.default_seating_config.seat_reservation_expiry_in_days,
+            seating_strategy_name:
+              update.default_seating_config.seating_strategy_name,
+          })
+          .where("seating_config.publisher_id", "=", update.id)
+          .executeTakeFirst();
+
+        if (seatingConfig.numUpdatedRows !== 1n)
+          throw new Error(
+            `Failed to update publisher configuration: [${update.id}]`
+          );
+      });
+
+      return update;
+    },
     getSeat: async (seatId, subscriptionId) => {
       const row = await db
         .selectFrom("seats")

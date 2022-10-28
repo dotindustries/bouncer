@@ -20,7 +20,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "npm run clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --sourcemap",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "clean": "rimraf -r dist"
   },

@@ -28,6 +28,16 @@ configRouter.get("/publisher", async (req, res) => {
   return res.status(200).json(pcs);
 });
 
-configRouter.put("/publisher/:publisherId/configuration", (req, res) => {});
+configRouter.put("/publisher/:publisherId/configuration", (req, res) => {
+  const config = req.body;
+
+  if (req.params.publisherId !== config.id) {
+    return res.status(400).json({
+      code: 400,
+      message: `Invalid publisher configuration [${req.params.publisherId}] doesn't match id in patch [${config.id}]`,
+    });
+  }
+  return req.repo.updatePublisher(config);
+});
 
 configRouter.post("/publisher/:publisherId/configuration", (req, res) => {});

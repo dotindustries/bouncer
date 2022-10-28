@@ -17,8 +17,8 @@ export const seatingConfiguration = z.object({
     })
     .nullable(),
   limited_overflow_seating_enabled: z.boolean().nullable(),
-  seat_reservation_expiry_in_days: z.number().min(1).default(1),
-  default_seat_expiry_in_days: z.number().min(1).default(1),
+  seat_reservation_expiry_in_days: z.number().min(1).default(1).optional(),
+  default_seat_expiry_in_days: z.number().min(1).default(1).optional(),
 });
 
 export type SeatingConfiguration = z.infer<typeof seatingConfiguration>;
@@ -84,6 +84,19 @@ export const configApi = makeApi([
     method: "put",
     alias: "updatePublisherConfiguration",
     path: "/publisher/:publisherId/configuration",
+    parameters: [
+      {
+        name: "publisherConfiguration",
+        schema: publisherConfiguration,
+        type: "Body",
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: publisherConfiguration,
   },
   {
