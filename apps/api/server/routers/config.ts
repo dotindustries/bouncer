@@ -61,4 +61,16 @@ configRouter.put("/publisher/:publisherId/configuration", async (req, res) => {
   }
 });
 
-configRouter.post("/publisher/:publisherId/configuration", (req, res) => {});
+configRouter.post("/publisher", async (req, res) => {
+  // TODO: API Keys access: sys_
+  const config = req.body;
+
+  try {
+    return res.status(200).json(await req.repo.createPublisher(config));
+  } catch (e: any) {
+    return res.status(500).json({
+      code: 500,
+      message: `Failed to save publisher configuration [${config.id}]: ${e.message}`,
+    });
+  }
+});

@@ -200,6 +200,89 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       return update;
     },
+    createPublisher: async (config) => {
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .insertInto("publishers")
+          .values({
+            id: config.id,
+            product_name: config.product_name,
+            publisher_name: config.publisher_name,
+            home_page_url: config.home_page_url,
+            contact_page_url: config.contact_page_url,
+            privacy_notice_page_url: config.privacy_notice_page_url,
+            contact_sales_email: config.contact_sales_email,
+            contact_sales_url: config.contact_sales_url,
+            contact_support_email: config.contact_support_email,
+            contact_support_url: config.contact_support_url,
+            mona_base_storage_url: config.mona_base_storage_url,
+            mona_subscription_state: config.mona_subscription_state,
+            mona_subscription_is_being_configured:
+              config.mona_subscription_is_being_configured,
+            is_setup_complete: config.is_setup_complete,
+          })
+          .executeTakeFirst();
+
+        if (!up)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const prodConfig = await db
+          .insertInto("product_config")
+          .values({
+            publisher_id: config.id,
+            on_access_denied_url: config.product_config.on_access_denied_url,
+            on_access_granted_url: config.product_config.on_access_granted_url,
+            on_no_seat_available_url:
+              config.product_config.on_no_seat_available_url,
+            on_no_subscriptions_found_url:
+              config.product_config.on_no_subscriptions_found_url,
+            on_subscription_canceled_url:
+              config.product_config.on_subscription_canceled_url,
+            on_subscription_not_found_url:
+              config.product_config.on_subscription_not_found_url,
+            on_subscription_not_ready_url:
+              config.product_config.on_subscription_not_ready_url,
+            on_subscription_suspended_url:
+              config.product_config.on_subscription_suspended_url,
+          })
+          .executeTakeFirst();
+
+        if (!prodConfig)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const seatingConfig = await db
+          .insertInto("seating_config")
+          .values({
+            publisher_id: config.id,
+            default_seat_expiry_in_days:
+              config.default_seating_config.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              config.default_seating_config.defaultLowSeatWarningLevelPercent,
+            limited_overflow_seating_enabled:
+              config.default_seating_config.limited_overflow_seating_enabled,
+            low_seat_warning_level_pct:
+              config.default_seating_config.low_seat_warning_level_pct,
+            seat_reservation_expiry_in_days:
+              config.default_seating_config.seat_reservation_expiry_in_days,
+            seating_strategy_name:
+              config.default_seating_config.seating_strategy_name,
+          })
+          .executeTakeFirst();
+
+        if (!seatingConfig)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+      });
+
+      return config;
+    },
     getSeat: async (seatId, subscriptionId) => {
       const row = await db
         .selectFrom("seats")

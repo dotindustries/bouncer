@@ -2,6 +2,9 @@ import type { PublisherConfiguration } from "..";
 import type { Seat } from "./../common/seats";
 
 export interface Repository {
+  createPublisher(
+    config: PublisherConfiguration
+  ): Promise<PublisherConfiguration>;
   getPublisher(
     publisherId: string
   ): Promise<PublisherConfiguration | undefined>;

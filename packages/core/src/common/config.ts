@@ -108,12 +108,18 @@ export const configApi = makeApi([
   {
     method: "post",
     alias: "publisherConfiguration",
-    path: "/publisher/:publisherId/configuration",
+    path: "/publisher",
     parameters: [
       {
         name: "publisherConfiguration",
         schema: publisherConfiguration,
         type: "Body",
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
       },
     ],
     response: publisherConfiguration,
