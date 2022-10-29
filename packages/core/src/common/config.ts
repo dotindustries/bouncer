@@ -78,6 +78,12 @@ export const configApi = makeApi([
     method: "get",
     alias: "publisherConfigurations",
     path: "/publishers",
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: z.array(publisherConfiguration),
   },
   {
