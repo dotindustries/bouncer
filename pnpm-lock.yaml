@@ -50,6 +50,7 @@ importers:
       '@zodios/express': 10.3.2
       '@zodios/react': 10.3.3
       axios: 1.1.3
+      date-fns: ^2.29.3
       eslint: 8.26.0
       eslint-config-next: 12.3.1
       express: 4.18.2
@@ -73,6 +74,7 @@ importers:
       '@zodios/express': 10.3.2_dolxl6uwrmlaxbcgzb76xvlfiu
       '@zodios/react': 10.3.3_ptr64sl3a3bsmwsbohxbfotdba
       axios: 1.1.3
+      date-fns: 2.29.3
       express: 4.18.2
       next: 12.3.1_biqbaboplfbrettd7655fr4n2y
       next-swagger-doc: 0.3.6_ipj3j3arlvnxaral2ehruqtse4

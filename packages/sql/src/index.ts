@@ -427,30 +427,115 @@ export const createRepository = (args: KyselyConfig): Repository => {
     },
     replaceSeat: async (update) => {
       await db.transaction().execute(async (tx) => {
-        // const up = await tx
-        //   .updateTable("seats")
-        //   .set({
-
-        //   })
-        //   .where("seat_id", "=", update.seat_id)
-        //   .executeTakeFirst();
-
-        // if (up.numUpdatedRows !== 1n)
-        //   throw new Error(
-        //     `Failed to save seat: [${update.seat_id}]`
-        //   );
-
-        const occ = await tx
-          .updateTable("seat_occupants")
-          .set({
-            email: update.occupant?.email,
-            user_name: update.occupant?.user_name,
+        const up = await tx
+          .insertInto("seats")
+          .values({
+            seat_id: update.seat_id,
+            created_utc: update.created_utc,
+            subscription_id: update.subscription_id,
+            expires_utc: update.expires_utc,
+            redeemed_utc: update.redeemed_utc,
+            seat_type: update.seat_type,
+            seating_strategy_name: update.seating_strategy_name,
           })
-          .where("seat_id", "=", update.seat_id)
+          .onConflict((oc) =>
+            oc.column("seat_id").doUpdateSet({
+              expires_utc: update.expires_utc,
+              redeemed_utc: update.redeemed_utc,
+              seat_type: update.seat_type,
+              seating_strategy_name: update.seating_strategy_name,
+            })
+          )
           .executeTakeFirst();
 
-        if (occ.numUpdatedRows !== 1n)
-          throw new Error(`Failed to save seat occupant: [${update.seat_id}]`);
+        // TODO: this does not check for success
+        if (up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
+
+        // if there's no reservation present in the update
+        //   try to delete it
+        if (!update.reservation) {
+          await tx
+            .deleteFrom("seat_reservations")
+            .where("seat_id", "=", update.seat_id)
+            .execute();
+        } else {
+          const reservation = update.reservation;
+          const res = await tx
+            .insertInto("seat_reservations")
+            .values({
+              seat_id: update.seat_id,
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
+            .onConflict((oc) =>
+              oc.column("seat_id").doUpdateSet({
+                tenant_id:
+                  "tenant_id" in reservation.identifier
+                    ? reservation.identifier.tenant_id
+                    : null,
+                user_id:
+                  "tenant_id" in reservation.identifier
+                    ? reservation.identifier.user_id
+                    : null,
+                invite_url: reservation.invite_url,
+                email:
+                  "email" in reservation.identifier
+                    ? reservation.identifier.email
+                    : null,
+              })
+            );
+          // TODO: this does not check for success
+          if (res)
+            throw new Error(
+              `Failed to save seat reservation: [${update.seat_id}]`
+            );
+        }
+
+        // if there's no occupant present in the update
+        //   try to delete it
+        if (!update.occupant) {
+          await tx
+            .deleteFrom("seat_occupants")
+            .where("seat_id", "=", update.seat_id)
+            .execute();
+        } else {
+          const occupant = update.occupant;
+
+          const occ = await tx
+            .insertInto("seat_occupants")
+            .values({
+              seat_id: update.seat_id,
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
+            .onConflict((oc) =>
+              oc.column("seat_id").doUpdateSet({
+                user_id: occupant.user_id,
+                tenant_id: occupant.tenant_id,
+                email: occupant.email,
+                user_name: occupant.user_name,
+              })
+            )
+            .executeTakeFirst();
+
+          if (occ)
+            throw new Error(
+              `Failed to save seat occupant: [${update.seat_id}]`
+            );
+        }
       });
 
       return update;

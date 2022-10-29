@@ -162,6 +162,23 @@ export const seatsApi = makeApi([
         schema: user,
       },
     ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: seat,
   },
   {
