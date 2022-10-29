@@ -4,12 +4,7 @@ import {
   SqliteDialect,
   SqliteDialectConfig,
 } from "kysely";
-import type {
-  Seat,
-  Repository,
-  PublisherConfiguration,
-  Subscription,
-} from "@dotinc/bouncer-core";
+import type { Repository } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -33,7 +28,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       if (!row) return undefined;
 
-      const pc: PublisherConfiguration = {
+      return {
         id: row.id,
         product_name: row.product_name,
         publisher_name: row.publisher_name,
@@ -70,7 +65,6 @@ export const createRepository = (args: KyselyConfig): Repository => {
           on_no_subscriptions_found_url: row.on_no_subscriptions_found_url,
         },
       };
-      return pc;
     },
     getPublishers: async () => {
       const rows = await db
@@ -315,7 +309,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .executeTakeFirst();
       if (!row) return undefined;
 
-      const seat: Seat = {
+      return {
         subscription_id: row.subscription_id,
         seat_id: row.seat_id,
         seat_type: row.seat_type,
@@ -347,7 +341,6 @@ export const createRepository = (args: KyselyConfig): Repository => {
               }
             : null,
       };
-      return seat;
     },
     getSeats: async (subscriptionId, byUserId, byEmail) => {
       const q = db
