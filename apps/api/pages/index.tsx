@@ -1,45 +1,45 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import { Zodios } from '@zodios/core'
-import { ZodiosHooks } from '@zodios/react'
-import styles from '../styles/Home.module.css'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import { seatsApi, configApi } from '@dotinc/bouncer-core'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import { Zodios } from "@zodios/core";
+import { ZodiosHooks } from "@zodios/react";
+import styles from "../styles/Home.module.css";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { seatsApi, configApi } from "@dotinc/bouncer-core";
 
-const queryClient = new QueryClient()
-const seatsClientApi = new Zodios('/api/v1', seatsApi)
-const configClientApi = new Zodios('/api/v1', configApi)
-const userClientHooks = new ZodiosHooks('seats', seatsClientApi)
-const configClientHooks = new ZodiosHooks('config', configClientApi)
+const queryClient = new QueryClient();
+const seatsClientApi = new Zodios("/api/v1", seatsApi);
+const configClientApi = new Zodios("/api/v1", configApi);
+const userClientHooks = new ZodiosHooks("seats", seatsClientApi);
+const configClientHooks = new ZodiosHooks("config", configClientApi);
 
 const Publishers = () => {
-  const [count, setCount] = useState(1)
+  const [count, setCount] = useState(1);
   const {
     data: publisherConfigurations,
     error,
     isLoading,
     invalidate,
-  } = configClientHooks.usePublisherConfigurations()
+  } = configClientHooks.usePublisherConfigurations();
   const { mutate } = userClientHooks.useMutation(
-    'post',
-    '/subscriptions/:subscriptionId/seats/:seatId/request',
+    "post",
+    "/subscriptions/:subscriptionId/seats/:seatId/request",
     {
       params: {
-        subscriptionId: '<your subscription id>',
-        seatId: '<your seat id>',
+        subscriptionId: "<your subscription id>",
+        seatId: "<your seat id>",
       },
     },
     {
       onSuccess: () => invalidate(),
     }
-  )
+  );
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
   if (error) {
-    return <pre>{JSON.stringify(error, null, '  ')}</pre>
+    return <pre>{JSON.stringify(error, null, "  ")}</pre>;
   }
 
   return (
@@ -51,19 +51,19 @@ const Publishers = () => {
           //   user_name: `user${count}`,
           //   email: `user${count}@test.com`,
           // });
-          setCount((prev) => prev + 1)
+          setCount((prev) => prev + 1);
         }}
       >
         Add User
       </button>
       {publisherConfigurations?.map((publisherConfig) => (
         <div key={publisherConfig.id}>
-          <pre>{JSON.stringify(publisherConfig, null, '  ')}</pre>
+          <pre>{JSON.stringify(publisherConfig, null, "  ")}</pre>
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
 const Home: NextPage = () => {
   return (
@@ -78,7 +78,7 @@ const Home: NextPage = () => {
         <Publishers />
       </div>
     </QueryClientProvider>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

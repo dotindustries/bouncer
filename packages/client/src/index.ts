@@ -1,3 +1,3 @@
-export { createClient } from '~/client'
+export { createClient } from "~/client";
 
-export type { BouncerClientOptions } from '~/client'
+export type { BouncerClientOptions } from "~/client";
