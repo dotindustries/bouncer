@@ -1,3 +1,32 @@
+# (Fri Oct 28 2022)
+
+#### 🚀 Enhancement
+
+- feat: repository middleware for zodios ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-core@0.5.0`, `@dotinc/bouncer-planetscale@0.5.0`, `@dotinc/bouncer-sql@0.5.0`
+  - feat: add update publisher config implementation ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: async end without response express issue ([@nadilas](https://github.com/nadilas))
+- fix: remove nextjs config workaround for tanstack ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-core@0.5.0`, `@dotinc/bouncer-sql@0.5.0`
+  - fix: publishers sql query ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- chore: add vercel analytics beta ([@nadilas](https://github.com/nadilas))
+- chore: ofc lock is out of sync ([@nadilas](https://github.com/nadilas))
+- refactor: wording on main page ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-core@0.5.0`, `@dotinc/bouncer-planetscale@0.5.0`, `@dotinc/bouncer-sql@0.5.0`
+  - Merge branch 'main' of github.com:dotindustries/bouncer ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # (Mon Oct 24 2022)
 
 #### 🚀 Enhancement

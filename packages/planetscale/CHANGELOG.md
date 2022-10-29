@@ -1,3 +1,19 @@
+# v0.5.0 (Fri Oct 28 2022)
+
+#### 🚀 Enhancement
+
+- feat: add update publisher config implementation ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:dotindustries/bouncer ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.4.0 (Mon Oct 24 2022)
 
 #### 🚀 Enhancement
