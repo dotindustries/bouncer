@@ -318,6 +318,6 @@ seatsRouter.delete(
 );
 
 seatsRouter.post(
-  "/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
+  "/subscriptions/:subscriptionId/seats/:seatId/reserve",
   (req, res) => {}
 );
