@@ -4,6 +4,7 @@ import { configApi } from "@dotinc/bouncer-core";
 export const configRouter = ctx.router(configApi);
 
 configRouter.get("/publisher/:publisherId/configuration", async (req, res) => {
+  // TODO: API Keys access: sys_ and pub_
   if (typeof req.params.publisherId !== "string") {
     return res.status(400).json({
       code: 400,
@@ -29,6 +30,7 @@ configRouter.get("/publisher/:publisherId/configuration", async (req, res) => {
 });
 
 configRouter.get("/publishers", async (req, res) => {
+  // TODO: API Keys access: sys_
   try {
     return res.status(200).json(await req.repo.getPublishers());
   } catch (e: any) {
@@ -40,6 +42,7 @@ configRouter.get("/publishers", async (req, res) => {
 });
 
 configRouter.put("/publisher/:publisherId/configuration", async (req, res) => {
+  // TODO: API Keys access: sys_ and pub_
   const config = req.body;
 
   if (req.params.publisherId !== config.id) {
