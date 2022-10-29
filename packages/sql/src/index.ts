@@ -494,7 +494,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
                     ? reservation.identifier.email
                     : null,
               })
-            );
+            )
+            .executeTakeFirst();
           // TODO: this does not check for success
           if (res)
             throw new Error(
