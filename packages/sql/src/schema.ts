@@ -14,7 +14,7 @@ export type PublisherConfigTable = Omit<
 >;
 
 export type SeatingConfigTable = SeatingConfiguration & {
-  publisher_id: PublisherConfiguration["id"];
+  owner_id: PublisherConfiguration["id"];
 };
 
 export type ProductConfigTable = ProductConfiguration & {

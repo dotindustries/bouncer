@@ -1,5 +1,8 @@
-import type { PublisherConfiguration } from "..";
-import type { Seat } from "./../common/seats";
+import type {
+  PublisherConfiguration,
+  Seat,
+  Subscription,
+} from "../common/index";
 
 export interface Repository {
   createPublisher(
@@ -18,4 +21,5 @@ export interface Repository {
     byUserId?: string,
     byEmail?: string
   ): Promise<Seat[]>;
+  getSubscription(id: string): Promise<Subscription | undefined>;
 }

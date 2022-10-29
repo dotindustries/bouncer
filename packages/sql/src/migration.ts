@@ -34,7 +34,7 @@ export class SqliteMigrationProvider implements MigrationProvider {
 
           await db.schema
             .createTable("seating_config")
-            .addColumn("publisher_id", "varchar(30)", (col) =>
+            .addColumn("owner_id", "varchar(30)", (col) =>
               col.unique().notNull().primaryKey()
             )
             .addColumn("defaultLowSeatWarningLevelPercent", "real", (col) =>
