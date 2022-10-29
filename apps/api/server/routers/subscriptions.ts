@@ -73,4 +73,25 @@ subscriptionsRouter.post(
   }
 );
 
-subscriptionsRouter.patch("/subscriptions/:subscriptionId", (req, res) => {});
+subscriptionsRouter.patch(
+  "/subscriptions/:subscriptionId",
+  async (req, res) => {
+    // TODO: API Keys access: sys_ and pub_
+    const sub = req.body;
+
+    if (req.params.subscriptionId !== sub.subscription_id) {
+      return res.status(400).json({
+        code: 400,
+        message: `Invalid subscrition [${req.params.subscriptionId}] doesn't match id in patch [${sub.subscription_id}]`,
+      });
+    }
+    try {
+      return res.status(200).json(await req.repo.updateSubscription(sub));
+    } catch (e: any) {
+      return res.status(500).json({
+        code: 500,
+        message: `Failed to update subscription [${sub.subscription_id}]: ${e.message}`,
+      });
+    }
+  }
+);

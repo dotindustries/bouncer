@@ -27,4 +27,5 @@ export interface Repository {
     publisherId: string,
     sub: Subscription
   ): Promise<Subscription>;
+  updateSubscription(sub: Subscription): Promise<Subscription>;
 }
