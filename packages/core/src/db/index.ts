@@ -23,4 +23,8 @@ export interface Repository {
   ): Promise<Seat[]>;
   getSubscription(id: string): Promise<Subscription | undefined>;
   getSubscriptions(publisherId: string): Promise<Subscription[]>;
+  createSubscription(
+    publisherId: string,
+    sub: Subscription
+  ): Promise<Subscription>;
 }

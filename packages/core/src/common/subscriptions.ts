@@ -138,7 +138,7 @@ export const subscriptionApi = makeApi([
   {
     method: "post",
     alias: "createSubscription",
-    path: "/subscriptions/:subscriptionId",
+    path: "/subscriptions/:publisherId/:subscriptionId",
     parameters: [
       {
         name: "subscription",

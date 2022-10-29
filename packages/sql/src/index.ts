@@ -519,6 +519,68 @@ export const createRepository = (args: KyselyConfig): Repository => {
           : null,
       }));
     },
+    createSubscription: async (publisherId, sub) => {
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .insertInto("subscriptions")
+          .values({
+            subscription_id: sub.subscription_id,
+            publisher_id: publisherId,
+            subscriber_info: sub.subscriber_info,
+            source_subscription: sub.source_subscription,
+            is_setup_complete: sub.is_setup_complete,
+            subscription_name: sub.subscription_name,
+            tenant_id: sub.tenant_id,
+            tenant_name: sub.tenant_name,
+            offer_id: sub.offer_id,
+            plan_id: sub.plan_id,
+            state: sub.state,
+            admin_role_name: sub.admin_role_name,
+            user_role_name: sub.user_role_name,
+            management_urls: sub.management_urls,
+            admin_name: sub.admin_name,
+            admin_email: sub.admin_email,
+            total_seats: sub.total_seats,
+            is_being_configured: sub.is_being_configured,
+            is_free_trial: sub.is_free_trial,
+            is_test_subscription: sub.is_test_subscription,
+            created_utc: sub.created_utc,
+            state_last_updated_utc: sub.state_last_updated_utc,
+          })
+          .execute();
+
+        // TODO: this does not check insert success
+        if (!up)
+          throw new Error(
+            `Failed to save subscription: [${publisherId}, ${sub.subscription_id}]`
+          );
+
+        if (sub.seating_config) {
+          const scUp = await tx.insertInto("seating_config").values({
+            owner_id: sub.subscription_id,
+            seat_reservation_expiry_in_days:
+              sub.seating_config.seat_reservation_expiry_in_days,
+            default_seat_expiry_in_days:
+              sub.seating_config.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              sub.seating_config.defaultLowSeatWarningLevelPercent,
+            seating_strategy_name: sub.seating_config.seating_strategy_name,
+            low_seat_warning_level_pct:
+              sub.seating_config.low_seat_warning_level_pct,
+            limited_overflow_seating_enabled:
+              sub.seating_config.limited_overflow_seating_enabled,
+          });
+
+          // TODO: this does not check insert success
+          if (!scUp)
+            throw new Error(
+              `Failed to save seating_config for subscription: [${publisherId}, ${sub.subscription_id}]`
+            );
+        }
+      });
+
+      return sub;
+    },
   };
 };
 

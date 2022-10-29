@@ -48,5 +48,29 @@ subscriptionsRouter.get("/subscriptions/:publisherId", async (req, res) => {
   }
 });
 
-subscriptionsRouter.post("/subscriptions/:subscriptionId", (req, res) => {});
+subscriptionsRouter.post(
+  "/subscriptions/:publisherId/:subscriptionId",
+  async (req, res) => {
+    // TODO: API Keys access: sys_ and pub_
+    if (typeof req.params.publisherId !== "string") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid subscriptionId",
+      });
+    }
+    const sub = req.body;
+
+    try {
+      return res
+        .status(200)
+        .json(await req.repo.createSubscription(req.params.publisherId, sub));
+    } catch (e: any) {
+      return res.status(500).json({
+        code: 500,
+        message: `Failed to save subscription [${sub.subscription_id}]: ${e.message}`,
+      });
+    }
+  }
+);
+
 subscriptionsRouter.patch("/subscriptions/:subscriptionId", (req, res) => {});
