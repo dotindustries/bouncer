@@ -438,7 +438,33 @@ const calculateNewSeatExpirationDate = (config: SeatingConfiguration) => {
 
 seatsRouter.delete(
   "/subscriptions/:subscriptionId/seats/:seatId",
-  (req, res) => {}
+  async (req, res) => {
+    const subscriptionId = req.params.subscriptionId;
+    const seatId = req.params.seatId;
+
+    if (typeof subscriptionId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid subscriptionId",
+      });
+    }
+    if (typeof seatId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid seatId",
+      });
+    }
+
+    const subscription = await req.repo.getSubscription(subscriptionId);
+
+    const seat = await req.repo.getSeat(seatId, subscriptionId);
+    if (seat && subscription) {
+      await req.repo.deleteSeat(seatId, subscriptionId);
+      // TODO: push event seat_released[subscription, seat]
+    }
+
+    return res.status(200).json({});
+  }
 );
 
 seatsRouter.post(

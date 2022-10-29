@@ -284,6 +284,15 @@ export const seatsApi = makeApi([
         schema: z.string(),
       },
     ],
+    errors: [
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: noContentResult,
   },
   {

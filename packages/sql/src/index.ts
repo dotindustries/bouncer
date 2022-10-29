@@ -666,6 +666,16 @@ export const createRepository = (args: KyselyConfig): Repository => {
         createdSeat: seat,
       };
     },
+    deleteSeat: async (seatId, subscriptionId) => {
+      await db.transaction().execute(async (tx) => {
+        await tx
+          .deleteFrom("seats")
+          .where("seat_id", "=", seatId)
+          .where("subscription_id", "=", subscriptionId);
+        await tx.deleteFrom("seat_occupants").where("seat_id", "=", seatId);
+        await tx.deleteFrom("seat_reservations").where("seat_id", "=", seatId);
+      });
+    },
     getSubscription: async (subscriptionId) => {
       const row = await db
         .selectFrom("subscriptions")

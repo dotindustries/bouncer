@@ -27,6 +27,7 @@ export interface Repository {
     seat: Seat,
     subscription: Subscription
   ): Promise<SeatCreationContext>;
+  deleteSeat(seatId: string, subscriptionId: string): Promise<void>;
   getSubscription(id: string): Promise<Subscription | undefined>;
   getSubscriptions(publisherId: string): Promise<Subscription[]>;
   createSubscription(
