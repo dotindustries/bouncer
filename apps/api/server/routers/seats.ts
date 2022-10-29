@@ -4,6 +4,7 @@ import {
   Seat,
   seatsApi,
   SeatingConfiguration,
+  validateSeatRequest,
 } from "@dotinc/bouncer-core";
 import { add, endOfMonth } from "date-fns";
 
@@ -253,7 +254,8 @@ seatsRouter.post(
           `This seat expires at [${updatedSeat.expires_utc}].`
       );
 
-      // TODO: push event? seat_redeemed[subscription, seat]
+      // TODO: push event seat_redeemed[subscription, seat]
+
       return res.status(200).json(updatedSeat);
     } else {
       return res.status(404).json({
@@ -309,8 +311,129 @@ const calculateRedeemedSeatExpirationDate = (config: SeatingConfiguration) => {
 
 seatsRouter.post(
   "/subscriptions/:subscriptionId/seats/:seatId/request",
-  (req, res) => {}
+  async (req, res) => {
+    const subscriptionId = req.params.subscriptionId;
+    const seatId = req.params.seatId;
+
+    if (typeof subscriptionId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid subscriptionId",
+      });
+    }
+    if (typeof seatId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid seatId",
+      });
+    }
+
+    const user = req.body;
+
+    const subscription = await req.repo.getSubscription(subscriptionId);
+    if (!subscription) {
+      return res.status(404).json({
+        code: 404,
+        message: `Subscription [${subscriptionId}] not found.`,
+        id: subscriptionId,
+      });
+    }
+
+    const validationError = validateSeatRequest(subscription);
+    if (validationError !== undefined) {
+      return res.status(400).json({
+        code: 400,
+        message: validationError,
+      });
+    }
+
+    const existingSeat = await req.repo.getSeat(seatId, subscriptionId);
+    if (!existingSeat) {
+      return res.status(409).json({
+        code: 409,
+        message: `Seat [${seatId}] already exists.`,
+      });
+    }
+
+    if (!subscription.seating_config) {
+      return res.status(404).json({
+        code: 404,
+        message: `Seating configuration [${subscriptionId}] not found.`,
+        id: subscriptionId,
+      });
+    }
+
+    // default username
+    user.user_name ??= user.email;
+
+    const seat: Seat = {
+      created_utc: new Date(),
+      expires_utc: calculateNewSeatExpirationDate(subscription.seating_config),
+      occupant: user,
+      seat_id: seatId,
+      seating_strategy_name: subscription.seating_config.seating_strategy_name,
+      seat_type: "standard",
+      subscription_id: subscriptionId,
+      reservation: null,
+      redeemed_utc: null,
+    };
+
+    const createSeat = await req.repo.createSeat(seat, subscription);
+
+    // TODO: publish seat warning events
+    // await req.events.publishSeatWarningEvents(subscription, seat, createSeat.seatingSummary)
+
+    if (createSeat.isSeatCreated) {
+      console.log(
+        `Seat [${seatId}] successfully provided in subscription [${subscriptionId}] to user [${user.user_id}]. ` +
+          `This seat expires at [${seat.expires_utc}].`
+      );
+      // TODO: push event seat_provided[subscription, seat, createSeat.seatingSummary]
+      return res.status(200).json(seat);
+    } else if (subscription.seating_config.limited_overflow_seating_enabled) {
+      // try it again without a total seats count to create a limited seat
+      seat.expires_utc = add(new Date(), { days: 1 }); // limited seats only last for one day
+      seat.seat_type = "limited";
+
+      const createLimitedSeat = await req.repo.createSeat(seat, subscription);
+
+      if (createLimitedSeat.isSeatCreated) {
+        console.log(
+          `Limited seat [${seatId}] successfully provided in subscription [${subscriptionId}] to user [${user.user_id}]. ` +
+            `This seat expires at [${seat.expires_utc}].`
+        );
+        // TODO: push event seat_provided[subscription, seat, createLimitedSeat.seatingSummary]
+        return res.status(200).json(seat);
+      }
+    }
+
+    // at this point, we were'nt able to get a seat within the provided subscription
+    console.log(
+      `Could not provide seat in subscription [${subscriptionId}]. No more seats available.`
+    );
+
+    return res.status(404).json({
+      code: 404,
+      message: `No seats available in subscription [${subscriptionId}]`,
+      id: subscriptionId,
+    });
+  }
 );
+
+const calculateNewSeatExpirationDate = (config: SeatingConfiguration) => {
+  const now = new Date();
+
+  switch (config.seating_strategy_name) {
+    case "first_come_first_served":
+      return add(now, { days: config.default_seat_expiry_in_days ?? 1 });
+    case "monthly_active_user":
+      return add(endOfMonth(now), { minutes: 1 }); // first day of next month
+    default:
+      throw new Error(
+        `Seating strategy [${config.seating_strategy_name}] not supported.`
+      );
+  }
+};
 
 seatsRouter.delete(
   "/subscriptions/:subscriptionId/seats/:seatId",

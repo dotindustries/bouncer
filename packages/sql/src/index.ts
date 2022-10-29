@@ -1,10 +1,11 @@
 import {
   Kysely,
   KyselyConfig,
+  sql,
   SqliteDialect,
   SqliteDialectConfig,
 } from "kysely";
-import type { Repository } from "@dotinc/bouncer-core";
+import type { Repository, SeatingSummary } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -540,6 +541,130 @@ export const createRepository = (args: KyselyConfig): Repository => {
       });
 
       return update;
+    },
+    createSeat: async (seat, subscription) => {
+      const actualSeatSummaryRows = await db
+        .selectFrom("seats")
+        .select([sql`COUNT(1)`.as("seat_count"), "seat_type"])
+        .where("expires_utc", "is", null)
+        .orWhere("expires_utc", ">", new Date())
+        .groupBy("seat_type")
+        .execute();
+
+      const actualSeatSummary: SeatingSummary = {
+        standardSeatCount:
+          (actualSeatSummaryRows.find((r) => r.seat_type === "standard")
+            ?.seat_count as number) ?? 0,
+        limitedSeatCount:
+          (actualSeatSummaryRows.find((r) => r.seat_type === "limited")
+            ?.seat_count as number) ?? 0,
+      };
+
+      if (seat.seat_type === "standard") {
+        if (
+          subscription.total_seats &&
+          subscription.total_seats <= actualSeatSummary.standardSeatCount
+        ) {
+          return {
+            isSeatCreated: false,
+            seatingSummary: actualSeatSummary,
+          };
+        }
+
+        actualSeatSummary.standardSeatCount += 1;
+      }
+
+      await db.transaction().execute(async (tx) => {
+        const ss = await tx
+          .insertInto("seat_summary")
+          .values({
+            subscription_id: subscription.subscription_id,
+            standard_seat_count: actualSeatSummary.standardSeatCount,
+            limited_seat_count: actualSeatSummary.limitedSeatCount,
+          })
+          .onConflict((oc) =>
+            oc.column("subscription_id").doUpdateSet({
+              standard_seat_count: actualSeatSummary.standardSeatCount,
+              limited_seat_count: actualSeatSummary.limitedSeatCount,
+            })
+          )
+          .executeTakeFirst();
+        // TODO: this doesn't check success
+        if (!ss) {
+          throw new Error(
+            `Failed to save seat summary for subscription [${subscription.subscription_id}]`
+          );
+        }
+
+        const up = await tx
+          .insertInto("seats")
+          .values({
+            seat_id: seat.seat_id,
+            created_utc: seat.created_utc,
+            subscription_id: seat.subscription_id,
+            expires_utc: seat.expires_utc,
+            redeemed_utc: seat.redeemed_utc,
+            seat_type: seat.seat_type,
+            seating_strategy_name: seat.seating_strategy_name,
+          })
+          .executeTakeFirst();
+
+        // TODO: this does not check for success
+        if (up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
+
+        if (seat.reservation) {
+          const reservation = seat.reservation;
+          const res = await tx
+            .insertInto("seat_reservations")
+            .values({
+              seat_id: seat.seat_id,
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
+            .executeTakeFirst();
+          // TODO: this does not check for success
+          if (res)
+            throw new Error(
+              `Failed to save seat reservation: [${seat.seat_id}]`
+            );
+        }
+
+        if (seat.occupant) {
+          const occupant = seat.occupant;
+
+          const occ = await tx
+            .insertInto("seat_occupants")
+            .values({
+              seat_id: seat.seat_id,
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
+            .executeTakeFirst();
+
+          if (occ)
+            throw new Error(`Failed to save seat occupant: [${seat.seat_id}]`);
+        }
+      });
+
+      // yay, if we got so far
+      return {
+        isSeatCreated: true,
+        seatingSummary: actualSeatSummary,
+        createdSeat: seat,
+      };
     },
     getSubscription: async (subscriptionId) => {
       const row = await db
