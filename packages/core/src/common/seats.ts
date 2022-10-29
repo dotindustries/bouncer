@@ -1,8 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 import { error, error404 } from "./shared";
-// TODO: PR for shorthand to add typed makeErrors?
-// import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
@@ -47,13 +45,6 @@ export type Seat = z.infer<typeof seat>;
 export const seats = z.array(seat);
 
 export type Seats = z.infer<typeof seats>;
-
-const seatByIdInput = z.object({
-  subscriptionId: z.string(),
-  seatId: z.string(),
-});
-
-export type SeatsByIdInput = z.infer<typeof seatByIdInput>;
 
 export const seatsApi = makeApi([
   {

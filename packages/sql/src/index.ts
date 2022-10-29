@@ -1,4 +1,3 @@
-import { subscription } from "./../../core/src/common/subscriptions";
 import {
   Kysely,
   KyselyConfig,
