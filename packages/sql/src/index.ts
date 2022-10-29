@@ -1,3 +1,4 @@
+import { subscription } from "./../../core/src/common/subscriptions";
 import {
   Kysely,
   KyselyConfig,
@@ -520,7 +521,14 @@ export const createRepository = (args: KyselyConfig): Repository => {
       }));
     },
     createSubscription: async (publisherId, sub) => {
+      const defaultSeatConfig = await db
+        .selectFrom("seating_config")
+        .selectAll()
+        .where("owner_id", "=", publisherId)
+        .executeTakeFirstOrThrow();
+
       await db.transaction().execute(async (tx) => {
+        const now = new Date().toISOString();
         const up = await tx
           .insertInto("subscriptions")
           .values({
@@ -528,8 +536,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
             publisher_id: publisherId,
             subscriber_info: sub.subscriber_info,
             source_subscription: sub.source_subscription,
-            is_setup_complete: sub.is_setup_complete,
-            subscription_name: sub.subscription_name,
+            is_setup_complete: sub.is_setup_complete ?? false,
+            subscription_name: sub.subscription_name ?? sub.subscription_id,
             tenant_id: sub.tenant_id,
             tenant_name: sub.tenant_name,
             offer_id: sub.offer_id,
@@ -544,8 +552,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
             is_being_configured: sub.is_being_configured,
             is_free_trial: sub.is_free_trial,
             is_test_subscription: sub.is_test_subscription,
-            created_utc: sub.created_utc,
-            state_last_updated_utc: sub.state_last_updated_utc,
+            created_utc: now,
+            state_last_updated_utc: now,
           })
           .execute();
 
@@ -555,61 +563,68 @@ export const createRepository = (args: KyselyConfig): Repository => {
             `Failed to save subscription: [${publisherId}, ${sub.subscription_id}]`
           );
 
-        if (sub.seating_config) {
-          const scUp = await tx
-            .insertInto("seating_config")
-            .values({
-              owner_id: sub.subscription_id,
-              seat_reservation_expiry_in_days:
-                sub.seating_config.seat_reservation_expiry_in_days,
-              default_seat_expiry_in_days:
-                sub.seating_config.default_seat_expiry_in_days,
-              defaultLowSeatWarningLevelPercent:
-                sub.seating_config.defaultLowSeatWarningLevelPercent,
-              seating_strategy_name: sub.seating_config.seating_strategy_name,
-              low_seat_warning_level_pct:
-                sub.seating_config.low_seat_warning_level_pct,
-              limited_overflow_seating_enabled:
-                sub.seating_config.limited_overflow_seating_enabled,
-            })
-            .execute();
+        const seatConfig = sub.seating_config ?? defaultSeatConfig;
 
-          // TODO: this does not check insert success
-          if (!scUp)
-            throw new Error(
-              `Failed to save seating_config for subscription: [${publisherId}, ${sub.subscription_id}]`
-            );
-        }
+        const scUp = await tx
+          .insertInto("seating_config")
+          .values({
+            owner_id: sub.subscription_id,
+            seat_reservation_expiry_in_days:
+              seatConfig.seat_reservation_expiry_in_days,
+            default_seat_expiry_in_days: seatConfig.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              seatConfig.defaultLowSeatWarningLevelPercent,
+            seating_strategy_name: seatConfig.seating_strategy_name,
+            low_seat_warning_level_pct: seatConfig.low_seat_warning_level_pct,
+            limited_overflow_seating_enabled:
+              seatConfig.limited_overflow_seating_enabled,
+          })
+          .execute();
+
+        // TODO: this does not check insert success
+        if (!scUp)
+          throw new Error(
+            `Failed to save seating_config for subscription: [${publisherId}, ${sub.subscription_id}]`
+          );
       });
 
       return sub;
     },
     updateSubscription: async (sub) => {
+      const defaultSeatConfig = await db
+        .selectFrom("seating_config")
+        .selectAll()
+        .where(
+          "owner_id",
+          "=",
+          db
+            .selectFrom("subscriptions")
+            .select("publisher_id")
+            .where("subscription_id", "=", sub.subscription_id)
+        )
+        .executeTakeFirstOrThrow();
+
       await db.transaction().execute(async (tx) => {
         const up = await tx
           .updateTable("subscriptions")
           .set({
-            subscription_id: sub.subscription_id,
-            subscriber_info: sub.subscriber_info,
-            source_subscription: sub.source_subscription,
-            is_setup_complete: sub.is_setup_complete,
-            subscription_name: sub.subscription_name,
-            tenant_id: sub.tenant_id,
-            tenant_name: sub.tenant_name,
-            offer_id: sub.offer_id,
             plan_id: sub.plan_id,
-            state: sub.state,
+            is_being_configured: sub.is_being_configured,
+            source_subscription: sub.source_subscription,
+            subscriber_info: sub.subscriber_info,
+            subscription_name: sub.subscription_name,
+            total_seats: sub.total_seats,
             admin_role_name: sub.admin_role_name,
             user_role_name: sub.user_role_name,
+            is_setup_complete: sub.is_setup_complete,
             management_urls: sub.management_urls,
             admin_name: sub.admin_name,
             admin_email: sub.admin_email,
-            total_seats: sub.total_seats,
-            is_being_configured: sub.is_being_configured,
-            is_free_trial: sub.is_free_trial,
-            is_test_subscription: sub.is_test_subscription,
-            created_utc: sub.created_utc,
-            state_last_updated_utc: sub.state_last_updated_utc,
+            tenant_name: sub.tenant_name,
+            // TODO: state might not change,
+            //   we should consider only updating the timestamp if state is different.
+            state: sub.state,
+            state_last_updated_utc: new Date().toISOString(),
           })
           .where("subscription_id", "=", sub.subscription_id)
           .execute();
@@ -624,18 +639,25 @@ export const createRepository = (args: KyselyConfig): Repository => {
           const scUp = await tx
             .updateTable("seating_config")
             .set({
-              owner_id: sub.subscription_id,
               seat_reservation_expiry_in_days:
-                sub.seating_config.seat_reservation_expiry_in_days,
+                sub.seating_config.seat_reservation_expiry_in_days ??
+                defaultSeatConfig.seat_reservation_expiry_in_days,
               default_seat_expiry_in_days:
-                sub.seating_config.default_seat_expiry_in_days,
-              defaultLowSeatWarningLevelPercent:
-                sub.seating_config.defaultLowSeatWarningLevelPercent,
-              seating_strategy_name: sub.seating_config.seating_strategy_name,
-              low_seat_warning_level_pct:
-                sub.seating_config.low_seat_warning_level_pct,
+                sub.seating_config.default_seat_expiry_in_days ??
+                defaultSeatConfig.default_seat_expiry_in_days,
+              seating_strategy_name:
+                sub.seating_config.seating_strategy_name ??
+                defaultSeatConfig.seating_strategy_name,
               limited_overflow_seating_enabled:
-                sub.seating_config.limited_overflow_seating_enabled,
+                sub.seating_config.limited_overflow_seating_enabled ??
+                defaultSeatConfig.limited_overflow_seating_enabled,
+              // these were originally not updated on patch
+              defaultLowSeatWarningLevelPercent:
+                sub.seating_config.defaultLowSeatWarningLevelPercent ??
+                defaultSeatConfig.defaultLowSeatWarningLevelPercent,
+              low_seat_warning_level_pct:
+                sub.seating_config.low_seat_warning_level_pct ??
+                defaultSeatConfig.low_seat_warning_level_pct,
             })
             .where("owner_id", "=", sub.subscription_id)
             .execute();
