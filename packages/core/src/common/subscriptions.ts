@@ -107,7 +107,7 @@ export const subscriptionApi = makeApi([
   {
     method: "get",
     alias: "subscriptions",
-    path: "/subscriptions",
+    path: "/subscriptions/:publisherId",
     errors: [
       {
         status: "default",

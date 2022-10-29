@@ -3,7 +3,6 @@ import { subscriptionApi } from "@dotinc/bouncer-core";
 
 export const subscriptionsRouter = ctx.router(subscriptionApi);
 
-subscriptionsRouter.get("/subscriptions", (req, res) => {});
 subscriptionsRouter.get("/subscriptions/:subscriptionId", async (req, res) => {
   // TODO: API Keys access: sys_ and pub_
   if (typeof req.params.subscriptionId !== "string") {
@@ -29,5 +28,25 @@ subscriptionsRouter.get("/subscriptions/:subscriptionId", async (req, res) => {
     });
   }
 });
-subscriptionsRouter.patch("/subscriptions/:subscriptionId", (req, res) => {});
+
+subscriptionsRouter.get("/subscriptions/:publisherId", async (req, res) => {
+  // TODO: API Keys access: sys_ and pub_
+  if (typeof req.params.publisherId !== "string") {
+    return res.status(400).json({
+      code: 400,
+      message: "Invalid subscriptionId",
+    });
+  }
+  try {
+    const sub = await req.repo.getSubscriptions(req.params.publisherId);
+    return res.status(200).json(sub);
+  } catch (e: any) {
+    return res.status(500).json({
+      code: 500,
+      message: `Failed to get subscriptions for publisher [${req.params.publisherId}]: ${e.message}`,
+    });
+  }
+});
+
 subscriptionsRouter.post("/subscriptions/:subscriptionId", (req, res) => {});
+subscriptionsRouter.patch("/subscriptions/:subscriptionId", (req, res) => {});

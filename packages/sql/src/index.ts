@@ -442,7 +442,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       if (!row) return undefined;
 
-      const sub: Subscription = {
+      return {
         subscription_id: row.subscription_id,
         subscriber_info: row.subscriber_info,
         source_subscription: row.source_subscription,
@@ -479,7 +479,52 @@ export const createRepository = (args: KyselyConfig): Repository => {
             }
           : null,
       };
-      return sub;
+    },
+    getSubscriptions: async (publisherId) => {
+      const rows = await db
+        .selectFrom("subscriptions")
+        .leftJoin("seating_config", "owner_id", "subscription_id")
+        .selectAll()
+        .where("publisher_id", "=", publisherId)
+        .execute();
+
+      return rows.map((row) => ({
+        subscription_id: row.subscription_id,
+        subscriber_info: row.subscriber_info,
+        source_subscription: row.source_subscription,
+        is_setup_complete: row.is_setup_complete,
+        subscription_name: row.subscription_name,
+        tenant_id: row.tenant_id,
+        tenant_name: row.tenant_name,
+        offer_id: row.offer_id,
+        plan_id: row.plan_id,
+        state: row.state,
+        admin_role_name: row.admin_role_name,
+        user_role_name: row.user_role_name,
+        management_urls: row.management_urls,
+        admin_name: row.admin_name,
+        admin_email: row.admin_email,
+        total_seats: row.total_seats,
+        is_being_configured: row.is_being_configured,
+        is_free_trial: row.is_free_trial,
+        is_test_subscription: row.is_test_subscription,
+        created_utc: row.created_utc,
+        state_last_updated_utc: row.state_last_updated_utc,
+        seating_config: row.seating_strategy_name
+          ? {
+              seat_reservation_expiry_in_days:
+                row.seat_reservation_expiry_in_days ?? undefined,
+              default_seat_expiry_in_days:
+                row.default_seat_expiry_in_days ?? undefined,
+              defaultLowSeatWarningLevelPercent:
+                row.defaultLowSeatWarningLevelPercent ?? 0,
+              seating_strategy_name: row.seating_strategy_name,
+              low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+              limited_overflow_seating_enabled:
+                row.limited_overflow_seating_enabled,
+            }
+          : null,
+      }));
     },
   };
 };
