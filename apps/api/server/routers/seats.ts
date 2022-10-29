@@ -348,7 +348,7 @@ seatsRouter.post(
     }
 
     const existingSeat = await req.repo.getSeat(seatId, subscriptionId);
-    if (!existingSeat) {
+    if (existingSeat) {
       return res.status(409).json({
         code: 409,
         message: `Seat [${seatId}] already exists.`,
@@ -381,7 +381,7 @@ seatsRouter.post(
     const createSeat = await req.repo.createSeat(seat, subscription);
 
     // TODO: publish seat warning events
-    // await req.events.publishSeatWarningEvents(subscription, seat, createSeat.seatingSummary)
+    // await req.events.publishSeatWarningEvents(subscription, createSeat.seatingSummary)
 
     if (createSeat.isSeatCreated) {
       console.log(
