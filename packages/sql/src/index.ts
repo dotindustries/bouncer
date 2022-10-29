@@ -425,6 +425,36 @@ export const createRepository = (args: KyselyConfig): Repository => {
             : null,
       }));
     },
+    replaceSeat: async (update) => {
+      await db.transaction().execute(async (tx) => {
+        // const up = await tx
+        //   .updateTable("seats")
+        //   .set({
+
+        //   })
+        //   .where("seat_id", "=", update.seat_id)
+        //   .executeTakeFirst();
+
+        // if (up.numUpdatedRows !== 1n)
+        //   throw new Error(
+        //     `Failed to save seat: [${update.seat_id}]`
+        //   );
+
+        const occ = await tx
+          .updateTable("seat_occupants")
+          .set({
+            email: update.occupant?.email,
+            user_name: update.occupant?.user_name,
+          })
+          .where("seat_id", "=", update.seat_id)
+          .executeTakeFirst();
+
+        if (occ.numUpdatedRows !== 1n)
+          throw new Error(`Failed to save seat occupant: [${update.seat_id}]`);
+      });
+
+      return update;
+    },
     getSubscription: async (subscriptionId) => {
       const row = await db
         .selectFrom("subscriptions")

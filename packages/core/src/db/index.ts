@@ -21,6 +21,7 @@ export interface Repository {
     byUserId?: string,
     byEmail?: string
   ): Promise<Seat[]>;
+  replaceSeat(update: Seat): Promise<Seat>;
   getSubscription(id: string): Promise<Subscription | undefined>;
   getSubscriptions(publisherId: string): Promise<Subscription[]>;
   createSubscription(

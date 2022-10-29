@@ -6,25 +6,28 @@ export const seatsRouter = ctx.router(seatsApi);
 seatsRouter.get(
   "/subscriptions/:subscriptionId/seats/:seatId",
   async (req, res) => {
-    if (
-      typeof req.params.seatId === "number" ||
-      typeof req.params.subscriptionId === "number"
-    ) {
+    const subscriptionId = req.params.subscriptionId;
+    const seatId = req.params.seatId;
+
+    if (typeof subscriptionId === "number") {
       return res.status(400).json({
         code: 400,
-        message: "Invalid ids",
+        message: "Invalid subscriptionId",
+      });
+    }
+    if (typeof seatId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid seatId",
       });
     }
 
-    const seat = await req.repo.getSeat(
-      req.params.seatId,
-      req.params.subscriptionId
-    );
+    const seat = await req.repo.getSeat(seatId, subscriptionId);
     if (!seat) {
       return res.status(404).json({
         code: 400,
-        message: `Seat [${req.params.seatId} at ${req.params.subscriptionId}] not found.`,
-        id: req.params.seatId,
+        message: `Seat [${seatId} at ${subscriptionId}] not found.`,
+        id: seatId,
       });
     }
 
@@ -36,7 +39,7 @@ seatsRouter.get("/subscriptions/:subscriptionId/seats", async (req, res) => {
   if (typeof req.params.subscriptionId === "number") {
     return res.status(400).json({
       code: 400,
-      message: "Invalid subscription id",
+      message: "Invalid subscriptionId",
     });
   }
 
@@ -59,19 +62,19 @@ seatsRouter.get(
     if (typeof subscriptionId === "number") {
       return res.status(400).json({
         code: 400,
-        message: "Invalid subscription id",
+        message: "Invalid subscriptionId",
       });
     }
     if (typeof tenantId === "number") {
       return res.status(400).json({
         code: 400,
-        message: "Invalid tenant id",
+        message: "Invalid tenantId",
       });
     }
     if (typeof userId === "number") {
       return res.status(400).json({
         code: 400,
-        message: "Invalid userId id",
+        message: "Invalid userId",
       });
     }
 
@@ -96,7 +99,72 @@ seatsRouter.get(
 
 seatsRouter.patch(
   "/subscriptions/:subscriptionId/seats/:seatId",
-  (req, res) => {}
+  async (req, res) => {
+    const subscriptionId = req.params.subscriptionId;
+    const seatId = req.params.seatId;
+
+    if (typeof subscriptionId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid subscriptionId",
+      });
+    }
+    if (typeof seatId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid seatId",
+      });
+    }
+
+    const user = req.body;
+
+    if (!user.user_id || !user.tenant_id) {
+      return res.status(400).json({
+        code: 400,
+        message: "[tenant_id] and [user_id] are required.",
+      });
+    }
+
+    const subscription = await req.repo.getSubscription(subscriptionId);
+    if (!subscription) {
+      return res.status(404).json({
+        code: 404,
+        message: `Subscription [${subscriptionId}] not found.`,
+        id: subscriptionId,
+      });
+    }
+
+    const seat = await req.repo.getSeat(seatId, subscriptionId);
+    if (!seat) {
+      return res.status(404).json({
+        code: 404,
+        message: `Seat [${seatId}] not found.`,
+        id: seatId,
+      });
+    }
+
+    if (
+      seat.occupant?.user_id !== user.user_id ||
+      seat.occupant?.tenant_id !== user.tenant_id
+    ) {
+      return res.status(400).json({
+        code: 400,
+        message: `Seat [${seatId}] is not currently occupied by user [${user.tenant_id}/${user.user_id}].`,
+      });
+    }
+
+    if (user.email !== null && seat.occupant) {
+      seat.occupant.email = user.email;
+    }
+
+    if (user.user_name !== null && seat.occupant) {
+      seat.occupant.user_name = user.user_name;
+    }
+
+    const update = await req.repo.replaceSeat(seat);
+
+    return res.status(200).json(update);
+  }
 );
 
 seatsRouter.post(
