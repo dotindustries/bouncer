@@ -92,6 +92,13 @@ export const subscriptionApi = makeApi([
     method: "get",
     alias: "subscriptionById",
     path: "/subscriptions/:subscriptionId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: 404,
@@ -108,6 +115,13 @@ export const subscriptionApi = makeApi([
     method: "get",
     alias: "subscriptions",
     path: "/subscriptions/:publisherId",
+    parameters: [
+      {
+        name: "publisherId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: "default",
@@ -125,6 +139,11 @@ export const subscriptionApi = makeApi([
         name: "subscription",
         schema: subscription,
         type: "Body",
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
       },
     ],
     errors: [
@@ -144,6 +163,16 @@ export const subscriptionApi = makeApi([
         name: "subscription",
         schema: subscription,
         type: "Body",
+      },
+      {
+        name: "publisherId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
       },
     ],
     errors: [

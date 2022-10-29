@@ -52,6 +52,18 @@ export const seatsApi = makeApi([
     alias: "seatById",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: seat,
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: 404,
@@ -68,6 +80,11 @@ export const seatsApi = makeApi([
     alias: "seats",
     path: "/subscriptions/:subscriptionId/seats",
     parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
       {
         name: "userId",
         type: "Query",
@@ -102,6 +119,23 @@ export const seatsApi = makeApi([
     alias: "userSeat",
     method: "get",
     path: "/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "tenantId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: 404,
@@ -130,6 +164,16 @@ export const seatsApi = makeApi([
         name: "user",
         type: "Body",
         schema: user,
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
       },
     ],
     errors: [
@@ -161,6 +205,16 @@ export const seatsApi = makeApi([
         type: "Body",
         schema: user,
       },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
     ],
     errors: [
       {
@@ -185,6 +239,18 @@ export const seatsApi = makeApi([
     alias: "releaseSeat",
     method: "delete",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     response: noContentResult,
   },
   {
@@ -197,18 +263,38 @@ export const seatsApi = makeApi([
         type: "Body",
         schema: user,
       },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
     ],
     response: seat,
   },
   {
     alias: "reserveSeat",
     method: "post",
-    path: "/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
+    path: "/subscriptions/:subscriptionId/seats/:seatId/reserve",
     parameters: [
       {
         name: "reservation",
         type: "Body",
         schema: reservation,
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
       },
     ],
     response: seat,
