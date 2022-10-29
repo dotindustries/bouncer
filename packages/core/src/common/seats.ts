@@ -69,12 +69,12 @@ export const seatsApi = makeApi([
     path: "/subscriptions/:subscriptionId/seats",
     parameters: [
       {
-        name: "user_id",
+        name: "userId",
         type: "Query",
         schema: z.string().optional(),
       },
       {
-        name: "user_email",
+        name: "userEmail",
         type: "Query",
         schema: z.string().optional(),
       },
@@ -102,8 +102,24 @@ export const seatsApi = makeApi([
     alias: "userSeat",
     method: "get",
     path: "/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: seat,
-    parameters: [],
   },
   {
     alias: "userOccupant",
