@@ -77,7 +77,7 @@ export const configApi = makeApi([
   {
     method: "get",
     alias: "publisherConfigurations",
-    path: "/publisher",
+    path: "/publishers",
     response: z.array(publisherConfiguration),
   },
   {
