@@ -5,6 +5,7 @@ import {
   seatsApi,
   SeatingConfiguration,
   validateSeatRequest,
+  validateSeatReservation,
 } from "@dotinc/bouncer-core";
 import { add, endOfMonth } from "date-fns";
 
@@ -442,5 +443,94 @@ seatsRouter.delete(
 
 seatsRouter.post(
   "/subscriptions/:subscriptionId/seats/:seatId/reserve",
-  (req, res) => {}
+  async (req, res) => {
+    const subscriptionId = req.params.subscriptionId;
+    const seatId = req.params.seatId;
+
+    if (typeof subscriptionId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid subscriptionId",
+      });
+    }
+    if (typeof seatId === "number") {
+      return res.status(400).json({
+        code: 400,
+        message: "Invalid seatId",
+      });
+    }
+    const reservation = req.body;
+
+    const subscription = await req.repo.getSubscription(subscriptionId);
+    if (!subscription) {
+      return res.status(404).json({
+        code: 404,
+        message: `Subscription [${subscriptionId}] not found.`,
+        id: subscriptionId,
+      });
+    }
+
+    const validationError = validateSeatReservation(reservation, subscription);
+    if (validationError) {
+      return res.status(400).json({
+        code: 400,
+        message: validationError,
+      });
+    }
+
+    const existingSeat = await req.repo.getSeat(seatId, subscriptionId);
+    if (existingSeat) {
+      return res.status(409).json({
+        code: 409,
+        message: `Seat [${seatId}] already exists.`,
+      });
+    }
+
+    if (!subscription.seating_config) {
+      return res.status(404).json({
+        code: 404,
+        message: `Seating configuration [${subscriptionId}] not found.`,
+        id: subscriptionId,
+      });
+    }
+
+    const now = new Date();
+    const seat: Seat = {
+      expires_utc: add(now, {
+        days: subscription.seating_config.seat_reservation_expiry_in_days ?? 1,
+      }),
+      created_utc: now,
+      subscription_id: subscriptionId,
+      reservation: reservation,
+      seat_id: seatId,
+      seating_strategy_name: subscription.seating_config.seating_strategy_name,
+      seat_type: "standard",
+      redeemed_utc: null,
+      occupant: null,
+    };
+
+    const createSeat = await req.repo.createSeat(seat, subscription);
+
+    // TODO: publish seat warning events
+    // await req.events.publishSeatWarningEvents(subscription, createSeat.seatingSummary)
+
+    if (createSeat.isSeatCreated) {
+      console.log(
+        `Seat [${seatId}] successfully reserved in subscription [${subscriptionId}]. ` +
+          `This reservation expires at [${seat.expires_utc}].`
+      );
+      // TODO: push event seat_reserved[subscription, seat, createSeat.seatingSummary]
+      return res.status(200).json(seat);
+    }
+
+    console.log(
+      `Can't reserve seat [${seatId}] in subscription [${subscriptionId}]. No more seats available.`
+    );
+
+    return res.status(404).json({
+      code: 404,
+      message: `No seats available to reserve in subscription [${subscriptionId}].`,
+      id: subscriptionId,
+    });
+  }
 );

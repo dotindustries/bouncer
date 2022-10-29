@@ -33,7 +33,17 @@ export const reservation = z.object({
 
 export type Reservation = z.infer<typeof reservation>;
 
-export const validateSeatReservation = (inSubscription: Subscription) => {
+export const validateSeatReservation = (
+  reservation: Reservation,
+  inSubscription: Subscription
+) => {
+  if (
+    ("email" in reservation.identifier && !reservation.identifier.email) ||
+    ("tenant_id" in reservation.identifier &&
+      (!reservation.identifier.tenant_id || !reservation.identifier.user_id))
+  ) {
+    return "Reservation ([user_id] and [tenant_id]) or [email] is required.";
+  }
   if (inSubscription.state != "active")
     return (
       `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
@@ -335,6 +345,23 @@ export const seatsApi = makeApi([
         name: "seatId",
         type: "Path",
         schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
       },
     ],
     response: seat,
