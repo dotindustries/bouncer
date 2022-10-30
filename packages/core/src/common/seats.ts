@@ -1,12 +1,21 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 import { error, error404 } from "./shared";
-// TODO: PR for shorthand to add typed makeErrors?
-// import { api } from "../utils/shorthand";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
 export const noContentResult = z.object({});
+
+export type SeatingSummary = {
+  standardSeatCount: number;
+  limitedSeatCount: number;
+};
+
+export type SeatCreationContext = {
+  isSeatCreated: boolean;
+  seatingSummary: SeatingSummary;
+  createdSeat?: Seat;
+};
 
 export const reservation = z.object({
   // Reservation ([user_id] and [tenant_id]) or [email] is required.
@@ -24,10 +33,32 @@ export const reservation = z.object({
 
 export type Reservation = z.infer<typeof reservation>;
 
-export const validateReservation = (inSubscription: Subscription) => {
-  if (inSubscription.state != "active") return;
-  `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
-    `seats can be reserved only in ['active'] subscriptions.`;
+export const validateSeatReservation = (
+  reservation: Reservation,
+  inSubscription: Subscription
+) => {
+  if (
+    ("email" in reservation.identifier && !reservation.identifier.email) ||
+    ("tenant_id" in reservation.identifier &&
+      (!reservation.identifier.tenant_id || !reservation.identifier.user_id))
+  ) {
+    return "Reservation ([user_id] and [tenant_id]) or [email] is required.";
+  }
+  if (inSubscription.state != "active")
+    return (
+      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `seats can be reserved only in ['active'] subscriptions.`
+    );
+  return undefined;
+};
+
+export const validateSeatRequest = (inSubscription: Subscription) => {
+  if (inSubscription.state != "active")
+    return (
+      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `seats can be reserved only in ['active'] subscriptions.`
+    );
+  return undefined;
 };
 
 export const seat = z.object({
@@ -35,7 +66,7 @@ export const seat = z.object({
   subscription_id: z.string().nullable(),
   occupant: user.nullable(),
   seating_strategy_name: z.string().nullable(),
-  seat_type: z.string(),
+  seat_type: z.enum(["standard", "limited"]),
   reservation: reservation.nullable(),
   expires_utc: z.date().nullable(),
   created_utc: z.date().nullable(),
@@ -48,19 +79,24 @@ export const seats = z.array(seat);
 
 export type Seats = z.infer<typeof seats>;
 
-const seatByIdInput = z.object({
-  subscriptionId: z.string(),
-  seatId: z.string(),
-});
-
-export type SeatsByIdInput = z.infer<typeof seatByIdInput>;
-
 export const seatsApi = makeApi([
   {
     method: "get",
     alias: "seatById",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
     response: seat,
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: 404,
@@ -78,12 +114,17 @@ export const seatsApi = makeApi([
     path: "/subscriptions/:subscriptionId/seats",
     parameters: [
       {
-        name: "user_id",
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "userId",
         type: "Query",
         schema: z.string().optional(),
       },
       {
-        name: "user_email",
+        name: "userEmail",
         type: "Query",
         schema: z.string().optional(),
       },
@@ -111,8 +152,41 @@ export const seatsApi = makeApi([
     alias: "userSeat",
     method: "get",
     path: "/subscriptions/:subscriptionId/user-seat/:tenantId/:userId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "tenantId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: seat,
-    parameters: [],
   },
   {
     alias: "userOccupant",
@@ -123,6 +197,33 @@ export const seatsApi = makeApi([
         name: "user",
         type: "Body",
         schema: user,
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
       },
     ],
     response: seat,
@@ -137,6 +238,33 @@ export const seatsApi = makeApi([
         type: "Body",
         schema: user,
       },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
     ],
     response: seat,
   },
@@ -144,6 +272,27 @@ export const seatsApi = makeApi([
     alias: "releaseSeat",
     method: "delete",
     path: "/subscriptions/:subscriptionId/seats/:seatId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: noContentResult,
   },
   {
@@ -156,18 +305,72 @@ export const seatsApi = makeApi([
         type: "Body",
         schema: user,
       },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
     ],
     response: seat,
   },
   {
     alias: "reserveSeat",
     method: "post",
-    path: "/subscriptions/{subscriptionId}/seats/{seatId}/reserve",
+    path: "/subscriptions/:subscriptionId/seats/:seatId/reserve",
     parameters: [
       {
         name: "reservation",
         type: "Body",
         schema: reservation,
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "seatId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
       },
     ],
     response: seat,

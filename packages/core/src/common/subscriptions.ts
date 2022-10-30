@@ -1,6 +1,7 @@
-import { api } from "../utils/shorthand";
+import { makeApi } from "@zodios/core";
 import { z } from "zod";
 import { seatingConfiguration } from "./config";
+import { error, error404 } from "./shared";
 
 export const subscriptionStates = z.enum([
   "purchased",
@@ -86,23 +87,100 @@ export const validateSubscriptionPatch = (
   return errors;
 };
 
-export const subscriptionApi = api({
-  "GET subscriptionById": {
+export const subscriptionApi = makeApi([
+  {
+    method: "get",
+    alias: "subscriptionById",
     path: "/subscriptions/:subscriptionId",
+    parameters: [
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: error404,
+      },
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: subscription,
   },
-  "GET subscriptions": {
+  {
+    method: "get",
+    alias: "subscriptions",
     path: "/subscriptions",
+    parameters: [
+      {
+        name: "publisherId",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: z.array(subscription),
   },
-  "PATCH subscriptionById": {
+  {
+    method: "patch",
+    alias: "updateSubscription",
     path: "/subscriptions/:subscriptionId",
-    body: subscription,
+    parameters: [
+      {
+        name: "subscription",
+        schema: subscription,
+        type: "Body",
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: subscription,
   },
-  "POST subscription": {
-    path: "/subscriptions/:subscriptionId",
-    body: subscription,
+  {
+    method: "post",
+    alias: "createSubscription",
+    path: "/subscriptions/:publisherId/:subscriptionId",
+    parameters: [
+      {
+        name: "subscription",
+        schema: subscription,
+        type: "Body",
+      },
+      {
+        name: "publisherId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "subscriptionId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
     response: subscription,
   },
-});
+]);

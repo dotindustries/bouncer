@@ -62,7 +62,13 @@ export const configApi = makeApi([
     method: "get",
     alias: "publisherConfigurationById",
     path: "/publisher/:publisherId/configuration",
-    response: publisherConfiguration,
+    parameters: [
+      {
+        name: "publisherId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
     errors: [
       {
         status: 404,
@@ -73,6 +79,7 @@ export const configApi = makeApi([
         schema: error,
       },
     ],
+    response: publisherConfiguration,
   },
   {
     method: "get",
@@ -96,6 +103,11 @@ export const configApi = makeApi([
         schema: publisherConfiguration,
         type: "Body",
       },
+      {
+        name: "publisherId",
+        type: "Path",
+        schema: z.string(),
+      },
     ],
     errors: [
       {
@@ -108,12 +120,18 @@ export const configApi = makeApi([
   {
     method: "post",
     alias: "publisherConfiguration",
-    path: "/publisher/:publisherId/configuration",
+    path: "/publisher",
     parameters: [
       {
         name: "publisherConfiguration",
         schema: publisherConfiguration,
         type: "Body",
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
       },
     ],
     response: publisherConfiguration,

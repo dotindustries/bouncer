@@ -14,7 +14,7 @@ export type PublisherConfigTable = Omit<
 >;
 
 export type SeatingConfigTable = SeatingConfiguration & {
-  publisher_id: PublisherConfiguration["id"];
+  owner_id: PublisherConfiguration["id"];
 };
 
 export type ProductConfigTable = ProductConfiguration & {
@@ -35,7 +35,15 @@ export type SeatOccupantTable = Intersect<Pick<Seat, "occupant">> & {
   seat_id: string;
 };
 
-export type SubscriptionTable = Omit<Subscription, "seating_config">;
+export type SubscriptionTable = Omit<Subscription, "seating_config"> & {
+  publisher_id: string;
+};
+
+export type SeatSummaryTable = {
+  subscription_id: string;
+  standard_seat_count: number;
+  limited_seat_count: number;
+};
 
 export interface Database {
   publishers: PublisherConfigTable;
@@ -45,4 +53,5 @@ export interface Database {
   seat_reservations: SeatReservationTable;
   seat_occupants: SeatOccupantTable;
   subscriptions: SubscriptionTable;
+  seat_summary: SeatSummaryTable;
 }

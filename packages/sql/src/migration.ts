@@ -34,7 +34,7 @@ export class SqliteMigrationProvider implements MigrationProvider {
 
           await db.schema
             .createTable("seating_config")
-            .addColumn("publisher_id", "varchar(30)", (col) =>
+            .addColumn("owner_id", "varchar(30)", (col) =>
               col.unique().notNull().primaryKey()
             )
             .addColumn("defaultLowSeatWarningLevelPercent", "real", (col) =>
@@ -112,6 +112,7 @@ export class SqliteMigrationProvider implements MigrationProvider {
             .addColumn("subscription_id", "varchar(30)", (col) =>
               col.primaryKey().notNull()
             )
+            .addColumn("publisher_id", "varchar(30)")
             .addColumn("is_setup_complete", "boolean")
             .addColumn("created_utc", "datetime")
             .addColumn("tenant_id", "varchar(30)")
@@ -147,6 +148,35 @@ export class SqliteMigrationProvider implements MigrationProvider {
           //   .execute();
           await db.schema.dropTable("seating_config").execute();
           await db.schema.dropTable("publishers").execute();
+        },
+      },
+      "2022-10-29_seat_summary": {
+        up: async (db) => {
+          await db.schema
+            .createTable("seat_summary")
+            .addColumn("subscription_id", "varchar(30)", (col) =>
+              col.unique().notNull().primaryKey()
+            )
+            .addColumn("standard_seat_count", "integer", (col) => col.notNull())
+            .addColumn("limited_seat_count", "integer", (col) => col.notNull())
+            .execute();
+        },
+        down: async (db) => {
+          await db.schema.dropTable("seat_summary").execute();
+        },
+      },
+      "2022-10-30_fix_missing_subscriptions_publisher_id": {
+        up: async (db) => {
+          await db.schema
+            .alterTable("subscriptions")
+            .addColumn("publisher_id", "varchar(30)")
+            .execute();
+        },
+        down: async (db) => {
+          await db.schema
+            .alterTable("subscriptions")
+            .dropColumn("publisher_id")
+            .execute();
         },
       },
     });

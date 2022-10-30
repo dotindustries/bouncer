@@ -1,14 +1,11 @@
 import {
   Kysely,
   KyselyConfig,
+  sql,
   SqliteDialect,
   SqliteDialectConfig,
 } from "kysely";
-import type {
-  Seat,
-  Repository,
-  PublisherConfiguration,
-} from "@dotinc/bouncer-core";
+import type { Repository, SeatingSummary } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -24,7 +21,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
     getPublisher: async (publisherId) => {
       const row = await db
         .selectFrom("publishers")
-        .innerJoin("seating_config", "seating_config.publisher_id", "id")
+        .innerJoin("seating_config", "seating_config.owner_id", "id")
         .innerJoin("product_config", "product_config.publisher_id", "id")
         .selectAll()
         .where("id", "=", publisherId)
@@ -32,7 +29,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       if (!row) return undefined;
 
-      const pc: PublisherConfiguration = {
+      return {
         id: row.id,
         product_name: row.product_name,
         publisher_name: row.publisher_name,
@@ -69,12 +66,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
           on_no_subscriptions_found_url: row.on_no_subscriptions_found_url,
         },
       };
-      return pc;
     },
     getPublishers: async () => {
       const rows = await db
         .selectFrom("publishers")
-        .innerJoin("seating_config", "seating_config.publisher_id", "id")
+        .innerJoin("seating_config", "seating_config.owner_id", "id")
         .innerJoin("product_config", "product_config.publisher_id", "id")
         .selectAll()
         .execute();
@@ -189,7 +185,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
             seating_strategy_name:
               update.default_seating_config.seating_strategy_name,
           })
-          .where("seating_config.publisher_id", "=", update.id)
+          .where("seating_config.owner_id", "=", update.id)
           .executeTakeFirst();
 
         if (seatingConfig.numUpdatedRows !== 1n)
@@ -199,6 +195,89 @@ export const createRepository = (args: KyselyConfig): Repository => {
       });
 
       return update;
+    },
+    createPublisher: async (config) => {
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .insertInto("publishers")
+          .values({
+            id: config.id,
+            product_name: config.product_name,
+            publisher_name: config.publisher_name,
+            home_page_url: config.home_page_url,
+            contact_page_url: config.contact_page_url,
+            privacy_notice_page_url: config.privacy_notice_page_url,
+            contact_sales_email: config.contact_sales_email,
+            contact_sales_url: config.contact_sales_url,
+            contact_support_email: config.contact_support_email,
+            contact_support_url: config.contact_support_url,
+            mona_base_storage_url: config.mona_base_storage_url,
+            mona_subscription_state: config.mona_subscription_state,
+            mona_subscription_is_being_configured:
+              config.mona_subscription_is_being_configured,
+            is_setup_complete: config.is_setup_complete,
+          })
+          .executeTakeFirst();
+
+        if (!up)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const prodConfig = await db
+          .insertInto("product_config")
+          .values({
+            publisher_id: config.id,
+            on_access_denied_url: config.product_config.on_access_denied_url,
+            on_access_granted_url: config.product_config.on_access_granted_url,
+            on_no_seat_available_url:
+              config.product_config.on_no_seat_available_url,
+            on_no_subscriptions_found_url:
+              config.product_config.on_no_subscriptions_found_url,
+            on_subscription_canceled_url:
+              config.product_config.on_subscription_canceled_url,
+            on_subscription_not_found_url:
+              config.product_config.on_subscription_not_found_url,
+            on_subscription_not_ready_url:
+              config.product_config.on_subscription_not_ready_url,
+            on_subscription_suspended_url:
+              config.product_config.on_subscription_suspended_url,
+          })
+          .executeTakeFirst();
+
+        if (!prodConfig)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+
+        // TODO: only update if we have a delta?
+        const seatingConfig = await db
+          .insertInto("seating_config")
+          .values({
+            owner_id: config.id,
+            default_seat_expiry_in_days:
+              config.default_seating_config.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              config.default_seating_config.defaultLowSeatWarningLevelPercent,
+            limited_overflow_seating_enabled:
+              config.default_seating_config.limited_overflow_seating_enabled,
+            low_seat_warning_level_pct:
+              config.default_seating_config.low_seat_warning_level_pct,
+            seat_reservation_expiry_in_days:
+              config.default_seating_config.seat_reservation_expiry_in_days,
+            seating_strategy_name:
+              config.default_seating_config.seating_strategy_name,
+          })
+          .executeTakeFirst();
+
+        if (!seatingConfig)
+          throw new Error(
+            `Failed to update publisher configuration: [${config.id}]`
+          );
+      });
+
+      return config;
     },
     getSeat: async (seatId, subscriptionId) => {
       const row = await db
@@ -231,7 +310,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .executeTakeFirst();
       if (!row) return undefined;
 
-      const seat: Seat = {
+      return {
         subscription_id: row.subscription_id,
         seat_id: row.seat_id,
         seat_type: row.seat_type,
@@ -263,7 +342,6 @@ export const createRepository = (args: KyselyConfig): Repository => {
               }
             : null,
       };
-      return seat;
     },
     getSeats: async (subscriptionId, byUserId, byEmail) => {
       const q = db
@@ -347,6 +425,502 @@ export const createRepository = (args: KyselyConfig): Repository => {
               }
             : null,
       }));
+    },
+    replaceSeat: async (update) => {
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .insertInto("seats")
+          .values({
+            seat_id: update.seat_id,
+            created_utc: update.created_utc,
+            subscription_id: update.subscription_id,
+            expires_utc: update.expires_utc,
+            redeemed_utc: update.redeemed_utc,
+            seat_type: update.seat_type,
+            seating_strategy_name: update.seating_strategy_name,
+          })
+          .onConflict((oc) =>
+            oc.column("seat_id").doUpdateSet({
+              expires_utc: update.expires_utc,
+              redeemed_utc: update.redeemed_utc,
+              seat_type: update.seat_type,
+              seating_strategy_name: update.seating_strategy_name,
+            })
+          )
+          .executeTakeFirst();
+
+        // TODO: this does not check for success
+        if (up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
+
+        // if there's no reservation present in the update
+        //   try to delete it
+        if (!update.reservation) {
+          await tx
+            .deleteFrom("seat_reservations")
+            .where("seat_id", "=", update.seat_id)
+            .execute();
+        } else {
+          const reservation = update.reservation;
+          const res = await tx
+            .insertInto("seat_reservations")
+            .values({
+              seat_id: update.seat_id,
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
+            .onConflict((oc) =>
+              oc.column("seat_id").doUpdateSet({
+                tenant_id:
+                  "tenant_id" in reservation.identifier
+                    ? reservation.identifier.tenant_id
+                    : null,
+                user_id:
+                  "tenant_id" in reservation.identifier
+                    ? reservation.identifier.user_id
+                    : null,
+                invite_url: reservation.invite_url,
+                email:
+                  "email" in reservation.identifier
+                    ? reservation.identifier.email
+                    : null,
+              })
+            )
+            .executeTakeFirst();
+          // TODO: this does not check for success
+          if (res)
+            throw new Error(
+              `Failed to save seat reservation: [${update.seat_id}]`
+            );
+        }
+
+        // if there's no occupant present in the update
+        //   try to delete it
+        if (!update.occupant) {
+          await tx
+            .deleteFrom("seat_occupants")
+            .where("seat_id", "=", update.seat_id)
+            .execute();
+        } else {
+          const occupant = update.occupant;
+
+          const occ = await tx
+            .insertInto("seat_occupants")
+            .values({
+              seat_id: update.seat_id,
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
+            .onConflict((oc) =>
+              oc.column("seat_id").doUpdateSet({
+                user_id: occupant.user_id,
+                tenant_id: occupant.tenant_id,
+                email: occupant.email,
+                user_name: occupant.user_name,
+              })
+            )
+            .executeTakeFirst();
+
+          if (occ)
+            throw new Error(
+              `Failed to save seat occupant: [${update.seat_id}]`
+            );
+        }
+      });
+
+      return update;
+    },
+    createSeat: async (seat, subscription) => {
+      const actualSeatSummaryRows = await db
+        .selectFrom("seats")
+        .select([sql`COUNT(1)`.as("seat_count"), "seat_type"])
+        .where("expires_utc", "is", null)
+        .orWhere("expires_utc", ">", new Date())
+        .groupBy("seat_type")
+        .execute();
+
+      const actualSeatSummary: SeatingSummary = {
+        standardSeatCount:
+          (actualSeatSummaryRows.find((r) => r.seat_type === "standard")
+            ?.seat_count as number) ?? 0,
+        limitedSeatCount:
+          (actualSeatSummaryRows.find((r) => r.seat_type === "limited")
+            ?.seat_count as number) ?? 0,
+      };
+
+      if (seat.seat_type === "standard") {
+        if (
+          subscription.total_seats &&
+          subscription.total_seats <= actualSeatSummary.standardSeatCount
+        ) {
+          return {
+            isSeatCreated: false,
+            seatingSummary: actualSeatSummary,
+          };
+        }
+
+        actualSeatSummary.standardSeatCount += 1;
+      }
+
+      await db.transaction().execute(async (tx) => {
+        const ss = await tx
+          .insertInto("seat_summary")
+          .values({
+            subscription_id: subscription.subscription_id,
+            standard_seat_count: actualSeatSummary.standardSeatCount,
+            limited_seat_count: actualSeatSummary.limitedSeatCount,
+          })
+          .onConflict((oc) =>
+            oc.column("subscription_id").doUpdateSet({
+              standard_seat_count: actualSeatSummary.standardSeatCount,
+              limited_seat_count: actualSeatSummary.limitedSeatCount,
+            })
+          )
+          .executeTakeFirst();
+        // TODO: this doesn't check success
+        if (!ss) {
+          throw new Error(
+            `Failed to save seat summary for subscription [${subscription.subscription_id}]`
+          );
+        }
+
+        const up = await tx
+          .insertInto("seats")
+          .values({
+            seat_id: seat.seat_id,
+            created_utc: seat.created_utc,
+            subscription_id: seat.subscription_id,
+            expires_utc: seat.expires_utc,
+            redeemed_utc: seat.redeemed_utc,
+            seat_type: seat.seat_type,
+            seating_strategy_name: seat.seating_strategy_name,
+          })
+          .executeTakeFirst();
+
+        // TODO: this does not check for success
+        if (up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
+
+        if (seat.reservation) {
+          const reservation = seat.reservation;
+          const res = await tx
+            .insertInto("seat_reservations")
+            .values({
+              seat_id: seat.seat_id,
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
+            .executeTakeFirst();
+          // TODO: this does not check for success
+          if (res)
+            throw new Error(
+              `Failed to save seat reservation: [${seat.seat_id}]`
+            );
+        }
+
+        if (seat.occupant) {
+          const occupant = seat.occupant;
+
+          const occ = await tx
+            .insertInto("seat_occupants")
+            .values({
+              seat_id: seat.seat_id,
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
+            .executeTakeFirst();
+
+          if (occ)
+            throw new Error(`Failed to save seat occupant: [${seat.seat_id}]`);
+        }
+      });
+
+      // yay, if we got so far
+      return {
+        isSeatCreated: true,
+        seatingSummary: actualSeatSummary,
+        createdSeat: seat,
+      };
+    },
+    deleteSeat: async (seatId, subscriptionId) => {
+      await db.transaction().execute(async (tx) => {
+        await tx
+          .deleteFrom("seats")
+          .where("seat_id", "=", seatId)
+          .where("subscription_id", "=", subscriptionId);
+        await tx.deleteFrom("seat_occupants").where("seat_id", "=", seatId);
+        await tx.deleteFrom("seat_reservations").where("seat_id", "=", seatId);
+      });
+    },
+    getSubscription: async (subscriptionId) => {
+      const row = await db
+        .selectFrom("subscriptions")
+        .leftJoin("seating_config", "owner_id", "subscription_id")
+        .selectAll()
+        .where("subscription_id", "=", subscriptionId)
+        .executeTakeFirst();
+
+      if (!row) return undefined;
+
+      return {
+        subscription_id: row.subscription_id,
+        subscriber_info: row.subscriber_info,
+        source_subscription: row.source_subscription,
+        is_setup_complete: row.is_setup_complete,
+        subscription_name: row.subscription_name,
+        tenant_id: row.tenant_id,
+        tenant_name: row.tenant_name,
+        offer_id: row.offer_id,
+        plan_id: row.plan_id,
+        state: row.state,
+        admin_role_name: row.admin_role_name,
+        user_role_name: row.user_role_name,
+        management_urls: row.management_urls,
+        admin_name: row.admin_name,
+        admin_email: row.admin_email,
+        total_seats: row.total_seats,
+        is_being_configured: row.is_being_configured,
+        is_free_trial: row.is_free_trial,
+        is_test_subscription: row.is_test_subscription,
+        created_utc: row.created_utc,
+        state_last_updated_utc: row.state_last_updated_utc,
+        seating_config: row.seating_strategy_name
+          ? {
+              seat_reservation_expiry_in_days:
+                row.seat_reservation_expiry_in_days ?? undefined,
+              default_seat_expiry_in_days:
+                row.default_seat_expiry_in_days ?? undefined,
+              defaultLowSeatWarningLevelPercent:
+                row.defaultLowSeatWarningLevelPercent ?? 0,
+              seating_strategy_name: row.seating_strategy_name,
+              low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+              limited_overflow_seating_enabled:
+                row.limited_overflow_seating_enabled,
+            }
+          : null,
+      };
+    },
+    getSubscriptions: async (publisherId) => {
+      const rows = await db
+        .selectFrom("subscriptions")
+        .leftJoin("seating_config", "owner_id", "subscription_id")
+        .selectAll()
+        .where("publisher_id", "=", publisherId)
+        .execute();
+
+      return rows.map((row) => ({
+        subscription_id: row.subscription_id,
+        subscriber_info: row.subscriber_info,
+        source_subscription: row.source_subscription,
+        is_setup_complete: row.is_setup_complete,
+        subscription_name: row.subscription_name,
+        tenant_id: row.tenant_id,
+        tenant_name: row.tenant_name,
+        offer_id: row.offer_id,
+        plan_id: row.plan_id,
+        state: row.state,
+        admin_role_name: row.admin_role_name,
+        user_role_name: row.user_role_name,
+        management_urls: row.management_urls,
+        admin_name: row.admin_name,
+        admin_email: row.admin_email,
+        total_seats: row.total_seats,
+        is_being_configured: row.is_being_configured,
+        is_free_trial: row.is_free_trial,
+        is_test_subscription: row.is_test_subscription,
+        created_utc: row.created_utc,
+        state_last_updated_utc: row.state_last_updated_utc,
+        seating_config: row.seating_strategy_name
+          ? {
+              seat_reservation_expiry_in_days:
+                row.seat_reservation_expiry_in_days ?? undefined,
+              default_seat_expiry_in_days:
+                row.default_seat_expiry_in_days ?? undefined,
+              defaultLowSeatWarningLevelPercent:
+                row.defaultLowSeatWarningLevelPercent ?? 0,
+              seating_strategy_name: row.seating_strategy_name,
+              low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+              limited_overflow_seating_enabled:
+                row.limited_overflow_seating_enabled,
+            }
+          : null,
+      }));
+    },
+    createSubscription: async (publisherId, sub) => {
+      const defaultSeatConfig = await db
+        .selectFrom("seating_config")
+        .selectAll()
+        .where("owner_id", "=", publisherId)
+        .executeTakeFirstOrThrow();
+
+      await db.transaction().execute(async (tx) => {
+        const now = new Date().toISOString();
+        const up = await tx
+          .insertInto("subscriptions")
+          .values({
+            subscription_id: sub.subscription_id,
+            publisher_id: publisherId,
+            subscriber_info: sub.subscriber_info,
+            source_subscription: sub.source_subscription,
+            is_setup_complete: sub.is_setup_complete ?? false,
+            subscription_name: sub.subscription_name ?? sub.subscription_id,
+            tenant_id: sub.tenant_id,
+            tenant_name: sub.tenant_name,
+            offer_id: sub.offer_id,
+            plan_id: sub.plan_id,
+            state: sub.state,
+            admin_role_name: sub.admin_role_name,
+            user_role_name: sub.user_role_name,
+            management_urls: sub.management_urls,
+            admin_name: sub.admin_name,
+            admin_email: sub.admin_email,
+            total_seats: sub.total_seats,
+            is_being_configured: sub.is_being_configured,
+            is_free_trial: sub.is_free_trial,
+            is_test_subscription: sub.is_test_subscription,
+            created_utc: now,
+            state_last_updated_utc: now,
+          })
+          .execute();
+
+        // TODO: this does not check insert success
+        if (!up)
+          throw new Error(
+            `Failed to save subscription: [${publisherId}, ${sub.subscription_id}]`
+          );
+
+        const seatConfig = sub.seating_config ?? defaultSeatConfig;
+
+        const scUp = await tx
+          .insertInto("seating_config")
+          .values({
+            owner_id: sub.subscription_id,
+            seat_reservation_expiry_in_days:
+              seatConfig.seat_reservation_expiry_in_days,
+            default_seat_expiry_in_days: seatConfig.default_seat_expiry_in_days,
+            defaultLowSeatWarningLevelPercent:
+              seatConfig.defaultLowSeatWarningLevelPercent,
+            seating_strategy_name: seatConfig.seating_strategy_name,
+            low_seat_warning_level_pct: seatConfig.low_seat_warning_level_pct,
+            limited_overflow_seating_enabled:
+              seatConfig.limited_overflow_seating_enabled,
+          })
+          .execute();
+
+        // TODO: this does not check insert success
+        if (!scUp)
+          throw new Error(
+            `Failed to save seating_config for subscription: [${publisherId}, ${sub.subscription_id}]`
+          );
+      });
+
+      return sub;
+    },
+    updateSubscription: async (sub) => {
+      const defaultSeatConfig = await db
+        .selectFrom("seating_config")
+        .selectAll()
+        .where(
+          "owner_id",
+          "=",
+          db
+            .selectFrom("subscriptions")
+            .select("publisher_id")
+            .where("subscription_id", "=", sub.subscription_id)
+        )
+        .executeTakeFirstOrThrow();
+
+      await db.transaction().execute(async (tx) => {
+        const up = await tx
+          .updateTable("subscriptions")
+          .set({
+            plan_id: sub.plan_id,
+            is_being_configured: sub.is_being_configured,
+            source_subscription: sub.source_subscription,
+            subscriber_info: sub.subscriber_info,
+            subscription_name: sub.subscription_name,
+            total_seats: sub.total_seats,
+            admin_role_name: sub.admin_role_name,
+            user_role_name: sub.user_role_name,
+            is_setup_complete: sub.is_setup_complete,
+            management_urls: sub.management_urls,
+            admin_name: sub.admin_name,
+            admin_email: sub.admin_email,
+            tenant_name: sub.tenant_name,
+            // TODO: state might not change,
+            //   we should consider only updating the timestamp if state is different.
+            state: sub.state,
+            state_last_updated_utc: new Date().toISOString(),
+          })
+          .where("subscription_id", "=", sub.subscription_id)
+          .execute();
+
+        // TODO: this does not check insert success
+        if (!up)
+          throw new Error(
+            `Failed to save subscription: [${sub.subscription_id}]`
+          );
+
+        if (sub.seating_config) {
+          const scUp = await tx
+            .updateTable("seating_config")
+            .set({
+              seat_reservation_expiry_in_days:
+                sub.seating_config.seat_reservation_expiry_in_days ??
+                defaultSeatConfig.seat_reservation_expiry_in_days,
+              default_seat_expiry_in_days:
+                sub.seating_config.default_seat_expiry_in_days ??
+                defaultSeatConfig.default_seat_expiry_in_days,
+              seating_strategy_name:
+                sub.seating_config.seating_strategy_name ??
+                defaultSeatConfig.seating_strategy_name,
+              limited_overflow_seating_enabled:
+                sub.seating_config.limited_overflow_seating_enabled ??
+                defaultSeatConfig.limited_overflow_seating_enabled,
+              // these were originally not updated on patch
+              defaultLowSeatWarningLevelPercent:
+                sub.seating_config.defaultLowSeatWarningLevelPercent ??
+                defaultSeatConfig.defaultLowSeatWarningLevelPercent,
+              low_seat_warning_level_pct:
+                sub.seating_config.low_seat_warning_level_pct ??
+                defaultSeatConfig.low_seat_warning_level_pct,
+            })
+            .where("owner_id", "=", sub.subscription_id)
+            .execute();
+
+          // TODO: this does not check insert success
+          if (!scUp)
+            throw new Error(
+              `Failed to save seating_config for subscription: [${sub.subscription_id}]`
+            );
+        }
+      });
+
+      return sub;
     },
   };
 };
