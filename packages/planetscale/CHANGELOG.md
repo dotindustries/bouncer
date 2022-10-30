@@ -1,3 +1,25 @@
+# v0.6.0 (Sun Oct 30 2022)
+
+#### 🚀 Enhancement
+
+- feat: API implementation [#2](https://github.com/dotindustries/bouncer/pull/2) ([@nadilas](https://github.com/nadilas))
+- feat: request seat implemented ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: subscription table schema missing publisher_id field ([@nadilas](https://github.com/nadilas))
+- fix: amend planetscale migration for seating_config owner_id ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:dotindustries/bouncer ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.5.0 (Fri Oct 28 2022)
 
 #### 🚀 Enhancement

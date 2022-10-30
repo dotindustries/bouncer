@@ -1,3 +1,29 @@
+# (Sun Oct 30 2022)
+
+#### 🚀 Enhancement
+
+- `@dotinc/bouncer-core@0.6.0`, `@dotinc/bouncer-planetscale@0.6.0`, `@dotinc/bouncer-sql@0.6.0`
+  - feat: API implementation [#2](https://github.com/dotindustries/bouncer/pull/2) ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- `@dotinc/bouncer-core@0.6.0`
+  - fix: add error handlers to config endpoints ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- chore: write up access levels on config endpoints ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-core@0.6.0`, `@dotinc/bouncer-planetscale@0.6.0`, `@dotinc/bouncer-sql@0.6.0`
+  - Merge branch 'main' of github.com:dotindustries/bouncer ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-core@0.6.0`
+  - refactor: all publishers endpoint should be plural ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # (Fri Oct 28 2022)
 
 #### 🚀 Enhancement
