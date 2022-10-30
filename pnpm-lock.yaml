@@ -36,9 +36,9 @@ importers:
 
   apps/api:
     specifiers:
-      '@dotinc/bouncer-core': ^0.5.0
-      '@dotinc/bouncer-planetscale': ^0.5.0
-      '@dotinc/bouncer-sql': ^0.5.0
+      '@dotinc/bouncer-core': ^0.6.0
+      '@dotinc/bouncer-planetscale': ^0.6.0
+      '@dotinc/bouncer-sql': ^0.6.0
       '@tanstack/react-query': 4.13.0
       '@types/express': 4.17.14
       '@types/node': 18.11.4
@@ -173,8 +173,8 @@ importers:
 
   packages/planetscale:
     specifiers:
-      '@dotinc/bouncer-core': ^0.5.0
-      '@dotinc/bouncer-sql': ^0.5.0
+      '@dotinc/bouncer-core': ^0.6.0
+      '@dotinc/bouncer-sql': ^0.6.0
       '@planetscale/database': ^1.4.0
       '@types/express': ^4.17.14
       '@zodios/core': 10.3.1
@@ -204,7 +204,7 @@ importers:
 
   packages/sql:
     specifiers:
-      '@dotinc/bouncer-core': ^0.5.0
+      '@dotinc/bouncer-core': ^0.6.0
       '@types/better-sqlite3': ^7.6.2
       '@types/express': ^4.17.14
       better-sqlite3: ^7.6.2
@@ -11957,6 +11957,11 @@ packages:
     resolution: {integrity: sha512-7OXtjkIfCMw3XfUPGInnUhxb/w/IHqATQM7XHOxwiJqbsQ44OYcLkTZb7mA35tDtqflnvWk88wD+IxiR/XJ5gQ==}
     engines: {node: '>=10.18'}
     hasBin: true
+    peerDependencies:
+      webpack: '>=1.11.0'
+    peerDependenciesMeta:
+      webpack:
+        optional: true
     dependencies:
       '@typescript-eslint/eslint-plugin': 4.33.0_k4l66av2tbo6kxzw52jzgbfzii
       '@typescript-eslint/parser': 4.33.0_3rubbgt5ekhqrcgx4uwls3neim
@@ -12004,7 +12009,6 @@ packages:
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - supports-color
-      - webpack
     dev: true
 
   /xtend/4.0.2:
