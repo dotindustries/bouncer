@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "nodemon -r dotenv/config",
     "build": "npm run clean && tsc && chmod +x dist/cli.js",
-    "build:bang": "npm run clean && tsc && chmod +x dist/cli.js && npm run hashbang",
+    "build:bang": "npm run clean && tsc && chmod +x dist/cli.cjs && npm run hashbang",
     "start": "pnpm run build && dist/cli.js",
     "pretest": "pnpm run build",
     "test": "xo && ava",
@@ -43,20 +43,19 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "@logtail/node": "^0.1.12",
-    "@logtail/types": "^0.1.12",
+    "commander": "^9.4.1",
     "dotenv": "^16.0.1",
     "ink": "^3.2.0",
-    "meow": "^9.0.0",
     "pino": "^8.4.2",
-    "pino-abstract-transport": "^1.0.0",
     "react": "^17.0.2",
+    "update-notifier": "^6.0.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@sindresorhus/tsconfig": "^3.0.1",
     "@types/react": "^18.0.24",
+    "@types/update-notifier": "^6.0.1",
     "ava": "^5.0.1",
     "chalk": "^4.1.2",
     "eslint-config-xo-react": "^0.27.0",

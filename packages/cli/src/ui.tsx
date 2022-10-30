@@ -1,9 +1,14 @@
-import React, { FC } from "react";
+import React from "react";
 import { Text } from "ink";
 
-const App: FC<{ name?: string }> = ({ name = "Stranger" }) => (
+type AppProps = {
+  func: `test`;
+  host: string;
+};
+
+const App = ({ func }: AppProps) => (
   <Text>
-    Hello, <Text color="green">{name}</Text>
+    Running: <Text color="green">{func}</Text>
   </Text>
 );
 
