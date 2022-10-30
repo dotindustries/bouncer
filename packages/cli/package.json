@@ -1,6 +1,6 @@
 {
   "name": "@dotinc/bouncer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "private": true,
   "license": "MIT",
@@ -43,14 +43,14 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "ink": "^3.2.0",
-    "meow": "^9.0.0",
-    "react": "^17.0.2",
     "@logtail/node": "^0.1.12",
     "@logtail/types": "^0.1.12",
     "dotenv": "^16.0.1",
+    "ink": "^3.2.0",
+    "meow": "^9.0.0",
     "pino": "^8.4.2",
     "pino-abstract-transport": "^1.0.0",
+    "react": "^17.0.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
@@ -63,11 +63,11 @@
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
     "ink-testing-library": "^2.1.0",
-    "typescript": "^4.8.4",
-    "xo": "^0.39.1",
     "nodemon": "2.0.19",
     "pino-pretty": "^9.1.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.4",
+    "xo": "^0.39.1"
   },
   "ava": {
     "typescript": {
