@@ -15,7 +15,7 @@
     "cli"
   ],
   "bin": {
-    "tw-compiler": "dist/cli.js"
+    "bouncer": "dist/cli.js"
   },
   "engines": {
     "node": ">=10"
