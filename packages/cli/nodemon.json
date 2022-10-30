@@ -1,0 +1,7 @@
+{
+	"watch": ["src"],
+	"ignore": ["src/**/*.test.ts", "node_modules"],
+	"ext": "ts,mjs,js,json,graphql",
+	"exec": "npm run build && NODE_ENV=development node -r dotenv/config ./dist/cli.js | pino-pretty -c",
+	"legacyWatch": true
+}
