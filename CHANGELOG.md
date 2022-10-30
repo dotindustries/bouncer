@@ -2,6 +2,26 @@
 
 #### 🚀 Enhancement
 
+- feat: add cli package [#5](https://github.com/dotindustries/bouncer/pull/5) ([@nadilas](https://github.com/nadilas))
+- feat: add google analytics placeholder [#4](https://github.com/dotindustries/bouncer/pull/4) ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-client@0.2.0`
+  - feat: add client package [#3](https://github.com/dotindustries/bouncer/pull/3) ([@Pagebakers](https://github.com/Pagebakers))
+
+#### ⚠️ Pushed to `main`
+
+- chore: pnpm lock after release :/ ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 2
+
+- [@nadilas](https://github.com/nadilas)
+- Eelco Wiersma ([@Pagebakers](https://github.com/Pagebakers))
+
+---
+
+# (Sun Oct 30 2022)
+
+#### 🚀 Enhancement
+
 - `@dotinc/bouncer-core@0.6.0`, `@dotinc/bouncer-planetscale@0.6.0`, `@dotinc/bouncer-sql@0.6.0`
   - feat: API implementation [#2](https://github.com/dotindustries/bouncer/pull/2) ([@nadilas](https://github.com/nadilas))
 
