@@ -1,2 +1,2 @@
-export { AuthPage } from './AuthPage'
-export { AuthProvider } from './AuthProvider'
+export { AuthPage } from "./AuthPage";
+export { AuthProvider } from "./AuthProvider";

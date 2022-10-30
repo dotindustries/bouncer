@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { AuthProvider } from '../auth/AuthProvider'
+import * as React from "react";
+import { AuthProvider } from "../auth/AuthProvider";
 
 export const AppProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  return <AuthProvider>{children}</AuthProvider>
-}
+  return <AuthProvider>{children}</AuthProvider>;
+};
