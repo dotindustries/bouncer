@@ -1,3 +1,36 @@
+# v0.6.0 (Sun Oct 30 2022)
+
+#### 🚀 Enhancement
+
+- feat: API implementation [#2](https://github.com/dotindustries/bouncer/pull/2) ([@nadilas](https://github.com/nadilas))
+- feat: release seat implemented ([@nadilas](https://github.com/nadilas))
+- feat: request seat implemented ([@nadilas](https://github.com/nadilas))
+- feat: redeemSeat implemented ([@nadilas](https://github.com/nadilas))
+- feat: patch occupant implemented ([@nadilas](https://github.com/nadilas))
+- feat: update subscription implemented ([@nadilas](https://github.com/nadilas))
+- feat: create subscription implemented ([@nadilas](https://github.com/nadilas))
+- feat: get subscriptions implemented ([@nadilas](https://github.com/nadilas))
+- feat: get subscription by id implemented ([@nadilas](https://github.com/nadilas))
+- feat: create publisher config implemented ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: subscription table schema missing publisher_id field ([@nadilas](https://github.com/nadilas))
+- fix: patch seat was not running reservation update ([@nadilas](https://github.com/nadilas))
+- refactor: remove zodios shorthand ([@nadilas](https://github.com/nadilas))
+- fix: create and update subscription logic by adding default seating config ([@nadilas](https://github.com/nadilas))
+- refactor: remove unused imports ([@nadilas](https://github.com/nadilas))
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:dotindustries/bouncer ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.5.0 (Fri Oct 28 2022)
 
 #### 🚀 Enhancement

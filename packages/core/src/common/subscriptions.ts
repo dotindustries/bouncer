@@ -114,11 +114,11 @@ export const subscriptionApi = makeApi([
   {
     method: "get",
     alias: "subscriptions",
-    path: "/subscriptions/:publisherId",
+    path: "/subscriptions",
     parameters: [
       {
         name: "publisherId",
-        type: "Path",
+        type: "Query",
         schema: z.string(),
       },
     ],

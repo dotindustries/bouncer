@@ -39,6 +39,12 @@ export type SubscriptionTable = Omit<Subscription, "seating_config"> & {
   publisher_id: string;
 };
 
+export type SeatSummaryTable = {
+  subscription_id: string;
+  standard_seat_count: number;
+  limited_seat_count: number;
+};
+
 export interface Database {
   publishers: PublisherConfigTable;
   seating_config: SeatingConfigTable;
@@ -47,4 +53,5 @@ export interface Database {
   seat_reservations: SeatReservationTable;
   seat_occupants: SeatOccupantTable;
   subscriptions: SubscriptionTable;
+  seat_summary: SeatSummaryTable;
 }

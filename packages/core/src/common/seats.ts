@@ -6,6 +6,17 @@ import { user } from "./users";
 
 export const noContentResult = z.object({});
 
+export type SeatingSummary = {
+  standardSeatCount: number;
+  limitedSeatCount: number;
+};
+
+export type SeatCreationContext = {
+  isSeatCreated: boolean;
+  seatingSummary: SeatingSummary;
+  createdSeat?: Seat;
+};
+
 export const reservation = z.object({
   // Reservation ([user_id] and [tenant_id]) or [email] is required.
   identifier: z.union([
@@ -22,10 +33,32 @@ export const reservation = z.object({
 
 export type Reservation = z.infer<typeof reservation>;
 
-export const validateReservation = (inSubscription: Subscription) => {
-  if (inSubscription.state != "active") return;
-  `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
-    `seats can be reserved only in ['active'] subscriptions.`;
+export const validateSeatReservation = (
+  reservation: Reservation,
+  inSubscription: Subscription
+) => {
+  if (
+    ("email" in reservation.identifier && !reservation.identifier.email) ||
+    ("tenant_id" in reservation.identifier &&
+      (!reservation.identifier.tenant_id || !reservation.identifier.user_id))
+  ) {
+    return "Reservation ([user_id] and [tenant_id]) or [email] is required.";
+  }
+  if (inSubscription.state != "active")
+    return (
+      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `seats can be reserved only in ['active'] subscriptions.`
+    );
+  return undefined;
+};
+
+export const validateSeatRequest = (inSubscription: Subscription) => {
+  if (inSubscription.state != "active")
+    return (
+      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `seats can be reserved only in ['active'] subscriptions.`
+    );
+  return undefined;
 };
 
 export const seat = z.object({
@@ -33,7 +66,7 @@ export const seat = z.object({
   subscription_id: z.string().nullable(),
   occupant: user.nullable(),
   seating_strategy_name: z.string().nullable(),
-  seat_type: z.string(),
+  seat_type: z.enum(["standard", "limited"]),
   reservation: reservation.nullable(),
   expires_utc: z.date().nullable(),
   created_utc: z.date().nullable(),
@@ -251,6 +284,15 @@ export const seatsApi = makeApi([
         schema: z.string(),
       },
     ],
+    errors: [
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: noContentResult,
   },
   {
@@ -274,6 +316,23 @@ export const seatsApi = makeApi([
         schema: z.string(),
       },
     ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
+      },
+    ],
     response: seat,
   },
   {
@@ -295,6 +354,23 @@ export const seatsApi = makeApi([
         name: "seatId",
         type: "Path",
         schema: z.string(),
+      },
+    ],
+    errors: [
+      {
+        status: 404,
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+          id: z.number().or(z.string()),
+        }),
+      },
+      {
+        status: "default",
+        schema: z.object({
+          code: z.number(),
+          message: z.string(),
+        }),
       },
     ],
     response: seat,
