@@ -22,7 +22,8 @@
   },
   "scripts": {
     "dev": "nodemon -r dotenv/config",
-    "build": "npm run clean && tsup src/cli.tsx --format cjs",
+    "build:dev": "npm run clean && tsup src/cli.tsx --format cjs",
+    "build": "npm run clean && tsup src/cli.tsx --minify --format cjs",
     "start": "pnpm run build && dist/cli.js",
     "pretest": "pnpm run build",
     "test": "xo && ava",
