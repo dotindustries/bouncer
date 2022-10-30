@@ -6,7 +6,7 @@ let __dirname = dirname(fileURLToPath(import.meta.url));
 let file = resolve(__dirname, "../dist/cli.js");
 
 writeFileSync(
-	file,
-	"#!/usr/bin/env node\n" + readFileSync(file, "utf-8"),
-	"utf-8"
+  file,
+  "#!/usr/bin/env node\n" + readFileSync(file, "utf-8"),
+  "utf-8"
 );
