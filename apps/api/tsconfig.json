@@ -14,7 +14,11 @@
     "isolatedModules": true,
     "noErrorTruncation": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": "./",
+    "paths": {
+      "@dotinc/bouncer-admin": ["../../packages/admin/src"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs"],
   "exclude": ["node_modules"]

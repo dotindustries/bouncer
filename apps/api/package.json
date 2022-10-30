@@ -24,8 +24,10 @@
     "next": "12.3.1",
     "next-swagger-doc": "^0.3.6",
     "next-transpile-modules": "^9.1.0",
+    "nextjs-cors": "^2.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "supertokens-node": "^12.0.5",
     "swagger-ui-react": "^4.15.0",
     "zod": "^3.19.1"
   },
