@@ -22,12 +22,11 @@
   },
   "scripts": {
     "dev": "nodemon -r dotenv/config",
-    "build": "npm run clean && tsc && chmod +x dist/cli.js",
-    "build:bang": "npm run clean && tsc && chmod +x dist/cli.cjs && npm run hashbang",
+    "build": "npm run clean && tsup src/cli.tsx --format cjs",
     "start": "pnpm run build && dist/cli.js",
     "pretest": "pnpm run build",
     "test": "xo && ava",
-    "clean": "rm -Rf bin",
+    "clean": "rm -Rf dist",
     "hashbang": "node scripts/hashbang.mjs"
   },
   "files": [
@@ -48,14 +47,16 @@
     "ink": "^3.2.0",
     "pino": "^8.4.2",
     "react": "^17.0.2",
-    "update-notifier": "^6.0.2",
+    "update-notifier": "^5.1.0",
     "zod": "^3.19.1"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@sindresorhus/tsconfig": "^3.0.1",
     "@types/react": "^18.0.24",
-    "@types/update-notifier": "^6.0.1",
+    "@types/update-notifier": "^5.1.0",
+    "tsc-alias": "^1.7.0",
+    "tsup": "^6.3.0",
     "ava": "^5.0.1",
     "chalk": "^4.1.2",
     "eslint-config-xo-react": "^0.27.0",

@@ -3,12 +3,12 @@ import React from "react";
 import { render } from "ink";
 import App from "./ui.js";
 import { program, Option } from "commander";
-const pkg = require("../package.json");
+import * as pkg from "../package.json";
 import updateNotifier from "update-notifier";
 
 let commandMatched = false;
 // Checking for available updates
-const notifier = updateNotifier({ pkg, isGlobal: true });
+const notifier = updateNotifier({ pkg });
 // Show update notification
 notifier.notify();
 
@@ -18,9 +18,9 @@ program
   .version(pkg.version, "-v, --version");
 program
   .command("test")
-  .option(
-    new Option("-h, --host", "API base url").defaultValue(
-      '"http://localhost:3000/api/v1"'
+  .addOption(
+    new Option("-h, --host", "API base url").default(
+      "http://localhost:3000/api/v1"
     )
   )
   .description("test API layer end-to-end")

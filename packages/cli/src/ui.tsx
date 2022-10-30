@@ -12,5 +12,4 @@ const App = ({ func }: AppProps) => (
   </Text>
 );
 
-module.exports = App;
 export default App;
