@@ -97,20 +97,24 @@ importers:
     specifiers:
       '@ava/typescript': ^3.0.1
       '@sindresorhus/tsconfig': ^3.0.1
+      '@types/ink-divider': ^2.0.2
       '@types/react': ^18.0.24
       '@types/update-notifier': ^5.1.0
       ava: ^5.0.1
       chalk: ^4.1.2
+      cli-spinners: ^2.7.0
       commander: ^9.4.1
       dotenv: ^16.0.1
       eslint-config-xo-react: ^0.27.0
       eslint-plugin-react: ^7.31.10
       eslint-plugin-react-hooks: ^4.6.0
       ink: ^3.2.0
+      ink-spinner: ^4.0.3
+      ink-table: ^3.0.0
+      ink-task-list: ^2.0.0
       ink-testing-library: ^2.1.0
       nodemon: 2.0.19
       pino: ^8.4.2
-      pino-abstract-transport: ^1.0.0
       pino-pretty: ^9.1.0
       react: ^17.0.2
       rimraf: ^3.0.2
@@ -121,17 +125,21 @@ importers:
       xo: ^0.39.1
       zod: ^3.19.1
     dependencies:
+      cli-spinners: 2.7.0
       commander: 9.4.1
       dotenv: 16.0.3
       ink: 3.2.0_kxqj3uqjjxu5i6yjbdv7tzqjde
+      ink-spinner: 4.0.3_ink@3.2.0+react@17.0.2
+      ink-table: 3.0.0_ink@3.2.0+react@17.0.2
+      ink-task-list: 2.0.0_ink@3.2.0+react@17.0.2
       pino: 8.7.0
-      pino-abstract-transport: 1.0.0
       react: 17.0.2
       update-notifier: 5.1.0
       zod: 3.19.1
     devDependencies:
       '@ava/typescript': 3.0.1
       '@sindresorhus/tsconfig': 3.0.1
+      '@types/ink-divider': 2.0.2
       '@types/react': 18.0.24
       '@types/update-notifier': 5.1.0
       ava: 5.0.1_@ava+typescript@3.0.1
@@ -2543,6 +2551,12 @@ packages:
       hoist-non-react-statics: 3.3.2
     dev: false
 
+  /@types/ink-divider/2.0.2:
+    resolution: {integrity: sha512-gY4kKSh1dNrZ++GQXW2KfMVexQfUsvE/LdUy7le5FSSeSemwk+u+ztHd+SMzfEjEHcCqpmRIQqKSrFOXLYCLHA==}
+    dependencies:
+      '@types/react': 18.0.24
+    dev: true
+
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
 
@@ -3886,7 +3900,6 @@ packages:
   /cli-spinners/2.7.0:
     resolution: {integrity: sha512-qu3pN8Y3qHNgE2AFweciB1IfMnmZ/fsNTEE+NOFjmGB2F/7rLhnhzppvpCnN4FovtP26k8lHyy9ptEbNwWFLzw==}
     engines: {node: '>=6'}
-    dev: true
 
   /cli-truncate/2.1.0:
     resolution: {integrity: sha512-n8fOixwDD6b/ObinzTrp1ZKFzbgvKZvuz/TvejnLn1aQfC6r52XEx85FmuC+3HI+JM7coBRXUvNqEU2PHVrHpg==}
@@ -6960,6 +6973,39 @@ packages:
       validate-npm-package-name: 4.0.0
     dev: true
 
+  /ink-spinner/4.0.3_ink@3.2.0+react@17.0.2:
+    resolution: {integrity: sha512-uJ4nbH00MM9fjTJ5xdw0zzvtXMkeGb0WV6dzSWvFv2/+ks6FIhpkt+Ge/eLdh0Ah6Vjw5pLMyNfoHQpRDRVFbQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      ink: '>=3.0.5'
+      react: '>=16.8.2'
+    dependencies:
+      cli-spinners: 2.7.0
+      ink: 3.2.0_kxqj3uqjjxu5i6yjbdv7tzqjde
+      react: 17.0.2
+    dev: false
+
+  /ink-table/3.0.0_ink@3.2.0+react@17.0.2:
+    resolution: {integrity: sha512-RtcYjenHKZWjnwVNQ6zSYWMOLKwkWscDAJsqUQXftyjkYho1gGrluGss87NOoIzss0IKr74lKasd6MtlQYALiA==}
+    peerDependencies:
+      ink: '>=3.0.0'
+      react: '>=16.8.0'
+    dependencies:
+      ink: 3.2.0_kxqj3uqjjxu5i6yjbdv7tzqjde
+      object-hash: 2.2.0
+      react: 17.0.2
+    dev: false
+
+  /ink-task-list/2.0.0_ink@3.2.0+react@17.0.2:
+    resolution: {integrity: sha512-+WadfalLGUrYT/5D4cHeShN73t5urEsI5VOwFYw3qNWdOL+GQVTLbTS0tCZkzIcBcL+dfZcQAtuoW56ZBZV+Bg==}
+    peerDependencies:
+      ink: '>=3.0.0'
+      react: '>=16.8.0'
+    dependencies:
+      ink: 3.2.0_kxqj3uqjjxu5i6yjbdv7tzqjde
+      react: 17.0.2
+    dev: false
+
   /ink-testing-library/2.1.0_@types+react@18.0.24:
     resolution: {integrity: sha512-7TNlOjJlJXB33vG7yVa+MMO7hCjaC1bCn+zdpSjknWoLbOWMaFdKc7LJvqVkZ0rZv2+akhjXPrcR/dbxissjUw==}
     engines: {node: '>=10'}
@@ -8788,6 +8834,11 @@ packages:
       define-property: 0.2.5
       kind-of: 3.2.2
     dev: true
+
+  /object-hash/2.2.0:
+    resolution: {integrity: sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==}
+    engines: {node: '>= 6'}
+    dev: false
 
   /object-inspect/1.12.2:
     resolution: {integrity: sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ==}

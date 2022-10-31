@@ -24,10 +24,11 @@ program
     )
   )
   .description("test API layer end-to-end")
-  .action((_, args) => {
+  .action(async (_, args) => {
     commandMatched = true;
 
-    render(<App func={"test"} host={args.host} />);
+    const { waitUntilExit } = render(<App func={"test"} host={args.host} />);
+    await waitUntilExit();
   });
 
 program.parse(process.argv);
