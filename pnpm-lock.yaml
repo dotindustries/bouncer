@@ -96,11 +96,14 @@ importers:
   packages/cli:
     specifiers:
       '@ava/typescript': ^3.0.1
+      '@dotinc/bouncer-core': '*'
       '@sindresorhus/tsconfig': ^3.0.1
       '@types/ink-divider': ^2.0.2
       '@types/react': ^18.0.24
       '@types/update-notifier': ^5.1.0
+      '@zodios/core': 10.3.1
       ava: ^5.0.1
+      axios: 1.1.3
       chalk: ^4.1.2
       cli-spinners: ^2.7.0
       commander: ^9.4.1
@@ -125,6 +128,9 @@ importers:
       xo: ^0.39.1
       zod: ^3.19.1
     dependencies:
+      '@dotinc/bouncer-core': link:../core
+      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      axios: 1.1.3
       cli-spinners: 2.7.0
       commander: 9.4.1
       dotenv: 16.0.3

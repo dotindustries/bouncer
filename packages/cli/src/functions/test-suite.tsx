@@ -1,14 +1,11 @@
 import React from "react";
 import { useApp, useInput, useStdin, Text, Box } from "ink";
 import { FunctionComponentSharedProps } from "./shared";
-import {
-  SequentialTaskQueue,
-  CancellablePromiseLike,
-  TaskEntry,
-} from "../utils/task-queue";
+import { SequentialTaskQueue, TaskEntry } from "../utils/task-queue";
 import { useEffect } from "react";
 import { TaskList, Task } from "ink-task-list";
 import spinners from "cli-spinners";
+import { tests } from "./test/api-tests";
 
 export const timeSince = (start: bigint) => {
   const end = process.hrtime.bigint();
@@ -16,105 +13,6 @@ export const timeSince = (start: bigint) => {
 };
 
 export const startTimer = () => process.hrtime.bigint();
-
-type TestCase = {
-  name: string;
-  description?: string;
-  startedAt?: string;
-  finishedAt?: string;
-  result?: string;
-  executionTime?: string;
-  error?: any;
-};
-
-type Test = {
-  type: "api" | "event";
-  fn: () => void;
-  cancellationToken?: CancellablePromiseLike<any>;
-  data: TestCase;
-};
-
-const tests: Test[] = [
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #1 - create a new publisher",
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #2 - create a new subscription",
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #3 - Patch an existing subscription",
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #4 - Reserve a seat in the subscription",
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #5 - Redeem a reserved seat",
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: 'Test #6 - Request some "walk-up" seats',
-      description: `
-This subscription has 5 total_seats.
-We've already occupied one of them during the seat reservation test so let's max this out
-and request 4 additional seats for \"walk-up\" users.`,
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #7 - Request a limited seat",
-      description: `
-At this point, we've exhausted our supply of this subscription's total_seats.
-This subscription is configured to provide limited seats after the supply of standard seats
-has been exhausted (subscription.seating_config.limited_overflow_seating_enabled == true).`,
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #8 - Check to see if a user has a seat",
-      description: `
-When a user logs in to your SaaS app, you should call this API to see if that user has a seat.
-If they don't have a seat, redirect them to the main Turnstile endpoint. To keep things simple,
-we'll reuse the identity of the user that we just created a limited seat for.
-The seat should certainly be here since we just created it!`,
-    },
-  },
-  {
-    type: "api",
-    fn: async () => {},
-    data: {
-      name: "Test #9 - Release a user's seat",
-      description: `
-Seats automatically expire on a scheduled based on the chosen seating strategy.
-If needed, however, tenant administrators can remove users from seats and cancel reservations.`,
-    },
-  },
-];
 
 export const TestSuiteContainer = ({}: FunctionComponentSharedProps) => {
   const { exit } = useApp();

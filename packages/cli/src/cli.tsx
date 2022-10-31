@@ -3,7 +3,7 @@ import React from "react";
 import { render } from "ink";
 import App from "./ui.js";
 import { program, Option } from "commander";
-import * as pkg from "../package.json";
+import pkg from "../package.json";
 import updateNotifier from "update-notifier";
 
 let commandMatched = false;

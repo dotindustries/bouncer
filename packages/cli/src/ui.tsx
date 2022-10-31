@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "ink";
-import { TestSuiteContainer } from "./functions/test-suite";
-import { FunctionComponentSharedProps } from "./functions/shared";
+import { TestSuiteContainer } from "./functions/test-suite.js";
+import { FunctionComponentSharedProps } from "./functions/shared.js";
 
 type FunctionType = `test`;
 

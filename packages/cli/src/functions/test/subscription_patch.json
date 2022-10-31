@@ -1,0 +1,24 @@
+{
+  "subscription_id": "cl9wtxux8000109jnb95hh4ip",
+  "subscription_name": "Patched Subscription",
+  "plan_id": "Patched Test Plan 1",
+  "state": "active",
+  "admin_role_name": "Patched Test Admins",
+  "user_role_name": "Patched Tests Users",
+  "admin_name": "Patched janos",
+  "admin_email": "Patched janos@dot.industries",
+  "total_seats": 5,
+  "is_being_configured": false,
+  "source_subscription": {
+    "id": "some other ID"
+  },
+  "subscriber_info": {
+    "country": "US"
+  },
+  "seating_config": {
+    "seating_strategy_name": "monthly_active_user",
+    "limited_overflow_seating_enabled": true,
+    "seat_reservation_expiry_in_days": 30,
+    "default_seat_expiry_in_days": 30
+  }
+}
