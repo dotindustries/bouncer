@@ -15,7 +15,7 @@
     "cli"
   ],
   "bin": {
-    "bouncer": "dist/cli.js"
+    "bouncer": "dist/cli.cjs"
   },
   "engines": {
     "node": ">=10"
@@ -25,14 +25,14 @@
     "dev": "nodemon",
     "build:dev": "npm run clean && tsup src/cli.tsx --format cjs",
     "build": "npm run clean && tsup src/cli.tsx --minify --format cjs",
-    "start": "pnpm run build && dist/cli.js",
+    "start": "pnpm run build && dist/cli.cjs",
     "pretest": "pnpm run build",
     "test": "xo && ava",
     "clean": "rm -Rf dist",
     "hashbang": "node scripts/hashbang.mjs"
   },
   "files": [
-    "dist/cli.js"
+    "dist/cli.cjs"
   ],
   "repository": {
     "type": "git",

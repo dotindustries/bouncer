@@ -2,6 +2,6 @@
   "watch": ["src"],
   "ignore": ["src/**/*.test.ts", "node_modules"],
   "ext": "ts,tsx,mjs,js,json,graphql",
-  "exec": "npm run build:dev && NODE_ENV=development node -r dotenv/config ./dist/cli.js test",
+  "exec": "npm run build:dev && NODE_ENV=development node -r dotenv/config ./dist/cli.cjs test",
   "legacyWatch": true
 }
