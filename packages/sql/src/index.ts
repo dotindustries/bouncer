@@ -962,6 +962,7 @@ class SqliteBooleanPlugin implements KyselyPlugin {
   transformResult(
     args: PluginTransformResultArgs
   ): Promise<QueryResult<UnknownRow>> {
+    // FIXME: we can't get out boolean from sqlite...
     return Promise.resolve(args.result);
   }
 }
