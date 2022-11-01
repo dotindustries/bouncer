@@ -1,3 +1,4 @@
+import { getMysqlFormattedDateTime } from "./../../sql/src/index";
 import type { Repository } from "@dotinc/bouncer-core";
 import {
   PlanetScaleDialect,
@@ -16,8 +17,13 @@ export const createRepository = (
   return createBaseRepository({
     dialect: new PlanetScaleDialect({
       cast: (field, value) => {
-        if (field.type === "DATETIME" && value) return parseJSON(value);
-        if (field.type === "TIMESTAMP" && value) return parseJSON(value);
+        // we want a mysql formatted date, because zod validates against it
+        if (field.type === "DATETIME" && value)
+          return getMysqlFormattedDateTime(parseJSON(value));
+        if (field.type === "TIMESTAMP" && value)
+          return getMysqlFormattedDateTime(parseJSON(value));
+
+        // kysely default for boolean in mysql is tinyint
         if (field.type === "INT8" && value !== null && value !== undefined)
           return parseInt(value) === 1 ? true : false;
         return cast(field, value);

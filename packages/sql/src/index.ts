@@ -13,7 +13,11 @@ import {
   SqliteDialectConfig,
   UnknownRow,
 } from "kysely";
-import type { Repository, SeatingSummary } from "@dotinc/bouncer-core";
+import type {
+  Repository,
+  SeatingSummary,
+  Subscription,
+} from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -23,14 +27,18 @@ import { format } from "date-fns";
 export * from "./schema";
 export { sqliteMigrateToLatest } from "./migration";
 
-const getMysqlFormattedDateTime = (date: Date = new Date()) => {
-  return format(date, "yyyy-MM-dd HH-mm-ss");
+export const getMysqlFormattedDateTime = (date: Date = new Date()) => {
+  return format(date, "yyyy-MM-dd HH:mm:ss");
 };
+
+// because json comes out as parsed object, but can only be inserted/updated as string
+const actuallyItisJsonAlready = (seeminglyString: string) =>
+  seeminglyString as unknown as Record<string, string> | null | undefined;
 
 export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
 
-  return {
+  const repo: Repository = {
     getPublisher: async (publisherId) => {
       const row = await db
         .selectFrom("publishers")
@@ -392,7 +400,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .where((qb) =>
           qb
             .where("expires_utc", "is", null)
-            .orWhere("expires_utc", ">", new Date())
+            .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
         );
 
       if (byUserId) {
@@ -565,7 +573,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .selectFrom("seats")
         .select([sql`COUNT(1)`.as("seat_count"), "seat_type"])
         .where("expires_utc", "is", null)
-        .orWhere("expires_utc", ">", new Date())
+        .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
         .groupBy("seat_type")
         .execute();
 
@@ -706,8 +714,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       return {
         subscription_id: row.subscription_id,
-        subscriber_info: row.subscriber_info,
-        source_subscription: row.source_subscription,
+        subscriber_info: actuallyItisJsonAlready(row.subscriber_info),
+        source_subscription: actuallyItisJsonAlready(row.source_subscription),
         is_setup_complete: row.is_setup_complete,
         subscription_name: row.subscription_name,
         tenant_id: row.tenant_id,
@@ -717,7 +725,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         state: row.state,
         admin_role_name: row.admin_role_name,
         user_role_name: row.user_role_name,
-        management_urls: row.management_urls,
+        management_urls: actuallyItisJsonAlready(row.management_urls),
         admin_name: row.admin_name,
         admin_email: row.admin_email,
         total_seats: row.total_seats,
@@ -750,43 +758,46 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .where("publisher_id", "=", publisherId)
         .execute();
 
-      return rows.map((row) => ({
-        subscription_id: row.subscription_id,
-        subscriber_info: row.subscriber_info,
-        source_subscription: row.source_subscription,
-        is_setup_complete: row.is_setup_complete,
-        subscription_name: row.subscription_name,
-        tenant_id: row.tenant_id,
-        tenant_name: row.tenant_name,
-        offer_id: row.offer_id,
-        plan_id: row.plan_id,
-        state: row.state,
-        admin_role_name: row.admin_role_name,
-        user_role_name: row.user_role_name,
-        management_urls: row.management_urls,
-        admin_name: row.admin_name,
-        admin_email: row.admin_email,
-        total_seats: row.total_seats,
-        is_being_configured: row.is_being_configured,
-        is_free_trial: row.is_free_trial,
-        is_test_subscription: row.is_test_subscription,
-        created_utc: row.created_utc,
-        state_last_updated_utc: row.state_last_updated_utc,
-        seating_config: row.seating_strategy_name
-          ? {
-              seat_reservation_expiry_in_days:
-                row.seat_reservation_expiry_in_days ?? undefined,
-              default_seat_expiry_in_days:
-                row.default_seat_expiry_in_days ?? undefined,
-              defaultLowSeatWarningLevelPercent:
-                row.defaultLowSeatWarningLevelPercent ?? 0,
-              seating_strategy_name: row.seating_strategy_name,
-              low_seat_warning_level_pct: row.low_seat_warning_level_pct,
-              limited_overflow_seating_enabled:
-                row.limited_overflow_seating_enabled,
-            }
-          : null,
-      }));
+      return rows.map((row) => {
+        const r: Subscription = {
+          subscription_id: row.subscription_id,
+          subscriber_info: actuallyItisJsonAlready(row.subscriber_info),
+          source_subscription: actuallyItisJsonAlready(row.source_subscription),
+          is_setup_complete: row.is_setup_complete,
+          subscription_name: row.subscription_name,
+          tenant_id: row.tenant_id,
+          tenant_name: row.tenant_name,
+          offer_id: row.offer_id,
+          plan_id: row.plan_id,
+          state: row.state,
+          admin_role_name: row.admin_role_name,
+          user_role_name: row.user_role_name,
+          management_urls: actuallyItisJsonAlready(row.management_urls),
+          admin_name: row.admin_name,
+          admin_email: row.admin_email,
+          total_seats: row.total_seats,
+          is_being_configured: row.is_being_configured,
+          is_free_trial: row.is_free_trial,
+          is_test_subscription: row.is_test_subscription,
+          created_utc: row.created_utc,
+          state_last_updated_utc: row.state_last_updated_utc,
+          seating_config: row.seating_strategy_name
+            ? {
+                seat_reservation_expiry_in_days:
+                  row.seat_reservation_expiry_in_days ?? undefined,
+                default_seat_expiry_in_days:
+                  row.default_seat_expiry_in_days ?? undefined,
+                defaultLowSeatWarningLevelPercent:
+                  row.defaultLowSeatWarningLevelPercent ?? 0,
+                seating_strategy_name: row.seating_strategy_name,
+                low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+                limited_overflow_seating_enabled:
+                  row.limited_overflow_seating_enabled,
+              }
+            : null,
+        };
+        return r;
+      });
     },
     createSubscription: async (publisherId, sub) => {
       const defaultSeatConfig = await db
@@ -802,8 +813,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
           .values({
             subscription_id: sub.subscription_id,
             publisher_id: publisherId,
-            subscriber_info: sub.subscriber_info,
-            source_subscription: sub.source_subscription,
+            subscriber_info: JSON.stringify(sub.subscriber_info),
+            source_subscription: JSON.stringify(sub.source_subscription),
             is_setup_complete: sub.is_setup_complete ?? false,
             subscription_name: sub.subscription_name ?? sub.subscription_id,
             tenant_id: sub.tenant_id,
@@ -813,7 +824,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
             state: sub.state,
             admin_role_name: sub.admin_role_name,
             user_role_name: sub.user_role_name,
-            management_urls: sub.management_urls,
+            management_urls: JSON.stringify(sub.management_urls),
             admin_name: sub.admin_name,
             admin_email: sub.admin_email,
             total_seats: sub.total_seats,
@@ -879,21 +890,21 @@ export const createRepository = (args: KyselyConfig): Repository => {
           .set({
             plan_id: sub.plan_id,
             is_being_configured: sub.is_being_configured,
-            source_subscription: sub.source_subscription,
-            subscriber_info: sub.subscriber_info,
+            source_subscription: JSON.stringify(sub.source_subscription),
+            subscriber_info: JSON.stringify(sub.subscriber_info),
             subscription_name: sub.subscription_name,
             total_seats: sub.total_seats,
             admin_role_name: sub.admin_role_name,
             user_role_name: sub.user_role_name,
             is_setup_complete: sub.is_setup_complete,
-            management_urls: sub.management_urls,
+            management_urls: JSON.stringify(sub.management_urls),
             admin_name: sub.admin_name,
             admin_email: sub.admin_email,
             tenant_name: sub.tenant_name,
             // TODO: state might not change,
             //   we should consider only updating the timestamp if state is different.
             state: sub.state,
-            state_last_updated_utc: new Date().toISOString(),
+            state_last_updated_utc: getMysqlFormattedDateTime(),
           })
           .where("subscription_id", "=", sub.subscription_id)
           .execute();
@@ -939,9 +950,21 @@ export const createRepository = (args: KyselyConfig): Repository => {
         }
       });
 
-      return sub;
+      // return the updated sub
+      const updated = await repo.getSubscription(sub.subscription_id);
+      if (!updated) {
+        console.error(
+          "we failed to get a subscription which we just updated... wtf?"
+        );
+        throw new Error(
+          "we failed to find the just updated subscription, please call us."
+        );
+      }
+      return updated;
     },
   };
+
+  return repo;
 };
 
 export const createSqliteDatabase = (

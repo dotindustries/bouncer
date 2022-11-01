@@ -109,7 +109,22 @@ export const tests: Test[] = [
   },
   {
     type: "api",
-    fn: async () => {},
+    fn: async (opts) => {
+      const client = newSubscriptions(opts.baseUrl);
+      const sub = await sample("subscription");
+      const { subscription_id: subscriptionId } = sub;
+      const patch = await sample("subscription_patch");
+
+      try {
+        return await client.updateSubscription(patch, {
+          params: {
+            subscriptionId,
+          },
+        });
+      } catch (e: any) {
+        throw stringErrorWithDetails(e);
+      }
+    },
     data: {
       name: "Test #3 - Patch an existing subscription",
     },

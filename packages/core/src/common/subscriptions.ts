@@ -33,8 +33,8 @@ export const subscription = z.object({
   created_utc: sqlDateString.nullish(),
   state_last_updated_utc: sqlDateString.nullish(),
   seating_config: seatingConfiguration.nullish(),
-  subscriber_info: z.any().nullable(),
-  source_subscription: z.any().nullable(),
+  subscriber_info: z.record(z.string()).nullish(),
+  source_subscription: z.record(z.string()).nullish(),
 });
 
 export type Subscription = z.infer<typeof subscription>;
@@ -137,7 +137,7 @@ export const subscriptionApi = makeApi([
     parameters: [
       {
         name: "subscription",
-        schema: subscription,
+        schema: subscription.partial(),
         type: "Body",
       },
       {
