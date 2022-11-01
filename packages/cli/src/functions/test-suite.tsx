@@ -17,6 +17,7 @@ export const startTimer = () => process.hrtime.bigint();
 export const TestSuiteContainer = ({}: FunctionComponentSharedProps) => {
   const { exit } = useApp();
   const { setRawMode, isRawModeSupported } = useStdin();
+  const [canceled, setCanceled] = React.useState(false);
   const [finished, setFinished] = React.useState(false);
 
   if (isRawModeSupported) {
@@ -28,9 +29,9 @@ export const TestSuiteContainer = ({}: FunctionComponentSharedProps) => {
           finishedHandler();
         }
 
-        // if (input === "c") {
-        //   setCanceled(true);
-        // }
+        if (input === "c") {
+          setCanceled(true);
+        }
 
         // if (key.leftArrow) {
         //   // Left arrow key pressed
@@ -52,7 +53,11 @@ export const TestSuiteContainer = ({}: FunctionComponentSharedProps) => {
       <Box marginBottom={2}>
         <Text bold>End to End test runner</Text>
       </Box>
-      <TestSuite testsuite={tests} onFinished={finishedHandler} />
+      <TestSuite
+        testsuite={tests}
+        onFinished={finishedHandler}
+        isCanceled={canceled}
+      />
       {finished && isRawModeSupported && (
         <Box marginTop={2}>
           <Text color={"green"}>
@@ -100,19 +105,21 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
 
   const runTestSuite = () => {
     testsuite.forEach((test) => {
+      const start = startTimer();
+      const measureExecTime = () => {
+        const execTime = timeSince(start);
+        test.data.finishedAt = new Date().toLocaleTimeString();
+        test.data.executionTime = `${execTime} ms`;
+      };
       const task = testQueue.current.push(
         async (token, progress, [opts]) => {
-          const start = startTimer();
           test.data.startedAt = new Date().toLocaleTimeString();
 
           progress(); // started
 
           const res = await test.fn(opts);
-
+          measureExecTime();
           test.data.result = JSON.stringify(res);
-          const execTime = timeSince(start);
-          test.data.finishedAt = new Date().toLocaleTimeString();
-          test.data.executionTime = `${execTime} ms`;
 
           if (token.cancelled) {
             throw new Error(token.reason ?? "canceled");
@@ -123,6 +130,7 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
       );
 
       task.then(undefined, (reason) => {
+        measureExecTime();
         test.data.error =
           typeof reason === "object" && reason.message
             ? reason.message
