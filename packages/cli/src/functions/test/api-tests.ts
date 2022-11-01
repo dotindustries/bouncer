@@ -1,6 +1,7 @@
 import { Zodios, ZodiosOptions } from "@zodios/core";
 import { configApi, subscriptionApi, seatsApi } from "@dotinc/bouncer-core";
 import { CancellablePromiseLike } from "../../utils/task-queue.js";
+import fs from "fs";
 
 const newSubscriptions = (baseUrl: string, opts?: ZodiosOptions) =>
   new Zodios(baseUrl, subscriptionApi, opts);
@@ -21,9 +22,7 @@ export type TestCase = {
 
 export type Test = {
   type: "api" | "event";
-  fn:
-    | ((opts: { baseUrl: string }) => void)
-    | ((opts: { baseUrl: string }) => Promise<void>);
+  fn: (opts: { baseUrl: string }) => Promise<any>;
   cancellationToken?: CancellablePromiseLike<any>;
   data: TestCase;
 };
@@ -41,8 +40,17 @@ const sample = async (
     | "subscription_patch"
     | "subscription"
 ) => {
-  return (await import(`./${res}.json`)).default;
+  // cwd = package dir
+  console.log("loading sample:", `src/functions/test/${res}.json`);
+  return JSON.parse(
+    fs.readFileSync(`src/functions/test/${res}.json`).toString()
+  );
 };
+
+const stringErrorWithDetails = (e: any) =>
+  new Error(
+    `${e.message}${e.response?.data ? ": " + e.response.data.message : ""}`
+  );
 
 export const tests: Test[] = [
   {
@@ -50,8 +58,11 @@ export const tests: Test[] = [
     fn: async (opts) => {
       const client = newConfig(opts.baseUrl ?? "");
       const pub = await sample("publisher");
-
-      return await client.publisherConfiguration(pub);
+      try {
+        return await client.publisherConfiguration(pub);
+      } catch (e: any) {
+        throw stringErrorWithDetails(e);
+      }
     },
     data: {
       name: "Test #1 - create a new publisher",
@@ -66,9 +77,13 @@ export const tests: Test[] = [
       const { subscription_id: subscriptionId } = sub;
       const { id: publisherId } = pub;
 
-      return await client.createSubscription(sub, {
-        params: { publisherId, subscriptionId },
-      });
+      try {
+        return await client.createSubscription(sub, {
+          params: { publisherId, subscriptionId },
+        });
+      } catch (e: any) {
+        throw stringErrorWithDetails(e);
+      }
     },
     data: {
       name: "Test #2 - create a new subscription",
@@ -84,17 +99,21 @@ export const tests: Test[] = [
   {
     type: "api",
     fn: async (opts) => {
-      const client = newSeats(opts.baseUrl);
-      client.reserveSeat(
-        {
-          identifier: {
-            tenant_id: "",
-            user_id: "",
-          },
-          invite_url: null,
-        },
-        { subscriptionId: "", seatId: "" }
-      );
+      //   const client = newSeats(opts.baseUrl);
+      //   try {
+      //     client.reserveSeat(
+      //       {
+      //         identifier: {
+      //           tenant_id: "",
+      //           user_id: "",
+      //         },
+      //         invite_url: null,
+      //       },
+      //       { subscriptionId: "", seatId: "" }
+      //     );
+      //   } catch (e: any) {
+      // throw plainStringError(e);
+      //   }
     },
     data: {
       name: "Test #4 - Reserve a seat in the subscription",

@@ -9,8 +9,8 @@
   "contact_sales_url": "https://dot.industries/contact",
   "contact_support_email": "dev@dot.industries",
   "contact_support_url": "https://dot.industries/support",
-  "mona_base_storage_url": "",
-  "mona_subscription_state": "",
+  "mona_base_storage_url": null,
+  "mona_subscription_state": null,
   "mona_subscription_is_being_configured": false,
   "is_setup_complete": true,
   "default_seating_config": {

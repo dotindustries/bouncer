@@ -1,9 +1,17 @@
 import {
   Kysely,
   KyselyConfig,
+  KyselyPlugin,
+  OperationNodeTransformer,
+  PluginTransformQueryArgs,
+  PluginTransformResultArgs,
+  PrimitiveValueListNode,
+  QueryResult,
+  RootOperationNode,
   sql,
   SqliteDialect,
   SqliteDialectConfig,
+  UnknownRow,
 } from "kysely";
 import type { Repository, SeatingSummary } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
@@ -198,6 +206,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
     },
     createPublisher: async (config) => {
       await db.transaction().execute(async (tx) => {
+        console.log("creating publisher", config.id);
         const up = await tx
           .insertInto("publishers")
           .values({
@@ -221,11 +230,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!up)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
 
-        // TODO: only update if we have a delta?
-        const prodConfig = await db
+        console.log(
+          `creating product configuration for publisher [${config.id}]`
+        );
+        const prodConfig = await tx
           .insertInto("product_config")
           .values({
             publisher_id: config.id,
@@ -248,11 +259,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!prodConfig)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
 
-        // TODO: only update if we have a delta?
-        const seatingConfig = await db
+        console.log(
+          `creating default seating configuration for publisher [${config.id}]`
+        );
+        const seatingConfig = await tx
           .insertInto("seating_config")
           .values({
             owner_id: config.id,
@@ -273,7 +286,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!seatingConfig)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
       });
 
@@ -934,6 +947,36 @@ export const createSqliteDatabase = (
 export const createSqliteRepository = (config: SqliteDialectConfig) => {
   return createRepository({
     dialect: new SqliteDialect(config),
+    plugins: [new SqliteBooleanPlugin()],
     log: ["query", "error"],
   });
 };
+
+class SqliteBooleanPlugin implements KyselyPlugin {
+  private readonly transformer = new SqliteBooleanTransformer();
+
+  transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
+    return this.transformer.transformNode(args.node);
+  }
+
+  transformResult(
+    args: PluginTransformResultArgs
+  ): Promise<QueryResult<UnknownRow>> {
+    return Promise.resolve(args.result);
+  }
+}
+
+class SqliteBooleanTransformer extends OperationNodeTransformer {
+  protected transformPrimitiveValueList(
+    node: PrimitiveValueListNode
+  ): PrimitiveValueListNode {
+    console.log("trasnforming values");
+    const vnode = super.transformPrimitiveValueList(node);
+    return {
+      ...vnode,
+      values: vnode.values.map((v) =>
+        typeof v === "boolean" ? (v ? 1 : 0) : v
+      ),
+    };
+  }
+}

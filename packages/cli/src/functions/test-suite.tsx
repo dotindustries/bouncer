@@ -1,11 +1,11 @@
 import React from "react";
 import { useApp, useInput, useStdin, Text, Box } from "ink";
-import { FunctionComponentSharedProps } from "./shared";
-import { SequentialTaskQueue, TaskEntry } from "../utils/task-queue";
+import { FunctionComponentSharedProps } from "./shared.js";
+import { SequentialTaskQueue, TaskEntry } from "../utils/task-queue.js";
 import { useEffect } from "react";
 import { TaskList, Task } from "ink-task-list";
 import spinners from "cli-spinners";
-import { tests } from "./test/api-tests";
+import { Test, tests } from "./test/api-tests.js";
 
 export const timeSince = (start: bigint) => {
   const end = process.hrtime.bigint();
@@ -99,40 +99,37 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
   };
 
   const runTestSuite = () => {
-    testsuite.forEach((test, idx) => {
+    testsuite.forEach((test) => {
       const task = testQueue.current.push(
-        (token, progress) => {
-          return new Promise((resolve) => {
-            const start = startTimer();
-            test.data.startedAt = new Date().toLocaleTimeString();
+        async (token, progress, [opts]) => {
+          const start = startTimer();
+          test.data.startedAt = new Date().toLocaleTimeString();
 
-            progress(); // started
+          progress(); // started
 
-            // dummy delay
-            setTimeout(() => {
-              test.data.result = "yay result";
+          const res = await test.fn(opts);
 
-              const execTime = timeSince(start);
-              test.data.finishedAt = new Date().toLocaleTimeString();
-              test.data.executionTime = `${execTime} ms`;
+          test.data.result = JSON.stringify(res);
+          const execTime = timeSince(start);
+          test.data.finishedAt = new Date().toLocaleTimeString();
+          test.data.executionTime = `${execTime} ms`;
 
-              // execute test
-              resolve(test.fn());
-            }, Math.random() * 500);
-          }).then(
-            (resp) =>
-              new Promise((resolve, reject) => {
-                if (token.cancelled) reject(token.reason ?? "canceled");
-                else resolve(resp);
-              })
-          );
+          if (token.cancelled) {
+            throw new Error(token.reason ?? "canceled");
+          }
+          return res;
         },
-        { args: [idx] }
+        { args: [{ baseUrl: "http://localhost:3000/api/v1" }] }
       );
-      test.cancellationToken = task;
+
       task.then(undefined, (reason) => {
-        test.data.error = reason;
+        test.data.error =
+          typeof reason === "object" && reason.message
+            ? reason.message
+            : reason;
       });
+      test.cancellationToken = task;
+      // visual update
       updateTasks();
     });
   };
@@ -194,7 +191,10 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
         {data
           .filter((t) => t.type === "event")
           .map((test, idx) => (
-            <TestTask test={test} key={idx} />
+            <Box key={idx} flexDirection="column">
+              <Text dimColor>{test.data.description}</Text>
+              <TestTask test={test} key={idx} />
+            </Box>
           ))}
       </Task>
     </TaskList>
@@ -202,6 +202,11 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
 };
 
 const TestTask = ({ test }: { test: Test }) => {
+  const output = test.data.error
+    ? typeof test.data.error === "object" && test.data.error.message
+      ? test.data.error.message
+      : test.data.error
+    : test.data.result;
   return (
     <Task
       label={test.data.name}
@@ -216,7 +221,7 @@ const TestTask = ({ test }: { test: Test }) => {
           : "loading"
       }
       spinner={spinners.dots}
-      output={test.data.result}
+      output={output}
     />
   );
 };
