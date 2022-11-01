@@ -6,6 +6,7 @@ import type { CancellablePromiseLike } from "../../utils/task-queue.js";
 import { AxiosError } from "axios";
 import jq from "node-jq";
 import { isDeepStrictEqual } from "util";
+import cuid from "cuid";
 
 export const formatErrors = (
   errors: ZodFormattedError<Map<string, string>, string>
@@ -102,7 +103,7 @@ export const tests: Test[] = [
         return await client.createSubscription(sub, {
           params: { publisherId, subscriptionId },
         });
-      } catch (e: any) {
+      } catch (e) {
         throw stringErrorWithDetails(e);
       }
     },
@@ -138,7 +139,7 @@ export const tests: Test[] = [
         } catch (e: any) {
           throw new Error("comparison failed: " + e.message);
         }
-      } catch (e: any) {
+      } catch (e) {
         throw stringErrorWithDetails(e);
       }
     },
@@ -150,20 +151,30 @@ export const tests: Test[] = [
     type: "api",
     fn: async (opts) => {
       const client = newSeats(opts.baseUrl);
-      // try {
-      //   client.reserveSeat(
-      //     {
-      //       identifier: {
-      //         tenant_id: "",
-      //         user_id: "",
-      //       },
-      //       invite_url: null,
-      //     },
-      //     { subscriptionId: "", seatId: "" }
-      //   );
-      // } catch (e: any) {
-      //   throw plainStringError(e);
-      // }
+      const seatId = cuid();
+      const sub = await sample("subscription");
+      const reserve = await sample("reserve_seat");
+      const { subscription_id: subscriptionId } = sub;
+
+      try {
+        const resp = await client.reserveSeat(reserve, {
+          params: { subscriptionId, seatId },
+        });
+
+        if (
+          resp.seat_id === seatId &&
+          resp.subscription_id === subscriptionId &&
+          resp.reservation &&
+          "email" in resp.reservation.identifier &&
+          resp.reservation?.identifier.email
+        ) {
+          return "Seat successfully reserved.";
+        } else {
+          throw new Error("Reserved seat details don't match the input.");
+        }
+      } catch (e) {
+        throw stringErrorWithDetails(e);
+      }
     },
     data: {
       name: "Test #4 - Reserve a seat in the subscription",

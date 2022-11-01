@@ -6,6 +6,7 @@ import {
   SeatingConfiguration,
   validateSeatRequest,
   validateSeatReservation,
+  getMysqlFormattedDateTime,
 } from "@dotinc/bouncer-core";
 import { add, endOfMonth } from "date-fns";
 
@@ -235,10 +236,10 @@ seatsRouter.post(
       // update object to be saved
       seat.reservation = null;
       seat.occupant = user;
-      seat.expires_utc = calculateRedeemedSeatExpirationDate(
-        subscription.seating_config
+      seat.expires_utc = getMysqlFormattedDateTime(
+        calculateRedeemedSeatExpirationDate(subscription.seating_config)
       );
-      seat.redeemed_utc = new Date();
+      seat.redeemed_utc = getMysqlFormattedDateTime(new Date());
       seat.seat_type = "standard";
 
       // What happens if between the time a seat is reserved and the time it's redeemed
@@ -368,8 +369,10 @@ seatsRouter.post(
     user.user_name ??= user.email;
 
     const seat: Seat = {
-      created_utc: new Date(),
-      expires_utc: calculateNewSeatExpirationDate(subscription.seating_config),
+      created_utc: getMysqlFormattedDateTime(new Date()),
+      expires_utc: getMysqlFormattedDateTime(
+        calculateNewSeatExpirationDate(subscription.seating_config)
+      ),
       occupant: user,
       seat_id: seatId,
       seating_strategy_name: subscription.seating_config.seating_strategy_name,
@@ -393,7 +396,9 @@ seatsRouter.post(
       return res.status(200).json(seat);
     } else if (subscription.seating_config.limited_overflow_seating_enabled) {
       // try it again without a total seats count to create a limited seat
-      seat.expires_utc = add(new Date(), { days: 1 }); // limited seats only last for one day
+      seat.expires_utc = getMysqlFormattedDateTime(
+        add(new Date(), { days: 1 })
+      ); // limited seats only last for one day
       seat.seat_type = "limited";
 
       const createLimitedSeat = await req.repo.createSeat(seat, subscription);
@@ -522,10 +527,13 @@ seatsRouter.post(
 
     const now = new Date();
     const seat: Seat = {
-      expires_utc: add(now, {
-        days: subscription.seating_config.seat_reservation_expiry_in_days ?? 1,
-      }),
-      created_utc: now,
+      expires_utc: getMysqlFormattedDateTime(
+        add(now, {
+          days:
+            subscription.seating_config.seat_reservation_expiry_in_days ?? 1,
+        })
+      ),
+      created_utc: getMysqlFormattedDateTime(now),
       subscription_id: subscriptionId,
       reservation: reservation,
       seat_id: seatId,

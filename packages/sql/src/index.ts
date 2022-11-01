@@ -18,18 +18,14 @@ import type {
   SeatingSummary,
   Subscription,
 } from "@dotinc/bouncer-core";
+import { getMysqlFormattedDateTime } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
 } from "better-sqlite3";
-import { format } from "date-fns";
 
 export * from "./schema";
 export { sqliteMigrateToLatest } from "./migration";
-
-export const getMysqlFormattedDateTime = (date: Date = new Date()) => {
-  return format(date, "yyyy-MM-dd HH:mm:ss");
-};
 
 // because json comes out as parsed object, but can only be inserted/updated as string
 const actuallyItisJsonAlready = (seeminglyString: string) =>
@@ -331,7 +327,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
           "seat_reservations.tenant_id as reservation_tenant_id",
           "seat_reservations.user_id as reservation_user_id",
         ]) // explicitly select the non-nullable seat_id to make typescript happy
-        .where("seat_id", "=", seatId)
+        .where("seats.seat_id", "=", seatId)
         .where("subscription_id", "=", subscriptionId)
         .executeTakeFirst();
       if (!row) return undefined;
@@ -358,11 +354,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 identifier: row.reservation_tenant_id
                   ? {
-                      user_id: row.reservation_user_id,
-                      tenant_id: row.reservation_tenant_id as string | null, // ts wants to be smart
+                      user_id: row.reservation_user_id as string,
+                      tenant_id: row.reservation_tenant_id as string, // ts wants to be smart
                     }
                   : {
-                      email: row.reservation_email,
+                      email: row.reservation_email as string,
                     },
                 invite_url: row.reservation_invite_url,
               }
@@ -441,11 +437,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 identifier: row.reservation_tenant_id
                   ? {
-                      user_id: row.reservation_user_id,
-                      tenant_id: row.reservation_tenant_id as string | null, // ts wants to be smart
+                      user_id: row.reservation_user_id as string,
+                      tenant_id: row.reservation_tenant_id as string, // ts wants to be smart
                     }
                   : {
-                      email: row.reservation_email,
+                      email: row.reservation_email as string,
                     },
                 invite_url: row.reservation_invite_url,
               }
@@ -465,18 +461,16 @@ export const createRepository = (args: KyselyConfig): Repository => {
             seat_type: update.seat_type,
             seating_strategy_name: update.seating_strategy_name,
           })
-          .onConflict((oc) =>
-            oc.column("seat_id").doUpdateSet({
-              expires_utc: update.expires_utc,
-              redeemed_utc: update.redeemed_utc,
-              seat_type: update.seat_type,
-              seating_strategy_name: update.seating_strategy_name,
-            })
-          )
+          .onDuplicateKeyUpdate({
+            expires_utc: update.expires_utc,
+            redeemed_utc: update.redeemed_utc,
+            seat_type: update.seat_type,
+            seating_strategy_name: update.seating_strategy_name,
+          })
           .executeTakeFirst();
 
         // TODO: this does not check for success
-        if (up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
+        if (!up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
 
         // if there's no reservation present in the update
         //   try to delete it
@@ -505,26 +499,24 @@ export const createRepository = (args: KyselyConfig): Repository => {
                   ? reservation.identifier.email
                   : null,
             })
-            .onConflict((oc) =>
-              oc.column("seat_id").doUpdateSet({
-                tenant_id:
-                  "tenant_id" in reservation.identifier
-                    ? reservation.identifier.tenant_id
-                    : null,
-                user_id:
-                  "tenant_id" in reservation.identifier
-                    ? reservation.identifier.user_id
-                    : null,
-                invite_url: reservation.invite_url,
-                email:
-                  "email" in reservation.identifier
-                    ? reservation.identifier.email
-                    : null,
-              })
-            )
+            .onDuplicateKeyUpdate({
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
             .executeTakeFirst();
           // TODO: this does not check for success
-          if (res)
+          if (!res)
             throw new Error(
               `Failed to save seat reservation: [${update.seat_id}]`
             );
@@ -549,17 +541,15 @@ export const createRepository = (args: KyselyConfig): Repository => {
               email: occupant.email,
               user_name: occupant.user_name,
             })
-            .onConflict((oc) =>
-              oc.column("seat_id").doUpdateSet({
-                user_id: occupant.user_id,
-                tenant_id: occupant.tenant_id,
-                email: occupant.email,
-                user_name: occupant.user_name,
-              })
-            )
+            .onDuplicateKeyUpdate({
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
             .executeTakeFirst();
 
-          if (occ)
+          if (!occ)
             throw new Error(
               `Failed to save seat occupant: [${update.seat_id}]`
             );
@@ -608,12 +598,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             standard_seat_count: actualSeatSummary.standardSeatCount,
             limited_seat_count: actualSeatSummary.limitedSeatCount,
           })
-          .onConflict((oc) =>
-            oc.column("subscription_id").doUpdateSet({
-              standard_seat_count: actualSeatSummary.standardSeatCount,
-              limited_seat_count: actualSeatSummary.limitedSeatCount,
-            })
-          )
+          .onDuplicateKeyUpdate({
+            standard_seat_count: actualSeatSummary.standardSeatCount,
+            limited_seat_count: actualSeatSummary.limitedSeatCount,
+          })
           .executeTakeFirst();
         // TODO: this doesn't check success
         if (!ss) {
@@ -636,7 +624,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
           .executeTakeFirst();
 
         // TODO: this does not check for success
-        if (up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
+        if (!up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
 
         if (seat.reservation) {
           const reservation = seat.reservation;
@@ -660,7 +648,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
             })
             .executeTakeFirst();
           // TODO: this does not check for success
-          if (res)
+          if (!res)
             throw new Error(
               `Failed to save seat reservation: [${seat.seat_id}]`
             );
@@ -680,16 +668,28 @@ export const createRepository = (args: KyselyConfig): Repository => {
             })
             .executeTakeFirst();
 
-          if (occ)
+          if (!occ)
             throw new Error(`Failed to save seat occupant: [${seat.seat_id}]`);
         }
       });
 
-      // yay, if we got so far
+      const createdSeat = await repo.getSeat(
+        seat.seat_id,
+        seat.subscription_id!
+      );
+      if (!createdSeat) {
+        console.error(
+          "we failed to get a subscription which we just updated... wtf?"
+        );
+        throw new Error(
+          "we failed to find the just updated subscription, please call us."
+        );
+      }
+
       return {
         isSeatCreated: true,
         seatingSummary: actualSeatSummary,
-        createdSeat: seat,
+        createdSeat,
       };
     },
     deleteSeat: async (seatId, subscriptionId) => {

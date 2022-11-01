@@ -21,14 +21,14 @@ export const reservation = z.object({
   // Reservation ([user_id] and [tenant_id]) or [email] is required.
   identifier: z.union([
     z.object({
-      user_id: z.string().nullable(),
-      tenant_id: z.string().nullable(),
+      user_id: z.string(),
+      tenant_id: z.string(),
     }),
     z.object({
-      email: z.string().nullable(),
+      email: z.string(),
     }),
   ]),
-  invite_url: z.string().nullable(),
+  invite_url: z.string().nullish(),
 });
 
 export type Reservation = z.infer<typeof reservation>;

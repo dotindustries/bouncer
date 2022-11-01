@@ -1,5 +1,4 @@
-import { getMysqlFormattedDateTime } from "./../../sql/src/index";
-import type { Repository } from "@dotinc/bouncer-core";
+import { Repository, getMysqlFormattedDateTime } from "@dotinc/bouncer-core";
 import {
   PlanetScaleDialect,
   PlanetScaleDialectConfig,
