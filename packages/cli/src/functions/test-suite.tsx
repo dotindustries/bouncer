@@ -105,14 +105,16 @@ const TestSuite = ({ onFinished, isCanceled, testsuite }: TestSuiteProps) => {
 
   const runTestSuite = () => {
     testsuite.forEach((test) => {
-      const start = startTimer();
       const measureExecTime = () => {
-        const execTime = timeSince(start);
-        test.data.finishedAt = new Date().toLocaleTimeString();
-        test.data.executionTime = `${execTime} ms`;
+        if (test.data.started) {
+          const execTime = timeSince(test.data.started);
+          test.data.finishedAt = new Date().toLocaleTimeString();
+          test.data.executionTime = `${execTime} ms`;
+        }
       };
       const task = testQueue.current.push(
         async (token, progress, [opts]) => {
+          test.data.started = startTimer();
           test.data.startedAt = new Date().toLocaleTimeString();
 
           progress(); // started

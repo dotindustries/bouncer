@@ -4,6 +4,8 @@ import { ZodError, ZodFormattedError } from "zod";
 import { configApi, subscriptionApi, seatsApi } from "@dotinc/bouncer-core";
 import type { CancellablePromiseLike } from "../../utils/task-queue.js";
 import { AxiosError } from "axios";
+import jq from "node-jq";
+import { isDeepStrictEqual } from "util";
 
 export const formatErrors = (
   errors: ZodFormattedError<Map<string, string>, string>
@@ -26,6 +28,7 @@ const newSeats = (baseUrl: string, opts?: ZodiosOptions) =>
 export type TestCase = {
   name: string;
   description?: string;
+  started?: bigint;
   startedAt?: string;
   finishedAt?: string;
   result?: string;
@@ -116,11 +119,25 @@ export const tests: Test[] = [
       const patch = await sample("subscription_patch");
 
       try {
-        return await client.updateSubscription(patch, {
+        const updated = await client.updateSubscription(patch, {
           params: {
             subscriptionId,
           },
         });
+
+        try {
+          const matchMask =
+            "{subscription_id, subscription_name, plan_id, state, admin_role_name, user_role_name, admin_name, admin_email, total_seats, subscriber_country: .subscriber_info.country, source_subscription_id: .source_subscription.id, seating_strategy_name: .seating_config.seating_strategy_name, limited_overflow_seating: .seating_config.limited_overflow_seating_enabled, reservation_expiry: .seating_config.seat_reservation_expiry_in_days, seat_expiry: .seating_config.default_seat_expiry_in_days}";
+          const patchjq = await jq.run(matchMask, patch, { input: "json" });
+          const updatedjq = await jq.run(matchMask, updated, { input: "json" });
+
+          if (isDeepStrictEqual(patchjq, updatedjq))
+            return "Expected patch applied.";
+          else
+            throw new Error("returned update result did not match the input.");
+        } catch (e: any) {
+          throw new Error("comparison failed: " + e.message);
+        }
       } catch (e: any) {
         throw stringErrorWithDetails(e);
       }
@@ -132,21 +149,21 @@ export const tests: Test[] = [
   {
     type: "api",
     fn: async (opts) => {
-      //   const client = newSeats(opts.baseUrl);
-      //   try {
-      //     client.reserveSeat(
-      //       {
-      //         identifier: {
-      //           tenant_id: "",
-      //           user_id: "",
-      //         },
-      //         invite_url: null,
+      const client = newSeats(opts.baseUrl);
+      // try {
+      //   client.reserveSeat(
+      //     {
+      //       identifier: {
+      //         tenant_id: "",
+      //         user_id: "",
       //       },
-      //       { subscriptionId: "", seatId: "" }
-      //     );
-      //   } catch (e: any) {
-      // throw plainStringError(e);
-      //   }
+      //       invite_url: null,
+      //     },
+      //     { subscriptionId: "", seatId: "" }
+      //   );
+      // } catch (e: any) {
+      //   throw plainStringError(e);
+      // }
     },
     data: {
       name: "Test #4 - Reserve a seat in the subscription",

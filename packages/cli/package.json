@@ -54,6 +54,7 @@
     "ink-spinner": "^4.0.3",
     "ink-table": "^3.0.0",
     "ink-task-list": "^2.0.0",
+    "node-jq": "^2.3.4",
     "pino": "^8.4.2",
     "react": "^17.0.2",
     "update-notifier": "^5.1.0",
