@@ -1,7 +1,20 @@
-import { Zodios, ZodiosOptions } from "@zodios/core";
-import { configApi, subscriptionApi, seatsApi } from "@dotinc/bouncer-core";
-import { CancellablePromiseLike } from "../../utils/task-queue.js";
 import fs from "fs";
+import { Zodios, ZodiosOptions } from "@zodios/core";
+import { ZodError, ZodFormattedError } from "zod";
+import { configApi, subscriptionApi, seatsApi } from "@dotinc/bouncer-core";
+import type { CancellablePromiseLike } from "../../utils/task-queue.js";
+import { AxiosError } from "axios";
+
+export const formatErrors = (
+  errors: ZodFormattedError<Map<string, string>, string>
+) =>
+  Object.entries(errors)
+    .map(([name, value]) => {
+      if (value && "_errors" in value)
+        return `${name}: ${value._errors.join(", ")}\n`;
+      return undefined;
+    })
+    .filter(Boolean);
 
 const newSubscriptions = (baseUrl: string, opts?: ZodiosOptions) =>
   new Zodios(baseUrl, subscriptionApi, opts);
@@ -41,16 +54,22 @@ const sample = async (
     | "subscription"
 ) => {
   // cwd = package dir
-  console.log("loading sample:", `src/functions/test/${res}.json`);
   return JSON.parse(
     fs.readFileSync(`src/functions/test/${res}.json`).toString()
   );
 };
 
-const stringErrorWithDetails = (e: any) =>
-  new Error(
-    `${e.message}${e.response?.data ? ": " + e.response.data.message : ""}`
-  );
+const stringErrorWithDetails = (e: any) => {
+  let details = "";
+  if (e instanceof AxiosError) {
+    details = ": " + e.response?.data.message;
+  }
+  if (e.cause instanceof ZodError) {
+    console.log("zod error", e.cause.issues);
+    details = ": " + formatErrors(e.cause.format()).join(" AND ");
+  }
+  return new Error(`${e.message}${details}`);
+};
 
 export const tests: Test[] = [
   {
@@ -76,7 +95,6 @@ export const tests: Test[] = [
       const pub = await sample("publisher");
       const { subscription_id: subscriptionId } = sub;
       const { id: publisherId } = pub;
-
       try {
         return await client.createSubscription(sub, {
           params: { publisherId, subscriptionId },
