@@ -98,6 +98,7 @@ importers:
   packages/cli:
     specifiers:
       '@ava/typescript': ^3.0.1
+      '@dotinc/bouncer-client': '*'
       '@dotinc/bouncer-core': '*'
       '@sindresorhus/tsconfig': ^3.0.1
       '@types/ink-divider': ^2.0.2
@@ -132,6 +133,7 @@ importers:
       xo: ^0.39.1
       zod: ^3.19.1
     dependencies:
+      '@dotinc/bouncer-client': link:../client
       '@dotinc/bouncer-core': link:../core
       '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
       axios: 1.1.3

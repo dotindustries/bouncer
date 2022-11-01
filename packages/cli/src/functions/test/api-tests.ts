@@ -1,7 +1,8 @@
+import { createClient } from "@dotinc/bouncer-client";
 import fs from "fs";
 import { Zodios, ZodiosOptions } from "@zodios/core";
 import { ZodError, ZodFormattedError } from "zod";
-import { configApi, subscriptionApi, seatsApi } from "@dotinc/bouncer-core";
+import { configApi, subscriptionApi } from "@dotinc/bouncer-core";
 import type { CancellablePromiseLike } from "../../utils/task-queue.js";
 import { AxiosError } from "axios";
 import jq from "node-jq";
@@ -23,8 +24,8 @@ const newSubscriptions = (baseUrl: string, opts?: ZodiosOptions) =>
   new Zodios(baseUrl, subscriptionApi, opts);
 const newConfig = (baseUrl: string, opts?: ZodiosOptions) =>
   new Zodios(baseUrl, configApi, opts);
-const newSeats = (baseUrl: string, opts?: ZodiosOptions) =>
-  new Zodios(baseUrl, seatsApi, opts);
+
+const seatId = cuid();
 
 export type TestCase = {
   name: string;
@@ -149,17 +150,20 @@ export const tests: Test[] = [
   },
   {
     type: "api",
+    data: {
+      name: "Test #4 - Reserve a seat in the subscription",
+    },
     fn: async (opts) => {
-      const client = newSeats(opts.baseUrl);
-      const seatId = cuid();
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
       const sub = await sample("subscription");
       const reserve = await sample("reserve_seat");
       const { subscription_id: subscriptionId } = sub;
 
       try {
-        const resp = await client.reserveSeat(reserve, {
-          params: { subscriptionId, seatId },
-        });
+        const resp = await client.seats.reserve(
+          { subscriptionId, seatId },
+          reserve
+        );
 
         if (
           resp.seat_id === seatId &&
@@ -176,15 +180,40 @@ export const tests: Test[] = [
         throw stringErrorWithDetails(e);
       }
     },
-    data: {
-      name: "Test #4 - Reserve a seat in the subscription",
-    },
   },
   {
     type: "api",
-    fn: async () => {},
     data: {
       name: "Test #5 - Redeem a reserved seat",
+    },
+    fn: async (opts) => {
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
+      const sub = await sample("subscription");
+      const redeem = await sample("redeem_seat");
+      const { subscription_id: subscriptionId, tenant_id: tenantId } = sub;
+
+      try {
+        client.identify(redeem);
+        const resp = await client.seats.redeem({
+          subscriptionId,
+          seatId,
+        });
+
+        if (
+          resp.seat_type == "standard" &&
+          resp.seat_id == seatId &&
+          subscriptionId == resp.subscription_id &&
+          resp.occupant &&
+          resp.occupant.tenant_id === tenantId &&
+          resp.occupant.user_id === redeem.user_id
+        ) {
+          return "Seat successfully redeemed.";
+        } else {
+          throw new Error(`Failed to redeem seat [${seatId}]`);
+        }
+      } catch (e) {
+        throw stringErrorWithDetails(e);
+      }
     },
   },
   {
