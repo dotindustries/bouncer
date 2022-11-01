@@ -3,7 +3,7 @@ import { z } from "zod";
 import { error, error404 } from "./shared";
 
 export const seatingConfiguration = z.object({
-  defaultLowSeatWarningLevelPercent: z.number(),
+  defaultLowSeatWarningLevelPercent: z.number().default(0.1),
   seating_strategy_name: z
     .enum(["monthly_active_user", "first_come_first_served"])
     .nullable(),
