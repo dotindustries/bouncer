@@ -18,9 +18,14 @@ import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
 } from "better-sqlite3";
+import { format } from "date-fns";
 
 export * from "./schema";
 export { sqliteMigrateToLatest } from "./migration";
+
+const getMysqlFormattedDateTime = (date: Date = new Date()) => {
+  return format(date, "yyyy-MM-dd HH-mm-ss");
+};
 
 export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
@@ -791,7 +796,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .executeTakeFirstOrThrow();
 
       await db.transaction().execute(async (tx) => {
-        const now = new Date().toISOString();
+        const now = new Date();
         const up = await tx
           .insertInto("subscriptions")
           .values({
@@ -815,8 +820,9 @@ export const createRepository = (args: KyselyConfig): Repository => {
             is_being_configured: sub.is_being_configured,
             is_free_trial: sub.is_free_trial,
             is_test_subscription: sub.is_test_subscription,
-            created_utc: now,
-            state_last_updated_utc: now,
+            created_utc: sub.created_utc ?? getMysqlFormattedDateTime(now),
+            state_last_updated_utc:
+              sub.state_last_updated_utc ?? getMysqlFormattedDateTime(now),
           })
           .execute();
 

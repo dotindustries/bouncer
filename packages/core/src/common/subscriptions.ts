@@ -1,7 +1,7 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 import { seatingConfiguration } from "./config";
-import { error, error404 } from "./shared";
+import { error, error404, sqlDateString } from "./shared";
 
 export const subscriptionStates = z.enum([
   "purchased",
@@ -22,7 +22,7 @@ export const subscription = z.object({
   state: subscriptionStates,
   admin_role_name: z.string().nullable(),
   user_role_name: z.string().nullable(),
-  management_urls: z.record(z.string()).nullable(),
+  management_urls: z.record(z.string()).nullish(),
   admin_name: z.string().nullable(),
   admin_email: z.string().nullable(),
   total_seats: z.number().nullable(),
@@ -30,9 +30,9 @@ export const subscription = z.object({
   is_free_trial: z.boolean(),
   is_setup_complete: z.boolean().nullable(),
   is_test_subscription: z.boolean(),
-  created_utc: z.string().nullable(),
-  state_last_updated_utc: z.string().nullable(),
-  seating_config: seatingConfiguration.nullable(),
+  created_utc: sqlDateString.nullish(),
+  state_last_updated_utc: sqlDateString.nullish(),
+  seating_config: seatingConfiguration.nullish(),
   subscriber_info: z.any().nullable(),
   source_subscription: z.any().nullable(),
 });

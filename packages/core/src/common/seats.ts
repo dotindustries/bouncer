@@ -1,6 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404 } from "./shared";
+import { error, error404, sqlDateString } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
@@ -68,9 +68,9 @@ export const seat = z.object({
   seating_strategy_name: z.string().nullable(),
   seat_type: z.enum(["standard", "limited"]),
   reservation: reservation.nullable(),
-  expires_utc: z.date().nullable(),
-  created_utc: z.date().nullable(),
-  redeemed_utc: z.date().nullable(),
+  expires_utc: sqlDateString.nullable(),
+  created_utc: sqlDateString.nullable(),
+  redeemed_utc: sqlDateString.nullable(),
 });
 
 export type Seat = z.infer<typeof seat>;
