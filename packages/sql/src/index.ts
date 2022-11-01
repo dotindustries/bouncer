@@ -562,8 +562,12 @@ export const createRepository = (args: KyselyConfig): Repository => {
       const actualSeatSummaryRows = await db
         .selectFrom("seats")
         .select([sql`COUNT(1)`.as("seat_count"), "seat_type"])
-        .where("expires_utc", "is", null)
-        .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
+        .where("subscription_id", "=", subscription.subscription_id)
+        .where((w) =>
+          w
+            .where("expires_utc", "is", null)
+            .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
+        )
         .groupBy("seat_type")
         .execute();
 
