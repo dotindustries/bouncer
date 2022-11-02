@@ -1,8 +1,15 @@
 import { Zodios, ZodiosOptions } from "@zodios/core";
 
-import { seatsApi, Reservation, User, user } from "@dotinc/bouncer-core";
+import {
+  seatsApi,
+  Reservation,
+  User,
+  user,
+  subscriptionApi,
+  Subscription,
+} from "@dotinc/bouncer-core";
 
-import type { InferParams, InferQueryParam } from "./types";
+import type { InferParams, InferQueries, InferQueryParams } from "./types";
 
 export interface BouncerClientOptions extends ZodiosOptions {
   apiKey: string;
@@ -40,7 +47,7 @@ export const createClient = (options: BouncerClientOptions) => {
 
   const seats = {
     userSeat: async (
-      params: Omit<InferQueryParam<typeof userSeat>, "userId" | "tenantId">
+      params: Omit<InferQueryParams<typeof userSeat>, "userId" | "tenantId">
     ) => {
       const attr = user.parse(_attr);
       return userSeat({
@@ -78,10 +85,37 @@ export const createClient = (options: BouncerClientOptions) => {
     },
   };
 
+  const subApi = new Zodios(baseUrl, subscriptionApi, zodiosOptions);
+
+  const {
+    subscriptions: allSubscriptions,
+    createSubscription,
+    updateSubscription,
+  } = subApi;
+
+  const subscriptions = {
+    subscriptions: async (queries: InferQueries<typeof allSubscriptions>) => {
+      return allSubscriptions({ queries });
+    },
+    createSubscription: async (
+      params: InferParams<typeof createSubscription>,
+      subscription: Subscription
+    ) => {
+      return createSubscription(subscription, { params });
+    },
+    updateSubscription: async (
+      params: InferParams<typeof updateSubscription>,
+      subscription: Subscription
+    ) => {
+      return updateSubscription(subscription, { params });
+    },
+  };
+
   return {
     identify: (attr: User) => {
       _attr = user.parse(attr);
     },
     seats,
+    subscriptions,
   };
 };

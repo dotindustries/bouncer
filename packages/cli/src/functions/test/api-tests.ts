@@ -82,6 +82,9 @@ const stringErrorWithDetails = (e: any) => {
 export const tests: Test[] = [
   {
     type: "api",
+    data: {
+      name: "Test #1 - create a new publisher",
+    },
     fn: async (opts) => {
       const client = newConfig(opts.baseUrl ?? "");
       const pub = await sample("publisher");
@@ -93,46 +96,52 @@ export const tests: Test[] = [
         throw stringErrorWithDetails(e);
       }
     },
-    data: {
-      name: "Test #1 - create a new publisher",
-    },
   },
   {
     type: "api",
+    data: {
+      name: "Test #2 - create a new subscription",
+    },
     fn: async (opts) => {
-      const client = newSubscriptions(opts.baseUrl);
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
       const sub = await sample("subscription");
       const pub = await sample("publisher");
       const { subscription_id: subscriptionId } = sub;
       const { id: publisherId } = pub;
       try {
-        await client.createSubscription(sub, {
-          params: { publisherId, subscriptionId },
-        });
+        await client.subscriptions.createSubscription(
+          {
+            params: { publisherId, subscriptionId },
+          },
+          sub
+        );
 
         return `Sucessfully cerated new subscription [${subscriptionId}]`;
       } catch (e) {
         throw stringErrorWithDetails(e);
       }
     },
-    data: {
-      name: "Test #2 - create a new subscription",
-    },
   },
   {
     type: "api",
+    data: {
+      name: "Test #3 - Patch an existing subscription",
+    },
     fn: async (opts) => {
-      const client = newSubscriptions(opts.baseUrl);
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
       const sub = await sample("subscription");
       const { subscription_id: subscriptionId } = sub;
       const patch = await sample("subscription_patch");
 
       try {
-        const updated = await client.updateSubscription(patch, {
-          params: {
-            subscriptionId,
+        const updated = await client.subscriptions.updateSubscription(
+          {
+            params: {
+              subscriptionId,
+            },
           },
-        });
+          patch
+        );
 
         try {
           const matchMask =
@@ -150,9 +159,6 @@ export const tests: Test[] = [
       } catch (e) {
         throw stringErrorWithDetails(e);
       }
-    },
-    data: {
-      name: "Test #3 - Patch an existing subscription",
     },
   },
   {
