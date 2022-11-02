@@ -86,7 +86,9 @@ export const tests: Test[] = [
       const client = newConfig(opts.baseUrl ?? "");
       const pub = await sample("publisher");
       try {
-        return await client.publisherConfiguration(pub);
+        await client.publisherConfiguration(pub);
+
+        return `Successfully created new publisher [${pub.id}]`;
       } catch (e: any) {
         throw stringErrorWithDetails(e);
       }
@@ -104,9 +106,11 @@ export const tests: Test[] = [
       const { subscription_id: subscriptionId } = sub;
       const { id: publisherId } = pub;
       try {
-        return await client.createSubscription(sub, {
+        await client.createSubscription(sub, {
           params: { publisherId, subscriptionId },
         });
+
+        return `Sucessfully cerated new subscription [${subscriptionId}]`;
       } catch (e) {
         throw stringErrorWithDetails(e);
       }
@@ -137,7 +141,7 @@ export const tests: Test[] = [
           const updatedjq = await jq.run(matchMask, updated, { input: "json" });
 
           if (isDeepStrictEqual(patchjq, updatedjq))
-            return "Expected patch applied.";
+            return "Subscription patched successfully.";
           else
             throw new Error("returned update result did not match the input.");
         } catch (e: any) {
