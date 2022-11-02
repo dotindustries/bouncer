@@ -47,16 +47,18 @@ export type Test = {
 
 const sample = async (
   res:
-    | "publisher"
-    | "redeem_seat"
-    | "request_limited_seat"
-    | "request_seat_2"
-    | "request_seat_3"
-    | "request_seat_4"
-    | "request_seat_5"
-    | "reserve_seat"
-    | "subscription_patch"
-    | "subscription"
+    | (
+        | "publisher"
+        | "redeem_seat"
+        | "request_limited_seat"
+        | "request_seat_2"
+        | "request_seat_3"
+        | "request_seat_4"
+        | "request_seat_5"
+        | "reserve_seat"
+        | "subscription_patch"
+        | "subscription"
+      )
     | string
 ) => {
   // cwd = package dir
@@ -267,13 +269,43 @@ export const tests: Test[] = [
   },
   {
     type: "api",
-    fn: async () => {},
     data: {
       name: "Test #7 - Request a limited seat",
       description: `
-  At this point, we've exhausted our supply of this subscription's total_seats.
-  This subscription is configured to provide limited seats after the supply of standard seats
-  has been exhausted (subscription.seating_config.limited_overflow_seating_enabled == true).`,
+      At this point, we've exhausted our supply of this subscription's total_seats.
+      This subscription is configured to provide limited seats after the supply of standard seats
+      has been exhausted (subscription.seating_config.limited_overflow_seating_enabled == true).`,
+    },
+    fn: async (opts) => {
+      const uid = cuid();
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
+      const sub = await sample("subscription");
+      const { subscription_id: subscriptionId, tenant_id } = sub;
+      const req = await sample("request_limited_seat");
+      client.identify(req);
+      try {
+        const resp = await client.seats.request({
+          subscriptionId,
+          seatId: uid,
+        });
+
+        if (
+          resp.seat_type === "limited" &&
+          uid === resp.seat_id &&
+          subscriptionId === resp.subscription_id &&
+          resp.occupant &&
+          resp.occupant.tenant_id === tenant_id &&
+          resp.occupant.user_id === req.user_id
+        ) {
+          return `Limited seat [${uid}] was successfully provided for user [${req.user_id}]`;
+        } else {
+          throw new Error(
+            `Unable to request limited seat [${uid}, ${req.user_id}]`
+          );
+        }
+      } catch (e) {
+        throw stringErrorWithDetails(e);
+      }
     },
   },
   {
