@@ -575,13 +575,27 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .groupBy("seat_type")
         .execute();
 
+      const unknownToInt = (seatCount: unknown) => {
+        if (!seatCount) return 0;
+        if (typeof seatCount === "number") return seatCount;
+        if (typeof seatCount === "string") return parseInt(seatCount);
+        console.error(
+          "got unknown type for seat count from aggregate query",
+          seatCount,
+          typeof seatCount
+        );
+        return 0; // unknown type
+      };
+
       const actualSeatSummary: SeatingSummary = {
-        standardSeatCount:
-          (actualSeatSummaryRows.find((r) => r.seat_type === "standard")
-            ?.seat_count as number) ?? 0,
-        limitedSeatCount:
-          (actualSeatSummaryRows.find((r) => r.seat_type === "limited")
-            ?.seat_count as number) ?? 0,
+        standardSeatCount: unknownToInt(
+          actualSeatSummaryRows.find((r) => r.seat_type === "standard")
+            ?.seat_count
+        ),
+        limitedSeatCount: unknownToInt(
+          actualSeatSummaryRows.find((r) => r.seat_type === "limited")
+            ?.seat_count
+        ),
       };
 
       console.log("seat_summary", JSON.stringify({ actualSeatSummary }));
