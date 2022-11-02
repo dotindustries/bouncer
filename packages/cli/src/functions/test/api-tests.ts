@@ -111,7 +111,8 @@ export const tests: Test[] = [
       try {
         await client.subscriptions.createSubscription(
           {
-            params: { publisherId, subscriptionId },
+            publisherId,
+            subscriptionId,
           },
           sub
         );
@@ -136,9 +137,7 @@ export const tests: Test[] = [
       try {
         const updated = await client.subscriptions.updateSubscription(
           {
-            params: {
-              subscriptionId,
-            },
+            subscriptionId,
           },
           patch
         );
