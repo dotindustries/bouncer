@@ -132,6 +132,7 @@ importers:
       update-notifier: ^5.1.0
       xo: ^0.39.1
       zod: ^3.19.1
+      zod-error: ^1.0.5
     dependencies:
       '@dotinc/bouncer-client': link:../client
       '@dotinc/bouncer-core': link:../core
@@ -150,6 +151,7 @@ importers:
       react: 17.0.2
       update-notifier: 5.1.0
       zod: 3.19.1
+      zod-error: 1.0.5
     devDependencies:
       '@ava/typescript': 3.0.1
       '@sindresorhus/tsconfig': 3.0.1
@@ -12931,6 +12933,12 @@ packages:
 
   /zenscroll/4.0.2:
     resolution: {integrity: sha512-jEA1znR7b4C/NnaycInCU6h/d15ZzCd1jmsruqOKnZP6WXQSMH3W2GL+OXbkruslU4h+Tzuos0HdswzRUk/Vgg==}
+    dev: false
+
+  /zod-error/1.0.5:
+    resolution: {integrity: sha512-dfLN+ds6YFUG3IOIrDbXewczB/fSh15GThi3SJmwL+/TAlMTPV/ebf4ttJt3MKdr1qzCYxnakWxmyOF3kI7DTA==}
+    dependencies:
+      zod: 3.19.1
     dev: false
 
   /zod-to-json-schema/3.18.1_zod@3.19.1:

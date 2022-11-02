@@ -2,7 +2,8 @@ import { createClient } from "@dotinc/bouncer-client";
 import fs from "fs";
 import { Zodios, ZodiosOptions } from "@zodios/core";
 import { ZodError, ZodFormattedError } from "zod";
-import { configApi, subscriptionApi } from "@dotinc/bouncer-core";
+import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
+import { configApi } from "@dotinc/bouncer-core";
 import type { CancellablePromiseLike } from "../../utils/task-queue.js";
 import { AxiosError } from "axios";
 import jq from "node-jq";
@@ -20,8 +21,6 @@ export const formatErrors = (
     })
     .filter(Boolean);
 
-const newSubscriptions = (baseUrl: string, opts?: ZodiosOptions) =>
-  new Zodios(baseUrl, subscriptionApi, opts);
 const newConfig = (baseUrl: string, opts?: ZodiosOptions) =>
   new Zodios(baseUrl, configApi, opts);
 
@@ -68,13 +67,28 @@ const sample = async (
 };
 
 const stringErrorWithDetails = (e: any) => {
+  const options: ErrorMessageOptions = {
+    delimiter: {
+      error: "\n",
+    },
+    transform: ({ errorMessage, index }) =>
+      `🔥 Error #${index + 1}: ${errorMessage}`,
+  };
   let details = "";
   if (e instanceof AxiosError) {
-    details = ": " + e.response?.data.message;
+    if (
+      e.response &&
+      e.response.data.error &&
+      Array.isArray(e.response.data.error)
+    ) {
+      // server side zod error
+      details = ":\n" + generateErrorMessage(e.response.data.error, options);
+    } else {
+      details = ":\n" + e.response?.data.message;
+    }
   }
   if (e.cause instanceof ZodError) {
-    console.log("zod error", e.cause.issues);
-    details = ": " + formatErrors(e.cause.format()).join(" AND ");
+    details = ": " + generateErrorMessage(e.cause.issues, options);
   }
   return new Error(`${e.message}${details}`);
 };
