@@ -10,4 +10,4 @@ const user = z.object({
 
 const repo = z.custom<Repository>();
 
-export const ctx = zodiosContext(z.object({ user, repo }));
+export const ctx = zodiosContext(z.object({ user, repo, apiKey: z.string() }));
