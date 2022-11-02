@@ -1002,6 +1002,21 @@ export const createRepository = (args: KyselyConfig): Repository => {
       }
       return updated;
     },
+    createApiKey: async (key) => {
+      return await db
+        .insertInto("api_keys")
+        .values(key)
+        .returningAll()
+        .executeTakeFirstOrThrow();
+    },
+    deleteApiKey: async (key) => {
+      await db
+        .deleteFrom("api_keys")
+        .where("owner_id", "=", key.owner_id)
+        .where("type", "=", key.type)
+        .where("key", "=", key.key)
+        .execute();
+    },
   };
 
   return repo;

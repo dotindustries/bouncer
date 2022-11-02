@@ -4,6 +4,7 @@ import type {
   PublisherConfiguration,
   ProductConfiguration,
   SeatingConfiguration,
+  ApiKey,
 } from "@dotinc/bouncer-core";
 
 export type Intersect<T> = T extends { [K in keyof T]: infer E } ? E : T;
@@ -57,6 +58,8 @@ export type SeatSummaryTable = {
   limited_seat_count: number;
 };
 
+export type ApiKeysTable = ApiKey;
+
 export interface Database {
   publishers: PublisherConfigTable;
   seating_config: SeatingConfigTable;
@@ -66,4 +69,5 @@ export interface Database {
   seat_occupants: SeatOccupantTable;
   subscriptions: SubscriptionTable;
   seat_summary: SeatSummaryTable;
+  api_keys: ApiKeysTable;
 }
