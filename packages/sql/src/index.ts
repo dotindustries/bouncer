@@ -878,7 +878,12 @@ export const createRepository = (args: KyselyConfig): Repository => {
             `Failed to save subscription: [${publisherId}, ${sub.subscription_id}]`
           );
 
-        const seatConfig = sub.seating_config ?? defaultSeatConfig;
+        const seatConfig = !sub.seating_config
+          ? defaultSeatConfig
+          : {
+              ...defaultSeatConfig,
+              ...sub.seating_config,
+            };
 
         const scUp = await tx
           .insertInto("seating_config")
