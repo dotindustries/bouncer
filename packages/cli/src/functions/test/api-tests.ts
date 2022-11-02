@@ -339,7 +339,7 @@ export const tests: Test[] = [
           tenantId === resp.occupant.tenant_id &&
           seatId === resp.seat_id
         ) {
-          return `User [${userId}] is currently occupying seat [${seatId}].`;
+          return `User [${userId}] is currently occupying seat [${seatId}]`;
         } else {
           throw new Error(`Unable to get seat for user [${userId}, ${resp}]`);
         }
@@ -350,12 +350,26 @@ export const tests: Test[] = [
   },
   {
     type: "api",
-    fn: async () => {},
     data: {
       name: "Test #9 - Release a user's seat",
       description: `
-  Seats automatically expire on a scheduled based on the chosen seating strategy.
-  If needed, however, tenant administrators can remove users from seats and cancel reservations.`,
+      Seats automatically expire on a scheduled based on the chosen seating strategy.
+      If needed, however, tenant administrators can remove users from seats and cancel reservations.`,
+    },
+    fn: async (opts) => {
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
+      const sub = await sample("subscription");
+      const { subscription_id: subscriptionId } = sub;
+
+      try {
+        await client.seats.release({
+          subscriptionId,
+          seatId,
+        });
+        return `Seat [${seatId}] released successfully`;
+      } catch (e) {
+        throw stringErrorWithDetails(e);
+      }
     },
   },
 ];

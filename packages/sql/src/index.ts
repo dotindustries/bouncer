@@ -723,11 +723,18 @@ export const createRepository = (args: KyselyConfig): Repository => {
     deleteSeat: async (seatId, subscriptionId) => {
       await db.transaction().execute(async (tx) => {
         await tx
+          .deleteFrom("seat_occupants")
+          .where("seat_id", "=", seatId)
+          .execute();
+        await tx
+          .deleteFrom("seat_reservations")
+          .where("seat_id", "=", seatId)
+          .execute();
+        await tx
           .deleteFrom("seats")
           .where("seat_id", "=", seatId)
-          .where("subscription_id", "=", subscriptionId);
-        await tx.deleteFrom("seat_occupants").where("seat_id", "=", seatId);
-        await tx.deleteFrom("seat_reservations").where("seat_id", "=", seatId);
+          .where("subscription_id", "=", subscriptionId)
+          .execute();
       });
     },
     getSubscription: async (subscriptionId) => {
