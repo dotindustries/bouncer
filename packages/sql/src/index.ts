@@ -345,8 +345,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 tenant_id: row.occupant_tenant_id,
                 user_id: row.occupant_user_id,
-                user_name: row.occupant_user_name,
-                email: row.occupant_email,
+                user_name: (row.occupant_user_name ?? undefined) as
+                  | string
+                  | undefined,
+                email: (row.occupant_email ?? undefined) as string | undefined,
               }
             : null,
         reservation:
@@ -428,8 +430,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 tenant_id: row.occupant_tenant_id,
                 user_id: row.occupant_user_id,
-                user_name: row.occupant_user_name,
-                email: row.occupant_email,
+                user_name: (row.occupant_user_name ?? undefined) as
+                  | string
+                  | undefined,
+                email: (row.occupant_email ?? undefined) as string | undefined,
               }
             : null,
         reservation:
@@ -580,6 +584,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ?.seat_count as number) ?? 0,
       };
 
+      console.log("seat_summary", JSON.stringify({ actualSeatSummary }));
+
       if (seat.seat_type === "standard") {
         if (
           subscription.total_seats &&
@@ -591,8 +597,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
           };
         }
 
-        actualSeatSummary.standardSeatCount += 1;
+        actualSeatSummary.standardSeatCount =
+          actualSeatSummary.standardSeatCount + 1;
+      } else {
+        actualSeatSummary.limitedSeatCount =
+          actualSeatSummary.limitedSeatCount + 1;
       }
+      console.log("modified seat_summary", JSON.stringify(actualSeatSummary));
 
       await db.transaction().execute(async (tx) => {
         const ss = await tx
