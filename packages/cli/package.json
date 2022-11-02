@@ -22,7 +22,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "nodemon",
+    "dev:test": "nodemon",
     "build:dev": "npm run clean && tsup src/cli.tsx --format cjs",
     "build": "npm run clean && tsup src/cli.tsx --minify --format cjs",
     "start": "pnpm run build && dist/cli.cjs",

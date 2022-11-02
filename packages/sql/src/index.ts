@@ -29,7 +29,7 @@ export { sqliteMigrateToLatest } from "./migration";
 
 // because json comes out as parsed object, but can only be inserted/updated as string
 const actuallyItisJsonAlready = (seeminglyString: string) =>
-  seeminglyString as unknown as Record<string, string> | null | undefined;
+  seeminglyString as unknown as Record<string, string> | undefined;
 
 export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
@@ -782,7 +782,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
               limited_overflow_seating_enabled:
                 row.limited_overflow_seating_enabled,
             }
-          : null,
+          : undefined,
       };
     },
     getSubscriptions: async (publisherId) => {
@@ -829,7 +829,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
                 limited_overflow_seating_enabled:
                   row.limited_overflow_seating_enabled,
               }
-            : null,
+            : undefined,
         };
         return r;
       });

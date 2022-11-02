@@ -292,7 +292,7 @@ const isReservedForEmail = (seat: Seat, user: User) => {
   return (
     reservation &&
     "email" in reservation.identifier &&
-    equalsNotNil(reservation.identifier.email, user.email)
+    equalsNotNil(reservation.identifier.email, user.email ?? null)
   );
 };
 
