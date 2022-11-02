@@ -1,3 +1,29 @@
+# v0.7.0 (Wed Nov 02 2022)
+
+#### 🚀 Enhancement
+
+- feat: cli end-to-end test [#6](https://github.com/dotindustries/bouncer/pull/6) ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: tenantId cannot be patched on subscription ([@nadilas](https://github.com/nadilas))
+- fix: fall back to publisher default low seat warning percent ([@nadilas](https://github.com/nadilas))
+- fix: clean up subscription patch types ([@nadilas](https://github.com/nadilas))
+- fix: get userSeat tested ([@nadilas](https://github.com/nadilas))
+- fix: myssql date regex was missing 20:mm:ss ([@nadilas](https://github.com/nadilas))
+- fix: redeem seat tested ([@nadilas](https://github.com/nadilas))
+- fix: reserve seat tested ([@nadilas](https://github.com/nadilas))
+- fix: update subscription tested ([@nadilas](https://github.com/nadilas))
+- fix: validate date string inputs ([@nadilas](https://github.com/nadilas))
+- fix: make defaultLowSeatWarningLevelPercent default to 10% on server ([@nadilas](https://github.com/nadilas))
+- fix: main of packages had wrong extensions ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.6.0 (Sun Oct 30 2022)
 
 #### 🚀 Enhancement

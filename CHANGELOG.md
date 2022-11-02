@@ -1,3 +1,24 @@
+# (Wed Nov 02 2022)
+
+#### 🚀 Enhancement
+
+- `@dotinc/bouncer-client@0.3.0`, `@dotinc/bouncer-core@0.7.0`, `@dotinc/bouncer-planetscale@0.7.0`, `@dotinc/bouncer-sql@0.7.0`
+  - feat: cli end-to-end test [#6](https://github.com/dotindustries/bouncer/pull/6) ([@nadilas](https://github.com/nadilas))
+- `@dotinc/bouncer-client@0.3.0`
+  - feat: use correct type ([@Pagebakers](https://github.com/Pagebakers))
+
+#### ⚠️ Pushed to `main`
+
+- `@dotinc/bouncer-client@0.3.0`
+  - chore: formatting ([@Pagebakers](https://github.com/Pagebakers))
+
+#### Authors: 2
+
+- [@nadilas](https://github.com/nadilas)
+- Eelco Wiersma ([@Pagebakers](https://github.com/Pagebakers))
+
+---
+
 # (Sun Oct 30 2022)
 
 #### 🚀 Enhancement
