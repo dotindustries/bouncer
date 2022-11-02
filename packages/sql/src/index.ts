@@ -1003,6 +1003,19 @@ export const createRepository = (args: KyselyConfig): Repository => {
       return updated;
     },
     createApiKey: async (key) => {
+      // in preparation for tenant keys
+      if (key.type.includes("publisher")) {
+        // validate that publisher exists
+        const publisher = await db
+          .selectFrom("publishers")
+          .select(["id"])
+          .where("id", "=", key.owner_id)
+          .executeTakeFirstOrThrow();
+        if (!publisher) {
+          throw new Error(`Publisher [${key.owner_id}] doesn't exist`);
+        }
+      }
+
       return await db
         .insertInto("api_keys")
         .values(key)
