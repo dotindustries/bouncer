@@ -300,7 +300,7 @@ export const tests: Test[] = [
           return `Limited seat [${uid}] was successfully provided for user [${req.user_id}]`;
         } else {
           throw new Error(
-            `Unable to request limited seat [${uid}, ${req.user_id}]`
+            `Unable to request limited seat [${uid}, ${req.user_id}, ${resp}]`
           );
         }
       } catch (e) {
@@ -310,14 +310,42 @@ export const tests: Test[] = [
   },
   {
     type: "api",
-    fn: async () => {},
     data: {
       name: "Test #8 - Check to see if a user has a seat",
       description: `
-  When a user logs in to your SaaS app, you should call this API to see if that user has a seat.
-  If they don't have a seat, redirect them to the main Turnstile endpoint. To keep things simple,
-  we'll reuse the identity of the user that we just created a limited seat for.
-  The seat should certainly be here since we just created it!`,
+      When a user logs in to your SaaS app, you should call this API to see if that user has a seat.
+      If they don't have a seat, redirect them to the main Turnstile endpoint. To keep things simple,
+      we'll reuse the identity of the user that we just created a limited seat for.
+      The seat should certainly be here since we just created it!`,
+    },
+    fn: async (opts) => {
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
+      const sub = await sample("subscription");
+      const { subscription_id: subscriptionId, tenant_id: tenantId } = sub;
+      const redeem = await sample("redeem_seat");
+      const { user_id: userId } = redeem;
+
+      client.identify(redeem);
+      try {
+        const resp = await client.seats.userSeat({
+          subscriptionId,
+          tenantId,
+          userId,
+        });
+
+        if (
+          subscriptionId === resp.subscription_id &&
+          resp.occupant &&
+          tenantId === resp.occupant.tenant_id &&
+          seatId === resp.seat_id
+        ) {
+          return `User [${userId}] is currently occupying seat [${seatId}].`;
+        } else {
+          throw new Error(`Unable to get seat for user [${userId}, ${resp}]`);
+        }
+      } catch (e) {
+        throw stringErrorWithDetails(e);
+      }
     },
   },
   {

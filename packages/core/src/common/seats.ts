@@ -159,7 +159,7 @@ export const seatsApi = makeApi([
         schema: z.string(),
       },
       {
-        name: "seatId",
+        name: "userId",
         type: "Path",
         schema: z.string(),
       },

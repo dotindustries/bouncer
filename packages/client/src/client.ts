@@ -2,7 +2,7 @@ import { Zodios, ZodiosOptions } from "@zodios/core";
 
 import { seatsApi, Reservation, User, user } from "@dotinc/bouncer-core";
 
-import type { InferParams } from "./types";
+import type { InferParams, InferQueryParam } from "./types";
 
 export interface BouncerClientOptions extends ZodiosOptions {
   apiKey: string;
@@ -36,9 +36,21 @@ export const createClient = (options: BouncerClientOptions) => {
 
   const api = new Zodios(baseUrl, seatsApi, zodiosOptions);
 
-  const { redeemSeat, requestSeat, reserveSeat, releaseSeat } = api;
+  const { redeemSeat, requestSeat, reserveSeat, releaseSeat, userSeat } = api;
 
   const seats = {
+    userSeat: async (
+      params: Omit<InferQueryParam<typeof userSeat>, "userId" | "tenantId">
+    ) => {
+      const attr = user.parse(_attr);
+      return userSeat({
+        params: {
+          ...params,
+          userId: attr.user_id,
+          tenantId: attr.tenant_id,
+        },
+      });
+    },
     redeem: async (params: InferParams<typeof redeemSeat>) => {
       const attr = user.parse(_attr);
       return redeemSeat(attr, {

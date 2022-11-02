@@ -393,7 +393,6 @@ export const createRepository = (args: KyselyConfig): Repository => {
           "seat_reservations.tenant_id as reservation_tenant_id",
           "seat_reservations.user_id as reservation_user_id",
         ]) // explicitly select the non-nullable seat_id to make typescript happy
-        .selectAll()
         .where("seats.subscription_id", "=", subscriptionId)
         .where((qb) =>
           qb
