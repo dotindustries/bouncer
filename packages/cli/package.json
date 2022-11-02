@@ -1,6 +1,6 @@
 {
   "name": "@dotinc/bouncer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "private": true,
   "license": "MIT",
@@ -44,8 +44,8 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "@dotinc/bouncer-client": "*",
-    "@dotinc/bouncer-core": "*",
+    "@dotinc/bouncer-client": "^0.3.0",
+    "@dotinc/bouncer-core": "^0.7.0",
     "@zodios/core": "10.3.1",
     "axios": "1.1.3",
     "cli-spinners": "^2.7.0",
