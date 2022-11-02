@@ -1,6 +1,5 @@
-import { apiKeyPrefixes } from "./../../../../packages/core/src/common/api";
 import { ctx } from "./../context";
-import { keysApi } from "@dotinc/bouncer-core";
+import { keysApi, apiKeyPrefixes } from "@dotinc/bouncer-core";
 import generateApiKey from "generate-api-key";
 
 export const keysRouter = ctx.router(keysApi);
