@@ -40,11 +40,12 @@ export const subscription = z.object({
 export type Subscription = z.infer<typeof subscription>;
 
 export const subscriptionPatch = subscription
-  .pick({ subscription_id: true, tenant_id: true })
+  .pick({ subscription_id: true })
   .and(
     subscription
       .omit({
         offer_id: true,
+        tenant_id: true,
       })
       .partial()
   );
