@@ -57,6 +57,7 @@ const sample = async (
     | "reserve_seat"
     | "subscription_patch"
     | "subscription"
+    | string
 ) => {
   // cwd = package dir
   return JSON.parse(
@@ -192,8 +193,8 @@ export const tests: Test[] = [
       const redeem = await sample("redeem_seat");
       const { subscription_id: subscriptionId, tenant_id: tenantId } = sub;
 
+      client.identify(redeem);
       try {
-        client.identify(redeem);
         const resp = await client.seats.redeem({
           subscriptionId,
           seatId,
@@ -218,13 +219,50 @@ export const tests: Test[] = [
   },
   {
     type: "api",
-    fn: async () => {},
     data: {
       name: 'Test #6 - Request some "walk-up" seats',
       description: `
-  This subscription has 5 total_seats.
-  We've already occupied one of them during the seat reservation test so let's max this out
-  and request 4 additional seats for \"walk-up\" users.`,
+      This subscription has 5 total_seats.
+      We've already occupied one of them during the seat reservation test so let's max this out
+      and request 4 additional seats for \"walk-up\" users.`,
+    },
+    fn: async (opts) => {
+      const client = createClient({ baseUrl: opts.baseUrl, apiKey: "" });
+
+      const results: string[] = [];
+
+      for (let idx = 2; idx <= 5; idx++) {
+        const uid = cuid();
+        const sub = await sample("subscription");
+        const { subscription_id: subscriptionId, tenant_id } = sub;
+        const req = await sample(`request_seat_${idx}`);
+
+        client.identify(req);
+        try {
+          const resp = await client.seats.request({
+            subscriptionId,
+            seatId: uid,
+          });
+
+          if (
+            resp.seat_type === "standard" &&
+            uid === resp.seat_id &&
+            subscriptionId === resp.subscription_id &&
+            resp.occupant &&
+            tenant_id === resp.occupant.tenant_id &&
+            resp.occupant.user_id === req.user_id
+          ) {
+            results.push(
+              `Seat [${uid}] was successfully provided for user [${req.user_id}]`
+            );
+          } else {
+            throw new Error(`Unable to request seat [${idx}, ${uid}]`);
+          }
+        } catch (e) {
+          throw stringErrorWithDetails(e);
+        }
+      }
+      return results;
     },
   },
   {
