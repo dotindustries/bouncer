@@ -1,59 +1,72 @@
-import { toOpenApi } from "@zodios/openapi";
-import { merge, isErrorResult } from "openapi-merge";
-import type { Swagger } from "atlassian-openapi";
-import { seatsApi } from "./seats";
-import { subscriptionApi } from "./subscriptions";
-import { configApi } from "./config";
+import { z } from "zod";
+import { makeApi } from "@zodios/core";
+import { noContentResult, error } from "./shared";
 
-const configOAS = toOpenApi(configApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
-});
-const seatsOAS = toOpenApi(seatsApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
-});
-const subscriptionsOAS = toOpenApi(subscriptionApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
+export const createApiKey = z.object({
+  owner_id: z.string(),
+  type: z.enum(["publisher_public", "publisher_private"]),
 });
 
-const mergedApi = merge([
+export const apiKey = z.object({
+  owner_id: z.string(),
+  type: z.enum(["publisher_public", "publisher_private"]),
+  key: z.string().length(32),
+});
+
+export type ApiKey = z.infer<typeof apiKey>;
+
+export const keysApi = makeApi([
   {
-    oas: configOAS as any,
+    alias: "createApiKey",
+    method: "post",
+    path: "keys/:type/:ownerId",
+    parameters: [
+      {
+        name: "type",
+        type: "Path",
+        schema: z.string().max(20),
+      },
+      {
+        name: "ownerId",
+        type: "Path",
+        schema: z.string().max(30),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
+    response: apiKey,
   },
   {
-    oas: seatsOAS as any,
+    alias: "deleteApiKey",
+    method: "delete",
+    path: "keys/:type/:ownerId",
+    parameters: [
+      {
+        name: "type",
+        type: "Path",
+        schema: z.string().max(20),
+      },
+      {
+        name: "ownerId",
+        type: "Path",
+        schema: z.string().max(30),
+      },
+      {
+        name: "key",
+        type: "Body",
+        schema: apiKey,
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
+    response: noContentResult,
   },
-  { oas: subscriptionsOAS },
 ]);
-
-if (isErrorResult(mergedApi)) {
-  throw new Error("cannot compile API definition");
-}
-
-export const apiDefinition: Swagger.SwaggerV3 = mergedApi.output;
