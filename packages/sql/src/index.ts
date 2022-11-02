@@ -1,11 +1,24 @@
 import {
   Kysely,
   KyselyConfig,
+  KyselyPlugin,
+  OperationNodeTransformer,
+  PluginTransformQueryArgs,
+  PluginTransformResultArgs,
+  PrimitiveValueListNode,
+  QueryResult,
+  RootOperationNode,
   sql,
   SqliteDialect,
   SqliteDialectConfig,
+  UnknownRow,
 } from "kysely";
-import type { Repository, SeatingSummary } from "@dotinc/bouncer-core";
+import type {
+  Repository,
+  SeatingSummary,
+  Subscription,
+} from "@dotinc/bouncer-core";
+import { getMysqlFormattedDateTime } from "@dotinc/bouncer-core";
 import type { Database } from "./schema";
 import SqliteDatabase, {
   Database as BetterSqlite3Database,
@@ -14,10 +27,14 @@ import SqliteDatabase, {
 export * from "./schema";
 export { sqliteMigrateToLatest } from "./migration";
 
+// because json comes out as parsed object, but can only be inserted/updated as string
+const actuallyItisJsonAlready = (seeminglyString: string) =>
+  seeminglyString as unknown as Record<string, string> | undefined;
+
 export const createRepository = (args: KyselyConfig): Repository => {
   const db = new Kysely<Database>(args);
 
-  return {
+  const repo: Repository = {
     getPublisher: async (publisherId) => {
       const row = await db
         .selectFrom("publishers")
@@ -198,6 +215,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
     },
     createPublisher: async (config) => {
       await db.transaction().execute(async (tx) => {
+        console.log("creating publisher", config.id);
         const up = await tx
           .insertInto("publishers")
           .values({
@@ -221,11 +239,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!up)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
 
-        // TODO: only update if we have a delta?
-        const prodConfig = await db
+        console.log(
+          `creating product configuration for publisher [${config.id}]`
+        );
+        const prodConfig = await tx
           .insertInto("product_config")
           .values({
             publisher_id: config.id,
@@ -248,11 +268,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!prodConfig)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
 
-        // TODO: only update if we have a delta?
-        const seatingConfig = await db
+        console.log(
+          `creating default seating configuration for publisher [${config.id}]`
+        );
+        const seatingConfig = await tx
           .insertInto("seating_config")
           .values({
             owner_id: config.id,
@@ -273,7 +295,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
         if (!seatingConfig)
           throw new Error(
-            `Failed to update publisher configuration: [${config.id}]`
+            `Failed to save publisher configuration: [${config.id}]`
           );
       });
 
@@ -305,7 +327,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
           "seat_reservations.tenant_id as reservation_tenant_id",
           "seat_reservations.user_id as reservation_user_id",
         ]) // explicitly select the non-nullable seat_id to make typescript happy
-        .where("seat_id", "=", seatId)
+        .where("seats.seat_id", "=", seatId)
         .where("subscription_id", "=", subscriptionId)
         .executeTakeFirst();
       if (!row) return undefined;
@@ -323,8 +345,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 tenant_id: row.occupant_tenant_id,
                 user_id: row.occupant_user_id,
-                user_name: row.occupant_user_name,
-                email: row.occupant_email,
+                user_name: (row.occupant_user_name ?? undefined) as
+                  | string
+                  | undefined,
+                email: (row.occupant_email ?? undefined) as string | undefined,
               }
             : null,
         reservation:
@@ -332,11 +356,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 identifier: row.reservation_tenant_id
                   ? {
-                      user_id: row.reservation_user_id,
-                      tenant_id: row.reservation_tenant_id as string | null, // ts wants to be smart
+                      user_id: row.reservation_user_id as string,
+                      tenant_id: row.reservation_tenant_id as string, // ts wants to be smart
                     }
                   : {
-                      email: row.reservation_email,
+                      email: row.reservation_email as string,
                     },
                 invite_url: row.reservation_invite_url,
               }
@@ -369,12 +393,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
           "seat_reservations.tenant_id as reservation_tenant_id",
           "seat_reservations.user_id as reservation_user_id",
         ]) // explicitly select the non-nullable seat_id to make typescript happy
-        .selectAll()
         .where("seats.subscription_id", "=", subscriptionId)
         .where((qb) =>
           qb
             .where("expires_utc", "is", null)
-            .orWhere("expires_utc", ">", new Date())
+            .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
         );
 
       if (byUserId) {
@@ -406,8 +429,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 tenant_id: row.occupant_tenant_id,
                 user_id: row.occupant_user_id,
-                user_name: row.occupant_user_name,
-                email: row.occupant_email,
+                user_name: (row.occupant_user_name ?? undefined) as
+                  | string
+                  | undefined,
+                email: (row.occupant_email ?? undefined) as string | undefined,
               }
             : null,
         reservation:
@@ -415,11 +440,11 @@ export const createRepository = (args: KyselyConfig): Repository => {
             ? {
                 identifier: row.reservation_tenant_id
                   ? {
-                      user_id: row.reservation_user_id,
-                      tenant_id: row.reservation_tenant_id as string | null, // ts wants to be smart
+                      user_id: row.reservation_user_id as string,
+                      tenant_id: row.reservation_tenant_id as string, // ts wants to be smart
                     }
                   : {
-                      email: row.reservation_email,
+                      email: row.reservation_email as string,
                     },
                 invite_url: row.reservation_invite_url,
               }
@@ -439,18 +464,16 @@ export const createRepository = (args: KyselyConfig): Repository => {
             seat_type: update.seat_type,
             seating_strategy_name: update.seating_strategy_name,
           })
-          .onConflict((oc) =>
-            oc.column("seat_id").doUpdateSet({
-              expires_utc: update.expires_utc,
-              redeemed_utc: update.redeemed_utc,
-              seat_type: update.seat_type,
-              seating_strategy_name: update.seating_strategy_name,
-            })
-          )
+          .onDuplicateKeyUpdate({
+            expires_utc: update.expires_utc,
+            redeemed_utc: update.redeemed_utc,
+            seat_type: update.seat_type,
+            seating_strategy_name: update.seating_strategy_name,
+          })
           .executeTakeFirst();
 
         // TODO: this does not check for success
-        if (up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
+        if (!up) throw new Error(`Failed to save seat: [${update.seat_id}]`);
 
         // if there's no reservation present in the update
         //   try to delete it
@@ -479,26 +502,24 @@ export const createRepository = (args: KyselyConfig): Repository => {
                   ? reservation.identifier.email
                   : null,
             })
-            .onConflict((oc) =>
-              oc.column("seat_id").doUpdateSet({
-                tenant_id:
-                  "tenant_id" in reservation.identifier
-                    ? reservation.identifier.tenant_id
-                    : null,
-                user_id:
-                  "tenant_id" in reservation.identifier
-                    ? reservation.identifier.user_id
-                    : null,
-                invite_url: reservation.invite_url,
-                email:
-                  "email" in reservation.identifier
-                    ? reservation.identifier.email
-                    : null,
-              })
-            )
+            .onDuplicateKeyUpdate({
+              tenant_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.tenant_id
+                  : null,
+              user_id:
+                "tenant_id" in reservation.identifier
+                  ? reservation.identifier.user_id
+                  : null,
+              invite_url: reservation.invite_url,
+              email:
+                "email" in reservation.identifier
+                  ? reservation.identifier.email
+                  : null,
+            })
             .executeTakeFirst();
           // TODO: this does not check for success
-          if (res)
+          if (!res)
             throw new Error(
               `Failed to save seat reservation: [${update.seat_id}]`
             );
@@ -523,17 +544,15 @@ export const createRepository = (args: KyselyConfig): Repository => {
               email: occupant.email,
               user_name: occupant.user_name,
             })
-            .onConflict((oc) =>
-              oc.column("seat_id").doUpdateSet({
-                user_id: occupant.user_id,
-                tenant_id: occupant.tenant_id,
-                email: occupant.email,
-                user_name: occupant.user_name,
-              })
-            )
+            .onDuplicateKeyUpdate({
+              user_id: occupant.user_id,
+              tenant_id: occupant.tenant_id,
+              email: occupant.email,
+              user_name: occupant.user_name,
+            })
             .executeTakeFirst();
 
-          if (occ)
+          if (!occ)
             throw new Error(
               `Failed to save seat occupant: [${update.seat_id}]`
             );
@@ -546,19 +565,39 @@ export const createRepository = (args: KyselyConfig): Repository => {
       const actualSeatSummaryRows = await db
         .selectFrom("seats")
         .select([sql`COUNT(1)`.as("seat_count"), "seat_type"])
-        .where("expires_utc", "is", null)
-        .orWhere("expires_utc", ">", new Date())
+        .where("subscription_id", "=", subscription.subscription_id)
+        .where((w) =>
+          w
+            .where("expires_utc", "is", null)
+            .orWhere("expires_utc", ">", getMysqlFormattedDateTime())
+        )
         .groupBy("seat_type")
         .execute();
 
-      const actualSeatSummary: SeatingSummary = {
-        standardSeatCount:
-          (actualSeatSummaryRows.find((r) => r.seat_type === "standard")
-            ?.seat_count as number) ?? 0,
-        limitedSeatCount:
-          (actualSeatSummaryRows.find((r) => r.seat_type === "limited")
-            ?.seat_count as number) ?? 0,
+      const unknownToInt = (seatCount: unknown) => {
+        if (!seatCount) return 0;
+        if (typeof seatCount === "number") return seatCount;
+        if (typeof seatCount === "string") return parseInt(seatCount);
+        console.error(
+          "got unknown type for seat count from aggregate query",
+          seatCount,
+          typeof seatCount
+        );
+        return 0; // unknown type
       };
+
+      const actualSeatSummary: SeatingSummary = {
+        standardSeatCount: unknownToInt(
+          actualSeatSummaryRows.find((r) => r.seat_type === "standard")
+            ?.seat_count
+        ),
+        limitedSeatCount: unknownToInt(
+          actualSeatSummaryRows.find((r) => r.seat_type === "limited")
+            ?.seat_count
+        ),
+      };
+
+      console.log("seat_summary", JSON.stringify({ actualSeatSummary }));
 
       if (seat.seat_type === "standard") {
         if (
@@ -571,8 +610,13 @@ export const createRepository = (args: KyselyConfig): Repository => {
           };
         }
 
-        actualSeatSummary.standardSeatCount += 1;
+        actualSeatSummary.standardSeatCount =
+          actualSeatSummary.standardSeatCount + 1;
+      } else {
+        actualSeatSummary.limitedSeatCount =
+          actualSeatSummary.limitedSeatCount + 1;
       }
+      console.log("modified seat_summary", JSON.stringify(actualSeatSummary));
 
       await db.transaction().execute(async (tx) => {
         const ss = await tx
@@ -582,12 +626,10 @@ export const createRepository = (args: KyselyConfig): Repository => {
             standard_seat_count: actualSeatSummary.standardSeatCount,
             limited_seat_count: actualSeatSummary.limitedSeatCount,
           })
-          .onConflict((oc) =>
-            oc.column("subscription_id").doUpdateSet({
-              standard_seat_count: actualSeatSummary.standardSeatCount,
-              limited_seat_count: actualSeatSummary.limitedSeatCount,
-            })
-          )
+          .onDuplicateKeyUpdate({
+            standard_seat_count: actualSeatSummary.standardSeatCount,
+            limited_seat_count: actualSeatSummary.limitedSeatCount,
+          })
           .executeTakeFirst();
         // TODO: this doesn't check success
         if (!ss) {
@@ -610,7 +652,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
           .executeTakeFirst();
 
         // TODO: this does not check for success
-        if (up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
+        if (!up) throw new Error(`Failed to save seat: [${seat.seat_id}]`);
 
         if (seat.reservation) {
           const reservation = seat.reservation;
@@ -634,7 +676,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
             })
             .executeTakeFirst();
           // TODO: this does not check for success
-          if (res)
+          if (!res)
             throw new Error(
               `Failed to save seat reservation: [${seat.seat_id}]`
             );
@@ -654,26 +696,45 @@ export const createRepository = (args: KyselyConfig): Repository => {
             })
             .executeTakeFirst();
 
-          if (occ)
+          if (!occ)
             throw new Error(`Failed to save seat occupant: [${seat.seat_id}]`);
         }
       });
 
-      // yay, if we got so far
+      const createdSeat = await repo.getSeat(
+        seat.seat_id,
+        seat.subscription_id!
+      );
+      if (!createdSeat) {
+        console.error(
+          "we failed to get a subscription which we just updated... wtf?"
+        );
+        throw new Error(
+          "we failed to find the just updated subscription, please call us."
+        );
+      }
+
       return {
         isSeatCreated: true,
         seatingSummary: actualSeatSummary,
-        createdSeat: seat,
+        createdSeat,
       };
     },
     deleteSeat: async (seatId, subscriptionId) => {
       await db.transaction().execute(async (tx) => {
         await tx
+          .deleteFrom("seat_occupants")
+          .where("seat_id", "=", seatId)
+          .execute();
+        await tx
+          .deleteFrom("seat_reservations")
+          .where("seat_id", "=", seatId)
+          .execute();
+        await tx
           .deleteFrom("seats")
           .where("seat_id", "=", seatId)
-          .where("subscription_id", "=", subscriptionId);
-        await tx.deleteFrom("seat_occupants").where("seat_id", "=", seatId);
-        await tx.deleteFrom("seat_reservations").where("seat_id", "=", seatId);
+          .where("subscription_id", "=", subscriptionId)
+          .execute();
       });
     },
     getSubscription: async (subscriptionId) => {
@@ -688,8 +749,8 @@ export const createRepository = (args: KyselyConfig): Repository => {
 
       return {
         subscription_id: row.subscription_id,
-        subscriber_info: row.subscriber_info,
-        source_subscription: row.source_subscription,
+        subscriber_info: actuallyItisJsonAlready(row.subscriber_info),
+        source_subscription: actuallyItisJsonAlready(row.source_subscription),
         is_setup_complete: row.is_setup_complete,
         subscription_name: row.subscription_name,
         tenant_id: row.tenant_id,
@@ -699,7 +760,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
         state: row.state,
         admin_role_name: row.admin_role_name,
         user_role_name: row.user_role_name,
-        management_urls: row.management_urls,
+        management_urls: actuallyItisJsonAlready(row.management_urls),
         admin_name: row.admin_name,
         admin_email: row.admin_email,
         total_seats: row.total_seats,
@@ -721,7 +782,7 @@ export const createRepository = (args: KyselyConfig): Repository => {
               limited_overflow_seating_enabled:
                 row.limited_overflow_seating_enabled,
             }
-          : null,
+          : undefined,
       };
     },
     getSubscriptions: async (publisherId) => {
@@ -732,43 +793,46 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .where("publisher_id", "=", publisherId)
         .execute();
 
-      return rows.map((row) => ({
-        subscription_id: row.subscription_id,
-        subscriber_info: row.subscriber_info,
-        source_subscription: row.source_subscription,
-        is_setup_complete: row.is_setup_complete,
-        subscription_name: row.subscription_name,
-        tenant_id: row.tenant_id,
-        tenant_name: row.tenant_name,
-        offer_id: row.offer_id,
-        plan_id: row.plan_id,
-        state: row.state,
-        admin_role_name: row.admin_role_name,
-        user_role_name: row.user_role_name,
-        management_urls: row.management_urls,
-        admin_name: row.admin_name,
-        admin_email: row.admin_email,
-        total_seats: row.total_seats,
-        is_being_configured: row.is_being_configured,
-        is_free_trial: row.is_free_trial,
-        is_test_subscription: row.is_test_subscription,
-        created_utc: row.created_utc,
-        state_last_updated_utc: row.state_last_updated_utc,
-        seating_config: row.seating_strategy_name
-          ? {
-              seat_reservation_expiry_in_days:
-                row.seat_reservation_expiry_in_days ?? undefined,
-              default_seat_expiry_in_days:
-                row.default_seat_expiry_in_days ?? undefined,
-              defaultLowSeatWarningLevelPercent:
-                row.defaultLowSeatWarningLevelPercent ?? 0,
-              seating_strategy_name: row.seating_strategy_name,
-              low_seat_warning_level_pct: row.low_seat_warning_level_pct,
-              limited_overflow_seating_enabled:
-                row.limited_overflow_seating_enabled,
-            }
-          : null,
-      }));
+      return rows.map((row) => {
+        const r: Subscription = {
+          subscription_id: row.subscription_id,
+          subscriber_info: actuallyItisJsonAlready(row.subscriber_info),
+          source_subscription: actuallyItisJsonAlready(row.source_subscription),
+          is_setup_complete: row.is_setup_complete,
+          subscription_name: row.subscription_name,
+          tenant_id: row.tenant_id,
+          tenant_name: row.tenant_name,
+          offer_id: row.offer_id,
+          plan_id: row.plan_id,
+          state: row.state,
+          admin_role_name: row.admin_role_name,
+          user_role_name: row.user_role_name,
+          management_urls: actuallyItisJsonAlready(row.management_urls),
+          admin_name: row.admin_name,
+          admin_email: row.admin_email,
+          total_seats: row.total_seats,
+          is_being_configured: row.is_being_configured,
+          is_free_trial: row.is_free_trial,
+          is_test_subscription: row.is_test_subscription,
+          created_utc: row.created_utc,
+          state_last_updated_utc: row.state_last_updated_utc,
+          seating_config: row.seating_strategy_name
+            ? {
+                seat_reservation_expiry_in_days:
+                  row.seat_reservation_expiry_in_days ?? undefined,
+                default_seat_expiry_in_days:
+                  row.default_seat_expiry_in_days ?? undefined,
+                defaultLowSeatWarningLevelPercent:
+                  row.defaultLowSeatWarningLevelPercent ?? 0,
+                seating_strategy_name: row.seating_strategy_name,
+                low_seat_warning_level_pct: row.low_seat_warning_level_pct,
+                limited_overflow_seating_enabled:
+                  row.limited_overflow_seating_enabled,
+              }
+            : undefined,
+        };
+        return r;
+      });
     },
     createSubscription: async (publisherId, sub) => {
       const defaultSeatConfig = await db
@@ -778,14 +842,14 @@ export const createRepository = (args: KyselyConfig): Repository => {
         .executeTakeFirstOrThrow();
 
       await db.transaction().execute(async (tx) => {
-        const now = new Date().toISOString();
+        const now = new Date();
         const up = await tx
           .insertInto("subscriptions")
           .values({
             subscription_id: sub.subscription_id,
             publisher_id: publisherId,
-            subscriber_info: sub.subscriber_info,
-            source_subscription: sub.source_subscription,
+            subscriber_info: JSON.stringify(sub.subscriber_info),
+            source_subscription: JSON.stringify(sub.source_subscription),
             is_setup_complete: sub.is_setup_complete ?? false,
             subscription_name: sub.subscription_name ?? sub.subscription_id,
             tenant_id: sub.tenant_id,
@@ -795,15 +859,16 @@ export const createRepository = (args: KyselyConfig): Repository => {
             state: sub.state,
             admin_role_name: sub.admin_role_name,
             user_role_name: sub.user_role_name,
-            management_urls: sub.management_urls,
+            management_urls: JSON.stringify(sub.management_urls),
             admin_name: sub.admin_name,
             admin_email: sub.admin_email,
             total_seats: sub.total_seats,
             is_being_configured: sub.is_being_configured,
             is_free_trial: sub.is_free_trial,
             is_test_subscription: sub.is_test_subscription,
-            created_utc: now,
-            state_last_updated_utc: now,
+            created_utc: sub.created_utc ?? getMysqlFormattedDateTime(now),
+            state_last_updated_utc:
+              sub.state_last_updated_utc ?? getMysqlFormattedDateTime(now),
           })
           .execute();
 
@@ -813,7 +878,12 @@ export const createRepository = (args: KyselyConfig): Repository => {
             `Failed to save subscription: [${publisherId}, ${sub.subscription_id}]`
           );
 
-        const seatConfig = sub.seating_config ?? defaultSeatConfig;
+        const seatConfig = !sub.seating_config
+          ? defaultSeatConfig
+          : {
+              ...defaultSeatConfig,
+              ...sub.seating_config,
+            };
 
         const scUp = await tx
           .insertInto("seating_config")
@@ -860,21 +930,21 @@ export const createRepository = (args: KyselyConfig): Repository => {
           .set({
             plan_id: sub.plan_id,
             is_being_configured: sub.is_being_configured,
-            source_subscription: sub.source_subscription,
-            subscriber_info: sub.subscriber_info,
+            source_subscription: JSON.stringify(sub.source_subscription),
+            subscriber_info: JSON.stringify(sub.subscriber_info),
             subscription_name: sub.subscription_name,
             total_seats: sub.total_seats,
             admin_role_name: sub.admin_role_name,
             user_role_name: sub.user_role_name,
             is_setup_complete: sub.is_setup_complete,
-            management_urls: sub.management_urls,
+            management_urls: JSON.stringify(sub.management_urls),
             admin_name: sub.admin_name,
             admin_email: sub.admin_email,
             tenant_name: sub.tenant_name,
             // TODO: state might not change,
             //   we should consider only updating the timestamp if state is different.
             state: sub.state,
-            state_last_updated_utc: new Date().toISOString(),
+            state_last_updated_utc: getMysqlFormattedDateTime(),
           })
           .where("subscription_id", "=", sub.subscription_id)
           .execute();
@@ -920,9 +990,21 @@ export const createRepository = (args: KyselyConfig): Repository => {
         }
       });
 
-      return sub;
+      // return the updated sub
+      const updated = await repo.getSubscription(sub.subscription_id);
+      if (!updated) {
+        console.error(
+          "we failed to get a subscription which we just updated... wtf?"
+        );
+        throw new Error(
+          "we failed to find the just updated subscription, please call us."
+        );
+      }
+      return updated;
     },
   };
+
+  return repo;
 };
 
 export const createSqliteDatabase = (
@@ -934,6 +1016,37 @@ export const createSqliteDatabase = (
 export const createSqliteRepository = (config: SqliteDialectConfig) => {
   return createRepository({
     dialect: new SqliteDialect(config),
+    plugins: [new SqliteBooleanPlugin()],
     log: ["query", "error"],
   });
 };
+
+class SqliteBooleanPlugin implements KyselyPlugin {
+  private readonly transformer = new SqliteBooleanTransformer();
+
+  transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
+    return this.transformer.transformNode(args.node);
+  }
+
+  transformResult(
+    args: PluginTransformResultArgs
+  ): Promise<QueryResult<UnknownRow>> {
+    // FIXME: we can't get out boolean from sqlite...
+    return Promise.resolve(args.result);
+  }
+}
+
+class SqliteBooleanTransformer extends OperationNodeTransformer {
+  protected transformPrimitiveValueList(
+    node: PrimitiveValueListNode
+  ): PrimitiveValueListNode {
+    console.log("trasnforming values");
+    const vnode = super.transformPrimitiveValueList(node);
+    return {
+      ...vnode,
+      values: vnode.values.map((v) =>
+        typeof v === "boolean" ? (v ? 1 : 0) : v
+      ),
+    };
+  }
+}

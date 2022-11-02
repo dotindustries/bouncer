@@ -35,8 +35,20 @@ export type SeatOccupantTable = Intersect<Pick<Seat, "occupant">> & {
   seat_id: string;
 };
 
-export type SubscriptionTable = Omit<Subscription, "seating_config"> & {
+export type SubscriptionTable = Omit<
+  Subscription,
+  | "seating_config"
+  | "subscriber_info"
+  | "source_subscription"
+  | "management_urls"
+> & {
   publisher_id: string;
+  // JSON field -- kysely-planetscale field is parsed to objedt when read from the database, but can only be inserted/updated as string
+  subscriber_info: string;
+  // JSON field -- kysely-planetscale field is parsed to objedt when read from the database, but can only be inserted/updated as string
+  source_subscription: string;
+  // JSON field -- kysely-planetscale field is parsed to objedt when read from the database, but can only be inserted/updated as string
+  management_urls: string;
 };
 
 export type SeatSummaryTable = {

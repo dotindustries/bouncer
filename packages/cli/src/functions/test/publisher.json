@@ -1,0 +1,34 @@
+{
+  "id": "cl9wtr6wt000009jn4u1775az",
+  "product_name": "Test product",
+  "publisher_name": "Test publisher",
+  "home_page_url": "https://dot.industries",
+  "contact_page_url": "https://dot.industries/contact",
+  "privacy_notice_page_url": "https://dot.industries/privacy",
+  "contact_sales_email": "dev@dot.industries",
+  "contact_sales_url": "https://dot.industries/contact",
+  "contact_support_email": "dev@dot.industries",
+  "contact_support_url": "https://dot.industries/support",
+  "mona_base_storage_url": null,
+  "mona_subscription_state": null,
+  "mona_subscription_is_being_configured": false,
+  "is_setup_complete": true,
+  "default_seating_config": {
+    "defaultLowSeatWarningLevelPercent": 0,
+    "seating_strategy_name": "monthly_active_user",
+    "low_seat_warning_level_pct": 0.25,
+    "limited_overflow_seating_enabled": true,
+    "seat_reservation_expiry_in_days": 1,
+    "default_seat_expiry_in_days": 1
+  },
+  "product_config": {
+    "on_access_denied_url": "https://product.info/access_denied",
+    "on_access_granted_url": "https://product.info/",
+    "on_no_seat_available_url": "https://product.info/no_seat",
+    "on_subscription_not_ready_url": "https://product.info/sub?state=not_ready",
+    "on_subscription_canceled_url": "https://product.info/sub?state=canceled",
+    "on_subscription_suspended_url": "https://product.info/sub?state=suspended",
+    "on_subscription_not_found_url": "https://product.info/sub?state=not_found",
+    "on_no_subscriptions_found_url": "https://product.info/no_subscriptions"
+  }
+}

@@ -1,5 +1,8 @@
 import { ctx } from "./../context";
-import { subscriptionApi } from "@dotinc/bouncer-core";
+import {
+  subscriptionApi,
+  validateSubscriptionPatch,
+} from "@dotinc/bouncer-core";
 
 export const subscriptionsRouter = ctx.router(subscriptionApi);
 
@@ -71,16 +74,34 @@ subscriptionsRouter.patch(
   "/subscriptions/:subscriptionId",
   async (req, res) => {
     // TODO: API Keys access: sys_ and pub_
-    const sub = req.body;
+    const patch = req.body;
 
-    if (req.params.subscriptionId !== sub.subscription_id) {
+    if (req.params.subscriptionId !== patch.subscription_id) {
       return res.status(400).json({
         code: 400,
-        message: `Invalid subscrition [${req.params.subscriptionId}] doesn't match id in patch [${sub.subscription_id}]`,
+        message: `Invalid subscrition [${req.params.subscriptionId}] doesn't match id in patch [${patch.subscription_id}]`,
       });
     }
+
+    const sub = await req.repo.getSubscription(req.params.subscriptionId);
+    if (!sub) {
+      return res.status(404).json({
+        code: 404,
+        message: `Subscription [${req.params.subscriptionId}] not found.`,
+        id: req.params.subscriptionId,
+      });
+    }
+
+    const validationError = validateSubscriptionPatch(sub, patch);
+    if (validationError) {
+      return res.status(400).json({
+        code: 400,
+        message: validationError,
+      });
+    }
+
     try {
-      return res.status(200).json(await req.repo.updateSubscription(sub));
+      return res.status(200).json(await req.repo.updateSubscription(patch));
     } catch (e: any) {
       return res.status(500).json({
         code: 500,

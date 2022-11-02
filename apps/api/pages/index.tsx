@@ -41,7 +41,12 @@ const Publishers = () => {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <pre>{JSON.stringify(error, null, "  ")}</pre>;
+    return (
+      <>
+        <h2>Error</h2>
+        <pre style={{ color: "red" }}>{JSON.stringify(error, null, "  ")}</pre>
+      </>
+    );
   }
 
   return (

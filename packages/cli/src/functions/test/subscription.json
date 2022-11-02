@@ -1,0 +1,27 @@
+{
+  "subscription_id": "cl9wtxux8000109jnb95hh4ip",
+  "subscription_name": "can_create_subscription",
+  "tenant_id": "cl9wtg8bx000009mob7iv2uev",
+  "tenant_name": "Test Tenant",
+  "offer_id": "Test Offer 1",
+  "plan_id": "Test Plan 1",
+  "state": "purchased",
+  "admin_role_name": "Test Admins",
+  "user_role_name": "Test Users",
+  "admin_name": "janos",
+  "admin_email": "janos@dot.industries",
+  "total_seats": 3,
+  "is_being_configured": true,
+  "is_free_trial": true,
+  "is_setup_complete": true,
+  "is_test_subscription": true,
+  "created_utc": "2022-06-06 18:21:00",
+  "state_last_updated_utc": "2022-06-07 12:05:00",
+  "seating_config": {
+    "seating_strategy_name": "first_come_first_served",
+    "low_seat_warning_level_pct": 0.25,
+    "limited_overflow_seating_enabled": true,
+    "seat_reservation_expiry_in_days": 14,
+    "default_seat_expiry_in_days": 14
+  }
+}

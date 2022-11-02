@@ -1,6 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404 } from "./shared";
+import { error, error404, sqlDateString } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 
@@ -21,14 +21,14 @@ export const reservation = z.object({
   // Reservation ([user_id] and [tenant_id]) or [email] is required.
   identifier: z.union([
     z.object({
-      user_id: z.string().nullable(),
-      tenant_id: z.string().nullable(),
+      user_id: z.string(),
+      tenant_id: z.string(),
     }),
     z.object({
-      email: z.string().nullable(),
+      email: z.string(),
     }),
   ]),
-  invite_url: z.string().nullable(),
+  invite_url: z.string().nullish(),
 });
 
 export type Reservation = z.infer<typeof reservation>;
@@ -68,9 +68,9 @@ export const seat = z.object({
   seating_strategy_name: z.string().nullable(),
   seat_type: z.enum(["standard", "limited"]),
   reservation: reservation.nullable(),
-  expires_utc: z.date().nullable(),
-  created_utc: z.date().nullable(),
-  redeemed_utc: z.date().nullable(),
+  expires_utc: sqlDateString.nullable(),
+  created_utc: sqlDateString.nullable(),
+  redeemed_utc: sqlDateString.nullable(),
 });
 
 export type Seat = z.infer<typeof seat>;
@@ -159,7 +159,7 @@ export const seatsApi = makeApi([
         schema: z.string(),
       },
       {
-        name: "seatId",
+        name: "userId",
         type: "Path",
         schema: z.string(),
       },

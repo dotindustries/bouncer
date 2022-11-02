@@ -3,7 +3,7 @@ import { z } from "zod";
 import { error, error404 } from "./shared";
 
 export const seatingConfiguration = z.object({
-  defaultLowSeatWarningLevelPercent: z.number(),
+  defaultLowSeatWarningLevelPercent: z.number().optional(),
   seating_strategy_name: z
     .enum(["monthly_active_user", "first_come_first_served"])
     .nullable(),
@@ -15,8 +15,8 @@ export const seatingConfiguration = z.object({
     .max(1, {
       message: `if provided, seating configuration [low_seat_warning_level_pct] must be > 0 (0%) and < 1 (100%).`,
     })
-    .nullable(),
-  limited_overflow_seating_enabled: z.boolean().nullable(),
+    .nullish(),
+  limited_overflow_seating_enabled: z.boolean().nullish(),
   seat_reservation_expiry_in_days: z.number().min(1).default(1).optional(),
   default_seat_expiry_in_days: z.number().min(1).default(1).optional(),
 });

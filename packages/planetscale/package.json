@@ -16,7 +16,7 @@
     "bouncer"
   ],
   "type": "module",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -40,6 +40,7 @@
     "@dotinc/bouncer-sql": "^0.6.0",
     "@planetscale/database": "^1.4.0",
     "@zodios/core": "10.3.1",
+    "date-fns": "^2.29.3",
     "kysely": "^0.22.0",
     "kysely-planetscale": "^1.1.0"
   },

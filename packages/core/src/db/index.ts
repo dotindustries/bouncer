@@ -3,6 +3,7 @@ import type {
   Seat,
   Subscription,
   SeatCreationContext,
+  SubscriptionPatch,
 } from "../common/index";
 
 export interface Repository {
@@ -34,5 +35,5 @@ export interface Repository {
     publisherId: string,
     sub: Subscription
   ): Promise<Subscription>;
-  updateSubscription(sub: Subscription): Promise<Subscription>;
+  updateSubscription(sub: SubscriptionPatch): Promise<Subscription>;
 }
