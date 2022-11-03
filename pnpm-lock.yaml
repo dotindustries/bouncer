@@ -36,9 +36,9 @@ importers:
 
   apps/api:
     specifiers:
-      '@dotinc/bouncer-core': ^0.6.0
-      '@dotinc/bouncer-planetscale': ^0.6.0
-      '@dotinc/bouncer-sql': ^0.6.0
+      '@dotinc/bouncer-core': ^0.7.0
+      '@dotinc/bouncer-planetscale': ^0.7.0
+      '@dotinc/bouncer-sql': ^0.7.0
       '@tanstack/react-query': 4.13.0
       '@types/express': 4.17.14
       '@types/node': 18.11.4
@@ -46,8 +46,8 @@ importers:
       '@types/react-dom': 18.0.7
       '@types/swagger-ui-react': ^4.11.0
       '@vercel/analytics': ^0.1.1
-      '@zodios/core': 10.3.1
-      '@zodios/express': 10.3.2
+      '@zodios/core': 10.5.2
+      '@zodios/express': 10.4.3
       '@zodios/react': 10.3.3
       axios: 1.1.3
       better-sqlite3: ^7.6.2
@@ -71,9 +71,9 @@ importers:
       '@tanstack/react-query': 4.13.0_biqbaboplfbrettd7655fr4n2y
       '@types/express': 4.17.14
       '@vercel/analytics': 0.1.1_react@18.2.0
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
-      '@zodios/express': 10.3.2_dolxl6uwrmlaxbcgzb76xvlfiu
-      '@zodios/react': 10.3.3_ptr64sl3a3bsmwsbohxbfotdba
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
+      '@zodios/express': 10.4.3_frapgquqqbi4qkoi7vompzvizy
+      '@zodios/react': 10.3.3_cal6ng2qhcphhf4wtx2gyvht7m
       axios: 1.1.3
       better-sqlite3: 7.6.2
       date-fns: 2.29.3
@@ -98,13 +98,13 @@ importers:
   packages/cli:
     specifiers:
       '@ava/typescript': ^3.0.1
-      '@dotinc/bouncer-client': '*'
-      '@dotinc/bouncer-core': '*'
+      '@dotinc/bouncer-client': ^0.3.0
+      '@dotinc/bouncer-core': ^0.7.0
       '@sindresorhus/tsconfig': ^3.0.1
       '@types/ink-divider': ^2.0.2
       '@types/react': ^18.0.24
       '@types/update-notifier': ^5.1.0
-      '@zodios/core': 10.3.1
+      '@zodios/core': 10.5.2
       ava: ^5.0.1
       axios: 1.1.3
       chalk: ^4.1.2
@@ -136,7 +136,7 @@ importers:
     dependencies:
       '@dotinc/bouncer-client': link:../client
       '@dotinc/bouncer-core': link:../core
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       axios: 1.1.3
       cli-spinners: 2.7.0
       commander: 9.4.1
@@ -175,7 +175,7 @@ importers:
   packages/client:
     specifiers:
       '@dotinc/bouncer-core': workspace:*
-      '@zodios/core': 10.3.1
+      '@zodios/core': 10.5.2
       axios: 1.1.3
       rimraf: ^3.0.2
       ts-toolbelt: ^9.6.0
@@ -186,7 +186,7 @@ importers:
       zod: ^3.19.1
     dependencies:
       '@dotinc/bouncer-core': link:../core
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       axios: 1.1.3
       zod: 3.19.1
     devDependencies:
@@ -200,8 +200,8 @@ importers:
   packages/core:
     specifiers:
       '@types/express': ^4.17.14
-      '@zodios/core': 10.3.1
-      '@zodios/openapi': ^10.3.1
+      '@zodios/core': 10.5.2
+      '@zodios/openapi': ^10.4.6
       atlassian-openapi: ^1.0.17
       axios: 1.1.3
       date-fns: ^2.29.3
@@ -212,8 +212,8 @@ importers:
       typescript: ^4.8.4
       zod: ^3.19.1
     dependencies:
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
-      '@zodios/openapi': 10.3.1_ewi4ns5bpty7uberzmtho4ivqq
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
+      '@zodios/openapi': 10.4.6_g27rmjqosrzjpwvrhpeud3if3m
       axios: 1.1.3
       date-fns: 2.29.3
       openapi-merge: 1.3.2
@@ -228,11 +228,11 @@ importers:
 
   packages/planetscale:
     specifiers:
-      '@dotinc/bouncer-core': ^0.6.0
-      '@dotinc/bouncer-sql': ^0.6.0
+      '@dotinc/bouncer-core': ^0.7.0
+      '@dotinc/bouncer-sql': ^0.7.0
       '@planetscale/database': ^1.4.0
       '@types/express': ^4.17.14
-      '@zodios/core': 10.3.1
+      '@zodios/core': 10.5.2
       axios: 1.1.3
       date-fns: ^2.29.3
       kysely: ^0.22.0
@@ -246,7 +246,7 @@ importers:
       '@dotinc/bouncer-core': link:../core
       '@dotinc/bouncer-sql': link:../sql
       '@planetscale/database': 1.4.0
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       date-fns: 2.29.3
       kysely: 0.22.0
       kysely-planetscale: 1.1.0_y2qhv4jbpuh4ntzbx65rrthyae
@@ -261,7 +261,7 @@ importers:
 
   packages/sql:
     specifiers:
-      '@dotinc/bouncer-core': ^0.6.0
+      '@dotinc/bouncer-core': ^0.7.0
       '@types/better-sqlite3': ^7.6.2
       '@types/express': ^4.17.14
       better-sqlite3: ^7.6.2
@@ -2917,8 +2917,8 @@ packages:
       argparse: 2.0.1
     dev: true
 
-  /@zodios/core/10.3.1_axios@1.1.3+zod@3.19.1:
-    resolution: {integrity: sha512-UQRtwj9natPT+NXXzJc5xO4N/XvZXfP1MpJ5FOcw43RPac50aH32pVBhx47SAPjpz1fMLCDrg7MEW9cXlMPiXA==}
+  /@zodios/core/10.5.2_axios@1.1.3+zod@3.19.1:
+    resolution: {integrity: sha512-bzWXmxtDGQJ9+Agdmwgm/9+WfcZ+KawzfHmwB6bmMoY9Q1kk53iFiWrRIuQ+GOAe85O/gwzVeH5MGvRzjuW0lQ==}
     peerDependencies:
       axios: ^0.x || ^1.0.0
       zod: ^3.x
@@ -2927,31 +2927,31 @@ packages:
       zod: 3.19.1
     dev: false
 
-  /@zodios/express/10.3.2_dolxl6uwrmlaxbcgzb76xvlfiu:
-    resolution: {integrity: sha512-OTLufS8VRRmt1XO9z8GQpWTUutDXRhX5LimzQX+1x+W4juz61uTkVLdIdYLaDXxpIkLh7RUi+/msp4kC4GeXcw==}
+  /@zodios/express/10.4.3_frapgquqqbi4qkoi7vompzvizy:
+    resolution: {integrity: sha512-obucUw01H+9cX5B3ww4Sf+RNAFB9PZtcjhqlkkP3Mag8g1RSmsuQY98rWgCWAFBbf3xubs9iiymj9ssLIpzHKw==}
     peerDependencies:
-      '@zodios/core': ^10.x
+      '@zodios/core': '>=10.4.4 <11.0.0'
       express: 4.x
       zod: ^3.x
     dependencies:
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       express: 4.18.2
       zod: 3.19.1
     dev: false
 
-  /@zodios/openapi/10.3.1_ewi4ns5bpty7uberzmtho4ivqq:
-    resolution: {integrity: sha512-Q9mxrgcOUDn+nIdT7q5eONXxLqG0HQZuVbmTH8VGaOmphR5GGHnnbV0uaCCsyFomeAo7AaIH0GYY5AgTdKDmXA==}
+  /@zodios/openapi/10.4.6_g27rmjqosrzjpwvrhpeud3if3m:
+    resolution: {integrity: sha512-Y2k/4EJG7y8LNGFYvOQb8zMw3jvNRzj/Lv2pwg3IAehWv42VYKrnWhC4FJ1O6d1826AOKQq2xuuFlpaOwjxQCA==}
     peerDependencies:
-      '@zodios/core': ^10.x
+      '@zodios/core': '>=10.5.2 <11.0.0'
       zod: ^3.x
     dependencies:
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       openapi-types: 12.0.2
       zod: 3.19.1
       zod-to-json-schema: 3.18.1_zod@3.19.1
     dev: false
 
-  /@zodios/react/10.3.3_ptr64sl3a3bsmwsbohxbfotdba:
+  /@zodios/react/10.3.3_cal6ng2qhcphhf4wtx2gyvht7m:
     resolution: {integrity: sha512-QAnlZVowIlSa0ezQtjr5wI84lJK7HifBtMTxmaEUiwrlOespdsz39IuojwUB+3G66kGTSbZLQcOhBPsiFPCvpQ==}
     peerDependencies:
       '@tanstack/react-query': 4.x
@@ -2959,7 +2959,7 @@ packages:
       react: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.13.0_biqbaboplfbrettd7655fr4n2y
-      '@zodios/core': 10.3.1_axios@1.1.3+zod@3.19.1
+      '@zodios/core': 10.5.2_axios@1.1.3+zod@3.19.1
       react: 18.2.0
     dev: false
 
