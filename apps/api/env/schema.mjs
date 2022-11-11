@@ -7,6 +7,7 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
+  DEV: z.string().optional(),
   SQLITE_DB: z.string().optional(),
   DB_MIGRATE: z.string().optional(),
   PSCALE_DATABASE_HOST: z.string().optional(),

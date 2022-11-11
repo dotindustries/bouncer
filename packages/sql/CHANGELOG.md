@@ -1,3 +1,31 @@
+# v0.7.0 (Wed Nov 02 2022)
+
+#### 🚀 Enhancement
+
+- feat: cli end-to-end test [#6](https://github.com/dotindustries/bouncer/pull/6) ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: fall back to publisher default low seat warning percent ([@nadilas](https://github.com/nadilas))
+- fix: clean up subscription patch types ([@nadilas](https://github.com/nadilas))
+- fix: release seat tested ([@nadilas](https://github.com/nadilas))
+- fix: get userSeat tested ([@nadilas](https://github.com/nadilas))
+- fix: seat summary counter ([@nadilas](https://github.com/nadilas))
+- fix: forgot to add limitSeatCount increase ([@nadilas](https://github.com/nadilas))
+- fix: limit seat summary to current subscription ([@nadilas](https://github.com/nadilas))
+- fix: reserve seat tested ([@nadilas](https://github.com/nadilas))
+- fix: update subscription tested ([@nadilas](https://github.com/nadilas))
+- fix: validate date string inputs ([@nadilas](https://github.com/nadilas))
+- chore: mark sqlite number-to-boolean conversion error on query output ([@nadilas](https://github.com/nadilas))
+- fix: create publisher sql insert ([@nadilas](https://github.com/nadilas))
+- fix: main of packages had wrong extensions ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.6.0 (Sun Oct 30 2022)
 
 #### 🚀 Enhancement

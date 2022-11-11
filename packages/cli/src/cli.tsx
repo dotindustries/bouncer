@@ -1,28 +1,38 @@
 #!/usr/bin/env node
 import React from "react";
 import { render } from "ink";
-import meow from "meow";
-import App from "./ui";
+import App from "./ui.js";
+import { program, Option } from "commander";
+import pkg from "../package.json";
+import updateNotifier from "update-notifier";
 
-const cli = meow(
-  `
-	Usage
-	  $ cli
+let commandMatched = false;
+// Checking for available updates
+const notifier = updateNotifier({ pkg });
+// Show update notification
+notifier.notify();
 
-	Options
-		--name  Your name
+program
+  .name("bouncer")
+  .description("CLI to bouncer SaaS seat management")
+  .version(pkg.version, "-v, --version");
+program
+  .command("test")
+  .addOption(
+    new Option("-h, --host", "API base url").default(
+      "http://localhost:3000/api/v1"
+    )
+  )
+  .description("test API layer end-to-end")
+  .action(async (_, args) => {
+    commandMatched = true;
 
-	Examples
-	  $ cli --name=Jane
-	  Hello, Jane
-`,
-  {
-    flags: {
-      name: {
-        type: "string",
-      },
-    },
-  }
-);
+    const { waitUntilExit } = render(<App func={"test"} host={args.host} />);
+    await waitUntilExit();
+  });
 
-render(<App name={cli.flags.name} />);
+program.parse(process.argv);
+
+if (!commandMatched) {
+  program.help();
+}

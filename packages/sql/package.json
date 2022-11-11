@@ -1,6 +1,6 @@
 {
   "name": "@dotinc/bouncer-sql",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "",
   "private": false,
   "keywords": [
@@ -15,7 +15,7 @@
     "bouncer"
   ],
   "type": "module",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -35,9 +35,10 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
-    "@dotinc/bouncer-core": "^0.6.0",
+    "@dotinc/bouncer-core": "^0.7.0",
     "better-sqlite3": "^7.6.2",
     "cuid": "^2.1.8",
+    "date-fns": "^2.29.3",
     "kysely": "^0.22.0"
   },
   "devDependencies": {

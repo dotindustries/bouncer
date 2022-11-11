@@ -1,3 +1,23 @@
+# v0.7.0 (Wed Nov 02 2022)
+
+#### 🚀 Enhancement
+
+- feat: cli end-to-end test [#6](https://github.com/dotindustries/bouncer/pull/6) ([@nadilas](https://github.com/nadilas))
+
+#### 🐛 Bug Fix
+
+- fix: reserve seat tested ([@nadilas](https://github.com/nadilas))
+- fix: update subscription tested ([@nadilas](https://github.com/nadilas))
+- fix: reading number instead of boolean from planetscale ([@nadilas](https://github.com/nadilas))
+- fix: create publisher sql insert ([@nadilas](https://github.com/nadilas))
+- fix: main of packages had wrong extensions ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.6.0 (Sun Oct 30 2022)
 
 #### 🚀 Enhancement

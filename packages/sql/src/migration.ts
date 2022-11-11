@@ -165,20 +165,6 @@ export class SqliteMigrationProvider implements MigrationProvider {
           await db.schema.dropTable("seat_summary").execute();
         },
       },
-      "2022-10-30_fix_missing_subscriptions_publisher_id": {
-        up: async (db) => {
-          await db.schema
-            .alterTable("subscriptions")
-            .addColumn("publisher_id", "varchar(30)")
-            .execute();
-        },
-        down: async (db) => {
-          await db.schema
-            .alterTable("subscriptions")
-            .dropColumn("publisher_id")
-            .execute();
-        },
-      },
     });
   }
 }
