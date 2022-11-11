@@ -1,8 +1,8 @@
-import path from "path";
+import path from 'path'
 // import ntm from "next-transpile-modules";
-import { createRequire } from "module";
+import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url);
+const require = createRequire(import.meta.url)
 // const withTM = ntm(["@dotinc/bouncer-core"]);
 
 /**
@@ -14,12 +14,15 @@ const require = createRequire(import.meta.url);
  * @constraint {{import('next').NextConfig}}
  */
 function defineNextConfig(config) {
-  return config;
+  return config
 }
 
 export default // withTM(
 defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
-});
+  experimental: {
+    externalDir: true,
+  },
+})
 // );

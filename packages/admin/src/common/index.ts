@@ -1,1 +1,1 @@
-export { AppProvider } from "./AppProvider";
+export { AppProvider } from './AppProvider'

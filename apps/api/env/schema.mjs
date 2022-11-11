@@ -1,19 +1,21 @@
 // @ts-check
-import { z } from "zod";
+import { z } from 'zod'
 
 /**
  * Specify your server-side environment variables schema here.
  * This way you can ensure the app isn't built with invalid env vars.
  */
 export const serverSchema = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]),
+  NODE_ENV: z.enum(['development', 'test', 'production']),
   DEV: z.string().optional(),
   SQLITE_DB: z.string().optional(),
   DB_MIGRATE: z.string().optional(),
   PSCALE_DATABASE_HOST: z.string().optional(),
   PSCALE_DATABASE_USERNAME: z.string().optional(),
   PSCALE_DATABASE_PASSWORD: z.string().optional(),
-});
+  SUPER_TOKENS_URI: z.string().optional(),
+  SUPER_TOKENS_API_KEY: z.string().optional(),
+})
 
 /**
  * Specify your client-side environment variables schema here.
@@ -23,7 +25,8 @@ export const serverSchema = z.object({
 export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID: z.string().optional(),
-});
+  NEXT_PUBLIC_SUPER_TOKENS_APP_NAME: z.string().optional(),
+})
 
 /**
  * You can't destruct `process.env` as a regular object, so you have to do
@@ -35,4 +38,4 @@ export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID:
     process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MID,
-};
+}

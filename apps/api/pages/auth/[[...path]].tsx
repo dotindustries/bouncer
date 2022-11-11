@@ -1,3 +1,3 @@
-import { AuthPage } from "@dotinc/bouncer-admin";
+import { AuthPage } from '@dotinc/bouncer-admin'
 
-export default AuthPage;
+export default AuthPage
