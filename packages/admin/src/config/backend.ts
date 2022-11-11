@@ -1,18 +1,18 @@
-import PasswordlessNode from 'supertokens-node/recipe/passwordless'
-import SessionNode from 'supertokens-node/recipe/session'
-import { appInfo as defaultAppInfo } from './appInfo'
-import { AppInfo, SuperTokensInfo, TypeInput } from 'supertokens-node/types'
+import PasswordlessNode from "supertokens-node/recipe/passwordless";
+import SessionNode from "supertokens-node/recipe/session";
+import { appInfo as defaultAppInfo } from "./appInfo";
+import { AppInfo, SuperTokensInfo, TypeInput } from "supertokens-node/types";
 
 export type BackendConfigProps = {
-  supertokens?: SuperTokensInfo
-  appInfo?: AppInfo
-}
+  supertokens?: SuperTokensInfo;
+  appInfo?: AppInfo;
+};
 
 export const backendConfig = (config: BackendConfigProps = {}): TypeInput => {
   return {
-    framework: 'express',
+    framework: "express",
     supertokens: {
-      connectionURI: 'https://try.supertokens.com',
+      connectionURI: "https://try.supertokens.com",
       ...config.supertokens,
     },
     appInfo: {
@@ -21,11 +21,11 @@ export const backendConfig = (config: BackendConfigProps = {}): TypeInput => {
     },
     recipeList: [
       PasswordlessNode.init({
-        flowType: 'MAGIC_LINK',
-        contactMethod: 'EMAIL',
+        flowType: "MAGIC_LINK",
+        contactMethod: "EMAIL",
       }),
       SessionNode.init(),
     ],
     isInServerlessEnv: true,
-  }
-}
+  };
+};
