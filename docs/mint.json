@@ -1,0 +1,87 @@
+{
+  "name": "Bouncer",
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "colors": {
+    "primary": "#28AFB0",
+    "light": "#5BE2E3",
+    "dark": "#282F44",
+    "ultraLight": "#EEE5E5",
+    "ultraDark": "#02091E",
+    "background": {
+      "dark": "#111"
+    }
+  },
+  "api": {
+    "baseUrl": "https://bouncer.dot.industries/api/v1"
+  },
+  "topbarCtaButton": {
+    "type": "github",
+    "url": "https://github.com/dotindustries/bouncer"
+  },
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/xNxkGVqX"
+    },
+    {
+      "name": "Github",
+      "icon": "github",
+      "url": "https://github.com/dotindustries/bouncer"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Configuration",
+      "pages": [
+        "configuration/get-configuration",
+        "configuration/set-configuration"
+      ]
+    },
+    {
+      "group": "Publishers",
+      "pages": ["publishers/publishers"]
+    },
+    {
+      "group": "Publisher",
+      "pages": ["publisher/publisher"]
+    },
+    {
+      "group": "Seats",
+      "pages": [
+        "seats/get-seat",
+        "seats/update-seat",
+        "seats/delete-seat",
+        "seats/get-seats"
+      ]
+    },
+    {
+      "group": "User-seat",
+      "pages": ["user-seat/user-seat"]
+    },
+    {
+      "group": "Redeem",
+      "pages": ["redeem/redeem"]
+    },
+    {
+      "group": "Request",
+      "pages": ["request/request"]
+    },
+    {
+      "group": "Reserve",
+      "pages": ["reserve/reserve"]
+    },
+    {
+      "group": "Subscription",
+      "pages": [
+        "subscriptions/get-subscription",
+        "subscriptions/update-subscription",
+        "subscriptions/get-subscriptions",
+        "subscriptions/create-subscription"
+      ]
+    }
+  ]
+}
