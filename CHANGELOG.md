@@ -1,3 +1,22 @@
+# (Wed Nov 16 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Han Wang ([@hanywang2](https://github.com/hanywang2)), for all your work!
+
+#### 🐛 Bug Fix
+
+- Add initial docs setup [#10](https://github.com/dotindustries/bouncer/pull/10) ([@hanywang2](https://github.com/hanywang2))
+- `@dotinc/bouncer-client@0.3.1`, `@dotinc/bouncer-core@0.7.1`, `@dotinc/bouncer-planetscale@0.7.1`
+  - chore: update zodios deps ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 2
+
+- [@nadilas](https://github.com/nadilas)
+- Han Wang ([@hanywang2](https://github.com/hanywang2))
+
+---
+
 # (Wed Nov 02 2022)
 
 #### 🚀 Enhancement
