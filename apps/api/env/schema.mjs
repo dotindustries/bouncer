@@ -1,14 +1,14 @@
 // @ts-check
-import { z } from 'zod'
+import { z } from "zod";
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = process.env.NODE_ENV === "production";
 
 /**
  * Specify your server-side environment variables schema here.
  * This way you can ensure the app isn't built with invalid env vars.
  */
 export const serverSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']),
+  NODE_ENV: z.enum(["development", "test", "production"]),
   DEV: z.string().optional(),
   SQLITE_DB: z.string().optional(),
   DB_MIGRATE: z.string().optional(),
@@ -17,7 +17,7 @@ export const serverSchema = z.object({
   PSCALE_DATABASE_PASSWORD: z.string().optional(),
   SUPER_TOKENS_URI: isProduction ? z.string() : z.string().optional(),
   SUPER_TOKENS_API_KEY: isProduction ? z.string() : z.string().optional(),
-})
+});
 
 /**
  * Specify your client-side environment variables schema here.
@@ -28,7 +28,7 @@ export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID: z.string().optional(),
   NEXT_PUBLIC_SUPER_TOKENS_APP_NAME: z.string().optional(),
-})
+});
 
 /**
  * You can't destruct `process.env` as a regular object, so you have to do
@@ -42,4 +42,4 @@ export const clientEnv = {
     process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MID,
   NEXT_PUBLIC_SUPER_TOKENS_APP_NAME:
     process.env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
-}
+};
