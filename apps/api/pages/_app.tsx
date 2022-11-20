@@ -4,7 +4,15 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { initFrontend } from "@dotinc/bouncer-admin";
 
-initFrontend();
+import { env } from "~/env/client.mjs";
+
+initFrontend({
+  appInfo: {
+    appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
+    apiDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+    websiteDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

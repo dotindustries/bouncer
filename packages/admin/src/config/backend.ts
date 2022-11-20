@@ -5,7 +5,7 @@ import { AppInfo, SuperTokensInfo, TypeInput } from "supertokens-node/types";
 
 export type BackendConfigProps = {
   supertokens?: SuperTokensInfo;
-  appInfo?: AppInfo;
+  appInfo?: Partial<AppInfo>;
 };
 
 export const backendConfig = (config: BackendConfigProps = {}): TypeInput => {

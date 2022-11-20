@@ -10,6 +10,11 @@ import { env } from "~/env/server.mjs";
 
 supertokens.init(
   backendConfig({
+    appInfo: {
+      appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
+      apiDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+      websiteDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+    },
     supertokens: env.SUPER_TOKENS_URI
       ? {
           connectionURI: env.SUPER_TOKENS_URI,
