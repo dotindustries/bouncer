@@ -1,1 +1,1 @@
-export { backendConfig } from '../config/backend'
+export { backendConfig } from "../config/backend";
