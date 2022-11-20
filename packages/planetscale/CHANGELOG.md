@@ -1,3 +1,15 @@
+# v0.7.1 (Wed Nov 16 2022)
+
+#### 🐛 Bug Fix
+
+- chore: update zodios deps ([@nadilas](https://github.com/nadilas))
+
+#### Authors: 1
+
+- [@nadilas](https://github.com/nadilas)
+
+---
+
 # v0.7.0 (Wed Nov 02 2022)
 
 #### 🚀 Enhancement
