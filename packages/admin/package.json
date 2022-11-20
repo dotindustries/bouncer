@@ -12,13 +12,22 @@
     "typescript"
   ],
   "type": "module",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
+    },
+    "./backend": {
+      "types": "./dist/backend/index.d.ts",
+      "require": "./dist/backend/index.cjs.js",
+      "default": "./dist/backend/index.esm.js"
+    }
+  },
   "scripts": {
     "prebuild": "npm run clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
-    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup --entry src/index.ts --entry src/backend/index.ts --format esm,cjs --dts --watch",
+    "build": "tsup --entry src/index.ts --entry src/backend/index.ts  --format esm,cjs --dts",
     "clean": "rimraf -r dist"
   },
   "repository": {

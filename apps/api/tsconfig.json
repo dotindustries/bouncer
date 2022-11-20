@@ -18,7 +18,8 @@
     "baseUrl": "./",
     "paths": {
       "~/env/*": ["./env/*"],
-      "@dotinc/bouncer-admin": ["../../packages/admin/src"]
+      "@dotinc/bouncer-admin": ["../../packages/admin/src"],
+      "@dotinc/bouncer-admin/backend": ["../../packages/admin/src/backend"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs"],
