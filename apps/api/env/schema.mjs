@@ -28,7 +28,6 @@ export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID: z.string().optional(),
   NEXT_PUBLIC_SUPER_TOKENS_APP_NAME: z.string().optional(),
-  NEXT_PUBLIC_HOST: z.string().optional(),
 });
 
 /**
@@ -43,5 +42,4 @@ export const clientEnv = {
     process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MID,
   NEXT_PUBLIC_SUPER_TOKENS_APP_NAME:
     process.env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
-  NEXT_PUBLIC_HOST: process.env.NEXT_PUBLIC_HOST,
 };

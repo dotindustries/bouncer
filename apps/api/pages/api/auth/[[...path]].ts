@@ -5,15 +5,15 @@ import { Request, Response } from "express";
 import supertokens from "supertokens-node";
 import { backendConfig } from "@dotinc/bouncer-admin/backend";
 import NextCors from "nextjs-cors";
-
+import { getBaseDomain } from "~/util/getBaseDomain";
 import { env } from "~/env/server.mjs";
 
 supertokens.init(
   backendConfig({
     appInfo: {
       appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
-      apiDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
-      websiteDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+      apiDomain: getBaseDomain(),
+      websiteDomain: getBaseDomain(),
     },
     supertokens: env.SUPER_TOKENS_URI
       ? {

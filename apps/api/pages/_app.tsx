@@ -3,14 +3,15 @@ import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 
 import { initFrontend } from "@dotinc/bouncer-admin";
+import { getBaseDomain } from "~/util/getBaseDomain";
 
 import { env } from "~/env/client.mjs";
 
 initFrontend({
   appInfo: {
     appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
-    apiDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
-    websiteDomain: env.NEXT_PUBLIC_HOST || "http://localhost:3000",
+    apiDomain: getBaseDomain(),
+    websiteDomain: getBaseDomain(),
   },
 });
 
