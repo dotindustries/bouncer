@@ -4,6 +4,7 @@ import type {
   Subscription,
   SeatCreationContext,
   SubscriptionPatch,
+  ApiKey,
 } from "../common/index";
 
 export interface Repository {
@@ -36,4 +37,6 @@ export interface Repository {
     sub: Subscription
   ): Promise<Subscription>;
   updateSubscription(sub: SubscriptionPatch): Promise<Subscription>;
+  createApiKey(key: ApiKey): Promise<ApiKey>;
+  deleteApiKey(key: ApiKey): Promise<void>;
 }

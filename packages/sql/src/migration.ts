@@ -165,6 +165,20 @@ export class SqliteMigrationProvider implements MigrationProvider {
           await db.schema.dropTable("seat_summary").execute();
         },
       },
+      "2022-11-02_api_keys": {
+        up: async (db) => {
+          await db.schema
+            .createTable("api_keys")
+            .addColumn("owner_id", "varchar(30)", (col) => col.notNull())
+            .addColumn("type", "varchar(20)", (col) => col.notNull())
+            .addColumn("key", "varchar(32)", (col) => col.notNull())
+            .addPrimaryKeyConstraint("pk_api_keys", ["owner_id", "type"])
+            .execute();
+        },
+        down: async (db) => {
+          await db.schema.dropTable("api_keys").execute();
+        },
+      },
     });
   }
 }

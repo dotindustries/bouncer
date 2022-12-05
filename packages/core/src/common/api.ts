@@ -1,59 +1,103 @@
-import { toOpenApi } from "@zodios/openapi";
-import { merge, isErrorResult } from "openapi-merge";
-import type { Swagger } from "atlassian-openapi";
-import { seatsApi } from "./seats";
-import { subscriptionApi } from "./subscriptions";
-import { configApi } from "./config";
+import { z } from "zod";
+import { makeApi, ZodiosPlugin } from "@zodios/core";
+import { noContentResult, error } from "./shared";
 
-const configOAS = toOpenApi(configApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
-});
-const seatsOAS = toOpenApi(seatsApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
-});
-const subscriptionsOAS = toOpenApi(subscriptionApi, {
-  info: {
-    title: "Bouncer API",
-    version: "1.0.0",
-    description: "SaaS seat management API",
-  },
-  servers: [
-    {
-      url: "/api/v1", // base path of user api
-    },
-  ],
+export const createApiKey = z.object({
+  owner_id: z.string(),
+  type: z.enum(["publisher_public", "publisher_private"]),
 });
 
-const mergedApi = merge([
+export const apiKeyType = z.enum([
+  "system",
+  "publisher_public",
+  "publisher_private",
+]);
+export type ApiKeyType = z.infer<typeof apiKeyType>;
+
+export const apiKeyPrefixes: Record<ApiKeyType, string> = {
+  publisher_public: "ppp",
+  publisher_private: "ppr",
+  system: "sts",
+};
+
+export const apiKey = z.object({
+  owner_id: z.string(),
+  type: apiKeyType,
+  key: z.string().length(32),
+});
+
+export type ApiKey = z.infer<typeof apiKey>;
+
+export const keysApi = makeApi([
   {
-    oas: configOAS as any,
+    alias: "createApiKey",
+    method: "post",
+    path: "keys/:type/:ownerId",
+    parameters: [
+      {
+        name: "type",
+        type: "Path",
+        schema: apiKeyType,
+      },
+      {
+        name: "ownerId",
+        type: "Path",
+        schema: z.string().max(30),
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
+    response: apiKey,
   },
   {
-    oas: seatsOAS as any,
+    alias: "deleteApiKey",
+    method: "delete",
+    path: "keys/:type/:ownerId",
+    parameters: [
+      {
+        name: "type",
+        type: "Path",
+        schema: apiKeyType,
+      },
+      {
+        name: "ownerId",
+        type: "Path",
+        schema: z.string().max(30),
+      },
+      {
+        name: "key",
+        type: "Body",
+        schema: apiKey,
+      },
+    ],
+    errors: [
+      {
+        status: "default",
+        schema: error,
+      },
+    ],
+    response: noContentResult,
   },
-  { oas: subscriptionsOAS },
 ]);
 
-if (isErrorResult(mergedApi)) {
-  throw new Error("cannot compile API definition");
+export interface ApiKeyPluginConfig {
+  getApiKey: () => Promise<string>;
 }
 
-export const apiDefinition: Swagger.SwaggerV3 = mergedApi.output;
+export const pluginApiKey = (provider: ApiKeyPluginConfig): ZodiosPlugin => {
+  return {
+    request: async (_, config) => {
+      return {
+        ...config,
+        headers: {
+          ...config.headers,
+          "x-api-key": await provider.getApiKey(),
+        },
+      };
+    },
+  };
+};
