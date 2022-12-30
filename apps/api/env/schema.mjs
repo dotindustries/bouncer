@@ -1,6 +1,8 @@
 // @ts-check
 import { z } from "zod";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 /**
  * Specify your server-side environment variables schema here.
  * This way you can ensure the app isn't built with invalid env vars.
@@ -13,6 +15,8 @@ export const serverSchema = z.object({
   PSCALE_DATABASE_HOST: z.string().optional(),
   PSCALE_DATABASE_USERNAME: z.string().optional(),
   PSCALE_DATABASE_PASSWORD: z.string().optional(),
+  SUPER_TOKENS_URI: isProduction ? z.string() : z.string().optional(),
+  SUPER_TOKENS_API_KEY: isProduction ? z.string() : z.string().optional(),
 });
 
 /**
@@ -23,6 +27,7 @@ export const serverSchema = z.object({
 export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID: z.string().optional(),
+  NEXT_PUBLIC_SUPER_TOKENS_APP_NAME: z.string().optional(),
 });
 
 /**
@@ -35,4 +40,6 @@ export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID:
     process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MID,
+  NEXT_PUBLIC_SUPER_TOKENS_APP_NAME:
+    process.env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
 };
