@@ -3,20 +3,40 @@ import { subscriptionsRouter } from "./subscriptions";
 import { configRouter } from "./config";
 import { seatsRouter } from "./seats";
 import { repo } from "../db";
-import { keysRouter } from "./keys";
 
 export const app = ctx.nextApp();
 
-// TODO: supertokens middleware that adds the user to the context
-// app.use(userMiddleware);
+// auth middleware that adds the user to the context
+app.use((req, res, next) => {
+  // check if we hav a request with an api key
+  const apiKeyHeader = req.headers["x-api-key"];
+
+  if (typeof apiKeyHeader === "string") {
+    const split = apiKeyHeader.split(" ");
+    if (split.length != 2) {
+      return res.status(401).json({ message: "Unauthorized request" });
+    }
+    req.apiKey = split[1];
+  }
+
+  // check if we have a direct user from the web ui instead
+  if (!req.apiKey) {
+    const user = undefined;
+    // TODO add supertokens read-out
+    req.user = user;
+  }
+
+  // if we have no auth set, reject
+  if (!req.user && !req.apiKey) {
+    return res.status(401).json({ message: "Unauthorized request" });
+  }
+
+  return next();
+});
 
 // repository middleware
 app.use((req, res, next) => {
   req.repo = repo;
-  const apiKeyHeader = req.headers["x-api-key"];
-  if (!apiKeyHeader || typeof apiKeyHeader !== "string")
-    return res.status(401).json({ message: "Unauthorized request" });
-  req.apiKey = apiKeyHeader;
 
   return next(); // passing arg hits http-500
 });
@@ -24,4 +44,3 @@ app.use((req, res, next) => {
 app.use("/api/v1", seatsRouter);
 app.use("/api/v1", configRouter);
 app.use("/api/v1", subscriptionsRouter);
-app.use("/api/v1", keysRouter);
