@@ -10,6 +10,8 @@ const isProduction = process.env.NODE_ENV === "production";
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   DEV: z.string().optional(),
+  API_KEYS: z.string(),
+  AUTH_ACL: z.string(),
   SQLITE_DB: z.string().optional(),
   DB_MIGRATE: z.string().optional(),
   PSCALE_DATABASE_HOST: z.string().optional(),

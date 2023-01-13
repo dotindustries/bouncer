@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { format } from "date-fns";
 
+export const noContentResult = z.object({});
+
 export const error404 = z.object({
   code: z.number(),
   message: z.string(),

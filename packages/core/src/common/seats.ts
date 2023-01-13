@@ -1,10 +1,8 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404, sqlDateString } from "./shared";
+import { error, error404, noContentResult, sqlDateString } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
-
-export const noContentResult = z.object({});
 
 export type SeatingSummary = {
   standardSeatCount: number;

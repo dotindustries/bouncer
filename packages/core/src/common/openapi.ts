@@ -1,9 +1,11 @@
-import { toOpenApi } from "@zodios/openapi";
+import { toOpenApi, bearerAuthScheme } from "@zodios/openapi";
 import { merge, isErrorResult } from "openapi-merge";
 import type { Swagger } from "atlassian-openapi";
 import { seatsApi } from "./seats";
 import { subscriptionApi } from "./subscriptions";
 import { configApi } from "./config";
+
+const securityScheme = bearerAuthScheme();
 
 const configOAS = toOpenApi(configApi, {
   info: {
@@ -16,7 +18,9 @@ const configOAS = toOpenApi(configApi, {
       url: "/api/v1", // base path of user api
     },
   ],
+  securityScheme,
 });
+
 const seatsOAS = toOpenApi(seatsApi, {
   info: {
     title: "Bouncer API",
@@ -28,7 +32,9 @@ const seatsOAS = toOpenApi(seatsApi, {
       url: "/api/v1", // base path of user api
     },
   ],
+  securityScheme,
 });
+
 const subscriptionsOAS = toOpenApi(subscriptionApi, {
   info: {
     title: "Bouncer API",
@@ -40,6 +46,7 @@ const subscriptionsOAS = toOpenApi(subscriptionApi, {
       url: "/api/v1", // base path of user api
     },
   ],
+  securityScheme,
 });
 
 const mergedApi = merge([
