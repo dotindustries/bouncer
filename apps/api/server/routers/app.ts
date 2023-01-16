@@ -14,6 +14,7 @@ import { backendConfig } from "@dotinc/bouncer-admin/backend";
 import { env } from "~/env/server.mjs";
 import { getBaseDomain } from "~/util/getBaseDomain";
 import { SessionRequest } from "supertokens-node/framework/express";
+import micromatch from "micromatch";
 
 export const app = ctx.nextApp();
 
@@ -88,15 +89,27 @@ app.use(async (req, res, next) => {
 
 // authZ middleware
 const apiKeys = env.API_KEYS.split(",");
-const authAcl = env.AUTH_ACL.split(",");
+
+export const validateEmailWithACL = (email: string) => {
+  const authAcl = env.AUTH_ACL || undefined;
+
+  if (!authAcl) {
+    return false;
+  }
+
+  const acl = authAcl.split(",");
+
+  return micromatch.isMatch(email, acl);
+};
+
 app.use((req, res, next) => {
   if (typeof req.auth === "string" && !apiKeys.includes(req.auth)) {
     // api key is not valid
     return res.status(403).json({ message: "Access denied" });
   } else if (typeof req.auth !== "string" && req.auth.email) {
-    authAcl.includes(req.auth.email);
-    // auth acl check
-    return res.status(403).json({ message: "Access denied" });
+    if (!validateEmailWithACL(req.auth.email)) {
+      return res.status(403).json({ message: "Access denied" });
+    }
   } else {
     // no e-mail set
     return res.status(403).json({ message: "Access denied" });
