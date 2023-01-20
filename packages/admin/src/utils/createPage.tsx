@@ -2,12 +2,14 @@ import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { NextPage } from "next/types";
+import { Authenticated } from "../auth";
 
 interface CustomPageProps {}
 
 export interface CreatePageProps<TPageProps extends object>
   extends CustomPageProps {
   title?: string;
+  protected?: boolean;
   renderComponent: React.FC<PageProps & TPageProps>;
 }
 
@@ -30,12 +32,14 @@ export interface PageProps {
  * https://blog.rstankov.com/structuring-next-js-application/
  */
 export const createPage = <TPageProps extends object>(
-  props: CreatePageProps<TPageProps>
+  createProps: CreatePageProps<TPageProps>
 ) => {
-  const { title, renderComponent: PageComponent } = props;
+  const { title, renderComponent: PageComponent } = createProps;
 
   const Page: NextPageWithLayout<TPageProps> = (props) => {
     const router = useRouter();
+
+    const page = <PageComponent query={router.query} {...props} />;
 
     return (
       <>
@@ -43,7 +47,7 @@ export const createPage = <TPageProps extends object>(
           <title>{title}</title>
         </Head>
 
-        <PageComponent query={router.query} {...props} />
+        {createProps.protected ? <Authenticated>{page}</Authenticated> : page}
       </>
     );
   };

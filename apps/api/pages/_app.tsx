@@ -9,7 +9,7 @@ import Script from "next/script";
 
 initFrontend({
   appInfo: {
-    appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
+    appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME ?? "bouncer",
     apiDomain: getBaseDomain(),
     websiteDomain: getBaseDomain(),
   },

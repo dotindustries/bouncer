@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
 import * as React from "react";
 import { config, seats } from "../api";
 
@@ -11,44 +11,12 @@ export const ListPublishersPage = () => {
     invalidate,
   } = config.usePublisherConfigurations();
 
-  const { mutate } = seats.useRequestSeat(
-    {
-      params: {
-        subscriptionId: "<your subscription id>",
-        seatId: "<your seat id>",
-      },
-    },
-    {
-      onSuccess: () => invalidate(),
-    }
-  );
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return (
-      <>
-        <h2>Error</h2>
-        <pre style={{ color: "red" }}>{JSON.stringify(error, null, "  ")}</pre>
-      </>
-    );
-  }
-
   return (
-    <Box>
-      <Button
-        onClick={() => {
-          mutate({
-            tenant_id: `tenant${count}`,
-            user_id: `${count}`,
-            user_name: `user${count}`,
-            email: `user${count}@test.com`,
-          });
-        }}
-      >
-        Add User
-      </Button>
+    <Box px="8" py="4">
+      <HStack>
+        <Heading>Publishers</Heading>
+      </HStack>
+
       {publisherConfigurations?.map((publisherConfig) => (
         <div key={publisherConfig.id}>
           <pre>{JSON.stringify(publisherConfig, null, "  ")}</pre>

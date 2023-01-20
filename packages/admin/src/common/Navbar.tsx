@@ -13,9 +13,10 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-} from "@chakra-ui/react";
+} from "@dotinc/bouncer-ui";
 
 import { FiMenu, FiX, FiPlus } from "react-icons/fi";
+import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 
 import { Link } from "./Link";
 
@@ -73,15 +74,6 @@ export const NavBar = () => {
             </HStack>
           </HStack>
           <Flex alignItems={"center"}>
-            <Button
-              variant={"solid"}
-              colorScheme={"teal"}
-              size={"sm"}
-              mr={4}
-              leftIcon={<FiPlus />}
-            >
-              Action
-            </Button>
             <Menu>
               <MenuButton
                 as={Button}
@@ -98,10 +90,7 @@ export const NavBar = () => {
                 />
               </MenuButton>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem onClick={() => signOut()}>Log out</MenuItem>
               </MenuList>
             </Menu>
           </Flex>

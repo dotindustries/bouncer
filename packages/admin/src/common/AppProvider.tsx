@@ -1,7 +1,7 @@
 import * as React from "react";
-import { SaasProvider } from "@saas-ui/react";
-import { AuthProvider } from "../auth/AuthProvider";
+import { ModalsProvider, SaasProvider, Form } from "@dotinc/bouncer-ui";
 
+import { AuthProvider } from "../auth/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient();
@@ -12,7 +12,9 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <SaasProvider>
-        <AuthProvider>{children}</AuthProvider>
+        <ModalsProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ModalsProvider>
       </SaasProvider>
     </QueryClientProvider>
   );
