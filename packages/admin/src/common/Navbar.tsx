@@ -13,12 +13,11 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Link,
 } from "@dotinc/bouncer-ui";
 
 import { FiMenu, FiX, FiPlus } from "react-icons/fi";
 import { signOut } from "supertokens-auth-react/recipe/emailpassword";
-
-import { Link } from "./Link";
 
 const links = [
   { label: "Dashboard", href: "/" },

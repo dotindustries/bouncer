@@ -1,5 +1,6 @@
 import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
+import type {} from "zod";
 
 import { seatsApi, configApi } from "@dotinc/bouncer-core";
 

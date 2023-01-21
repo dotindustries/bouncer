@@ -22,6 +22,7 @@
     "noUnusedParameters": true,
     "noErrorTruncation": true,
     "importsNotUsedAsValues": "error",
+    "preserveSymlinks": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]

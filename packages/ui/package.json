@@ -22,8 +22,8 @@
   },
   "scripts": {
     "prebuild": "npm run clean",
-    "dev": "tsup --entry src/index.ts --entry src/backend/index.ts --format esm,cjs --dts --watch",
-    "build": "tsup --entry src/index.ts --entry src/backend/index.ts  --format esm,cjs --dts",
+    "dev": "tsup --entry src/index.ts --entry src/backend/index.ts --format esm,cjs --dts-resolve --watch",
+    "build": "tsup --entry src/index.ts --entry src/backend/index.ts  --format esm,cjs --dts-resolve",
     "clean": "rimraf -r dist"
   },
   "repository": {
@@ -38,6 +38,7 @@
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
     "@chakra-ui/react": "^2.4.9",
+    "@chakra-ui/system": "^2.4.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@saas-ui/react": "^1.8.0",
@@ -46,7 +47,6 @@
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "zod": "^3.19.1",
-    "@tanstack/react-query": "^4.13.0",
     "react-icons": "^4.7.1"
   },
   "peerDependencies": {
