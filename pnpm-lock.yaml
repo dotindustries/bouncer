@@ -41,6 +41,7 @@ importers:
       '@dotinc/bouncer-sql': ^0.7.1
       '@tanstack/react-query': 4.13.0
       '@types/express': 4.17.14
+      '@types/micromatch': ^4.0.2
       '@types/node': 18.11.4
       '@types/react': 18.0.22
       '@types/react-dom': 18.0.7
@@ -96,6 +97,7 @@ importers:
       swagger-ui-react: 4.15.0_biqbaboplfbrettd7655fr4n2y
       zod: 3.19.1
     devDependencies:
+      '@types/micromatch': 4.0.2
       '@types/node': 18.11.4
       '@types/react': 18.0.22
       '@types/react-dom': 18.0.7
@@ -4742,6 +4744,10 @@ packages:
       '@types/connect': 3.4.35
       '@types/node': 18.11.4
 
+  /@types/braces/3.0.1:
+    resolution: {integrity: sha512-+euflG6ygo4bn0JHtn4pYqcXwRtLvElQ7/nnjDu7iYG56H0+OhCd7d6Ug0IE3WcFpZozBKW2+80FUbv5QGk5AQ==}
+    dev: true
+
   /@types/command-line-args/5.2.0:
     resolution: {integrity: sha512-UuKzKpJJ/Ief6ufIaIzr3A/0XnluX7RvFgwkV89Yzvm77wCh1kFaFmqN8XEnGcN62EuHdedQjEMb8mYxFLGPyA==}
     dev: true
@@ -4848,6 +4854,12 @@ packages:
   /@types/lodash/4.14.186:
     resolution: {integrity: sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==}
     dev: false
+
+  /@types/micromatch/4.0.2:
+    resolution: {integrity: sha512-oqXqVb0ci19GtH0vOA/U2TmHTcRY9kuZl4mqUxe0QmJAlIW13kzhuK5pi1i9+ngav8FjpSb9FVS/GE00GLX1VA==}
+    dependencies:
+      '@types/braces': 3.0.1
+    dev: true
 
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
