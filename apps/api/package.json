@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dotinc/bouncer-admin": "workspace:*",
     "@dotinc/bouncer-core": "^0.7.1",
     "@dotinc/bouncer-planetscale": "^0.7.1",
     "@dotinc/bouncer-sql": "^0.7.1",
@@ -41,7 +42,6 @@
     "@types/react": "18.0.24",
     "@types/react-dom": "18.0.7",
     "@types/swagger-ui-react": "^4.11.0",
-    "@types/micromatch": "^4.0.2",
     "eslint": "8.26.0",
     "eslint-config-next": "12.3.1",
     "openapi-types": "^12.0.2",
