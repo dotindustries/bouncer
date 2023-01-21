@@ -40,6 +40,7 @@ importers:
 
   apps/api:
     specifiers:
+      '@dotinc/bouncer-admin': workspace:*
       '@dotinc/bouncer-core': ^0.7.1
       '@dotinc/bouncer-planetscale': ^0.7.1
       '@dotinc/bouncer-sql': ^0.7.1
@@ -75,6 +76,7 @@ importers:
       typescript: 4.8.4
       zod: 3.19.1
     dependencies:
+      '@dotinc/bouncer-admin': link:../../packages/admin
       '@dotinc/bouncer-core': link:../../packages/core
       '@dotinc/bouncer-planetscale': link:../../packages/planetscale
       '@dotinc/bouncer-sql': link:../../packages/sql
