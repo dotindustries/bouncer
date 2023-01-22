@@ -2,7 +2,6 @@
   "name": "@dotinc/bouncer-core",
   "version": "0.7.1",
   "description": "",
-  "private": false,
   "keywords": [
     "saas",
     "seat",
@@ -32,6 +31,7 @@
   },
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
+    "@dotinc/bouncer-db": "workspace:*",
     "@zodios/core": "10.5.2",
     "@zodios/openapi": "^10.4.6",
     "axios": "1.1.3",

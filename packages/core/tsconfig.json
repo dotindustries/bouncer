@@ -25,7 +25,8 @@
     "preserveSymlinks": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "@dotinc/bouncer-db": ["../../packages/db"]
     }
   },
   "include": ["src/**/*.ts"]

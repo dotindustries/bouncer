@@ -3,6 +3,11 @@ import { z } from "zod";
 import { error, error404, noContentResult, sqlDateString } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
+import type {
+  Seat as DbSeat,
+  SeatOccupant,
+  SeatReservation,
+} from "@dotinc/bouncer-db";
 
 export type SeatingSummary = {
   standardSeatCount: number;
@@ -12,7 +17,10 @@ export type SeatingSummary = {
 export type SeatCreationContext = {
   isSeatCreated: boolean;
   seatingSummary: SeatingSummary;
-  createdSeat?: Seat;
+  createdSeat?: DbSeat & {
+    reservation: SeatReservation | null;
+    occupant: SeatOccupant | null;
+  };
 };
 
 export const reservation = z.object({
