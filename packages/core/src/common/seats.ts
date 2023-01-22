@@ -68,7 +68,7 @@ export const validateSeatRequest = (inSubscription: Subscription) => {
 };
 
 export const seat = z.object({
-  seat_id: z.string(),
+  id: z.string(),
   subscription_id: z.string().nullable(),
   occupant: user.nullable(),
   seating_strategy_name: z.string().nullable(),
