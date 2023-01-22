@@ -43,5 +43,5 @@
     "openapi-types": "^12.0.2",
     "typescript": "4.8.4"
   },
-  "packageManager": "yarn@3.3.0"
+  "packageManager": "yarn@3.3.1"
 }
