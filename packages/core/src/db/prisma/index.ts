@@ -388,7 +388,7 @@ export const PrismaRepository: Repository = {
       createdSeat,
     };
   },
-  deleteSeat: async (seatId, subscriptionId) => {
+  deleteSeat: async (seatId, _subscriptionId) => {
     await prisma.$transaction([
       prisma.seatOccupant.delete({ where: { seat_id: seatId } }),
       prisma.seatReservation.delete({ where: { seat_id: seatId } }),

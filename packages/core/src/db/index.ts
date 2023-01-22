@@ -8,9 +8,6 @@ import type {
   Subscription,
 } from "@dotinc/bouncer-db";
 
-// Export default repository
-export * from "./prisma";
-
 export interface Repository {
   createProduct(
     config: Product & { seatingConfig: SeatingConfig },
