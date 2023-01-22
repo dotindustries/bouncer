@@ -6,33 +6,12 @@ import { configRouter } from "./config";
 import { seatsRouter } from "./seats";
 import { repo } from "../db";
 import NextCors from "nextjs-cors";
-import supertokens from "supertokens-node";
-import { superTokensNextWrapper } from "supertokens-node/nextjs";
-import { verifySession } from "supertokens-node/recipe/session/framework/express";
-import Passwordless from "supertokens-node/recipe/passwordless";
-import { backendConfig } from "@dotinc/bouncer-admin/backend";
+
+import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 import { env } from "~/env/server.mjs";
-import { getBaseDomain } from "~/util/getBaseDomain";
-import { SessionRequest } from "supertokens-node/framework/express";
 import micromatch from "micromatch";
 
 export const app = ctx.nextApp();
-
-supertokens.init(
-  backendConfig({
-    appInfo: {
-      appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
-      apiDomain: getBaseDomain(),
-      websiteDomain: getBaseDomain(),
-    },
-    supertokens: env.SUPER_TOKENS_URI
-      ? {
-          connectionURI: env.SUPER_TOKENS_URI,
-          apiKey: env.SUPER_TOKENS_API_KEY,
-        }
-      : undefined,
-  })
-);
 
 // auth middleware that adds the user or apiKey to the context
 app.use(async (req, res, next) => {
@@ -56,27 +35,16 @@ app.use(async (req, res, next) => {
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
         origin: "*",
         credentials: true,
-        allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
+        allowedHeaders: ["content-type"],
       }
     );
 
-    await superTokensNextWrapper(
-      async (next) => {
-        return await verifySession()(req, res, next);
-      },
-      req,
-      res
-    );
-    // supertokens: if it comes here, it means that the session verification was successful
+    const sessh = await getServerSession({ req, res });
 
-    const session = (req as unknown as SessionRequest).session!;
-    const user = await Passwordless.getUserById({
-      userId: session.getUserId(),
-    });
-    if (!user) {
+    if (!sessh || !sessh.user) {
       return res.status(500).json({ message: "User not available" });
     }
-    req.auth = user;
+    req.auth = sessh.user;
   }
 
   // if we have no auth set, reject
