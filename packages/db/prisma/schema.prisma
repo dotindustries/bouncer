@@ -35,7 +35,6 @@ model Product {
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   owner User @relation(fields: [owner_id], references: [id])
 
-  @@map("products")
   @@index([owner_id])
 }
 
@@ -109,7 +108,7 @@ model Seat {
 }
 
 model Subscription {
-  id                     String    @id @db.VarChar(30) @unique
+  id                     String   @id @db.VarChar(30) @unique
   product_id             String   @db.VarChar(30)
   is_setup_complete      Boolean?
   created_utc            DateTime? @db.DateTime(0)
@@ -134,8 +133,6 @@ model Subscription {
 
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   seatSummary   SeatSummary?
-
-  @@map("subscriptions")
 }
 
 // NextAuth.js Models
