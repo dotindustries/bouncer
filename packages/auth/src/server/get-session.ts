@@ -15,5 +15,9 @@ export const getServerSession = async (
       }
     | { req: NextApiRequest; res: NextApiResponse }
 ) => {
-  return await unstable_getServerSession(ctx.req, ctx.res, authOptions);
+  return await unstable_getServerSession(
+    ctx.req,
+    ctx.res,
+    authOptions({ domain: "localhost", origin: "http://localhost:3000" })
+  );
 };

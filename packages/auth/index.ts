@@ -1,6 +1,15 @@
-export { authOptions } from "./src/auth-options";
-export { getServerSession } from "./src/get-session";
+export { RegisterWebAuthn } from "./src/RegisterWebAuthn";
+export { AuthProvider } from "./src/AuthProvider";
+
 export type { Session } from "next-auth";
+export { signIn, signOut, useSession } from "next-auth/react";
+
+export {
+  startAuthentication,
+  startRegistration,
+} from "@simplewebauthn/browser";
+
+export type { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/typescript-types";
 
 import { DefaultSession } from "next-auth";
 /**
@@ -10,10 +19,12 @@ import { DefaultSession } from "next-auth";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 
+export type User = {
+  id: string;
+} & DefaultSession["user"];
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
+    user: User;
   }
 }

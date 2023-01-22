@@ -1,21 +1,15 @@
 import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 
-import { initFrontend, AppProvider, Layout } from "@dotinc/bouncer-admin";
-import { getBaseDomain } from "~/util/getBaseDomain";
+import { AppProvider, AuthProvider, Layout } from "@dotinc/bouncer-admin";
 
 import { env } from "~/env/client.mjs";
 import Script from "next/script";
-
-initFrontend({
-  appInfo: {
-    appName: env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME ?? "bouncer",
-    apiDomain: getBaseDomain(),
-    websiteDomain: getBaseDomain(),
-  },
-});
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  console.log("did we get a session", pageProps.session);
   return (
     <>
       {/* Google tag (gtag.js) - Google Analytics */}
@@ -42,12 +36,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         </>
       )}
 
-      <AppProvider>
-        <Layout>
-          <Component {...pageProps} />
-          <Analytics />
-        </Layout>
-      </AppProvider>
+      <AuthProvider session={pageProps.session}>
+        <AppProvider>
+          <Layout>
+            <Component {...pageProps} />
+            <Analytics />
+          </Layout>
+        </AppProvider>
+      </AuthProvider>
     </>
   );
 }

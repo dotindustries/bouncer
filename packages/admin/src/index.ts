@@ -1,8 +1,4 @@
-// config
-export { frontendConfig } from "./config/frontend";
-
 // utils
-export { initFrontend } from "./utils/initFrontend";
 export { createPage } from "./utils/createPage";
 
 // auth & providers
