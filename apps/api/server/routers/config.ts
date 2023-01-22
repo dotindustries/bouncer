@@ -3,36 +3,36 @@ import { configApi } from "@dotinc/bouncer-core";
 
 export const configRouter = ctx.router(configApi);
 
-configRouter.get("/publisher/:publisherId/configuration", async (req, res) => {
+configRouter.get("/products/:productId/config", async (req, res) => {
   // TODO: API Keys access: sys_ and pub_
-  if (typeof req.params.publisherId !== "string") {
+  if (typeof req.params.productId !== "string") {
     return res.status(400).json({
       code: 400,
       message: "Invalid publisherId",
     });
   }
   try {
-    const pc = await req.repo.getPublisher(req.params.publisherId);
+    const pc = await req.repo.getProduct(req.params.productId);
     if (!pc) {
       return res.status(404).json({
         code: 404,
-        message: `Publisher [${req.params.publisherId}] not found.`,
-        id: req.params.publisherId,
+        message: `Publisher [${req.params.productId}] not found.`,
+        id: req.params.productId,
       });
     }
     return res.status(200).json(pc);
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
-      message: `Failed to get publisher configuration [${req.params.publisherId}]: ${e.message}`,
+      message: `Failed to get publisher configuration [${req.params.productId}]: ${e.message}`,
     });
   }
 });
 
-configRouter.get("/publishers", async (req, res) => {
+configRouter.get("/products", async (req, res) => {
   // TODO: API Keys access: sys_
   try {
-    return res.status(200).json(await req.repo.getPublishers());
+    return res.status(200).json(await req.repo.getProducts());
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
@@ -41,18 +41,18 @@ configRouter.get("/publishers", async (req, res) => {
   }
 });
 
-configRouter.put("/publisher/:publisherId/configuration", async (req, res) => {
+configRouter.put("/products/:productId/config", async (req, res) => {
   // TODO: API Keys access: sys_ and pub_
   const config = req.body;
 
-  if (req.params.publisherId !== config.id) {
+  if (req.params.productId !== config.id) {
     return res.status(400).json({
       code: 400,
-      message: `Invalid publisher configuration [${req.params.publisherId}] doesn't match id in patch [${config.id}]`,
+      message: `Invalid publisher configuration [${req.params.productId}] doesn't match id in patch [${config.id}]`,
     });
   }
   try {
-    return res.status(200).json(await req.repo.updatePublisher(config));
+    return res.status(200).json(await req.repo.updateProduct(config));
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
@@ -61,12 +61,19 @@ configRouter.put("/publisher/:publisherId/configuration", async (req, res) => {
   }
 });
 
-configRouter.post("/publisher", async (req, res) => {
+configRouter.post("/products", async (req, res) => {
   // TODO: API Keys access: sys_
   const config = req.body;
 
+  let ownerId = "";
+  if (typeof req.auth === "string") {
+    ownerId = req.auth; // TODO: find userId associated to api_key
+  } else {
+    ownerId = req.auth.id;
+  }
+
   try {
-    return res.status(200).json(await req.repo.createPublisher(config));
+    return res.status(200).json(await req.repo.createProduct(config, ownerId));
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
