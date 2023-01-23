@@ -7,7 +7,7 @@ import {
   SeatReservation,
   SeatType,
 } from "@dotinc/bouncer-db";
-import { getMysqlFormattedDateTime, SeatingSummary } from "~/common";
+import { getMysqlFormattedDateTime, SeatingSummary } from "../../common";
 
 export const PrismaRepository: Repository = {
   getProduct: (productId) => {

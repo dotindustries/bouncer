@@ -1,6 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404, noContentResult, sqlDateString } from "./shared";
+import { error, error404, noContentResult } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 import type {
@@ -34,7 +34,7 @@ export const reservation = z.object({
       email: z.string(),
     }),
   ]),
-  invite_url: z.string().nullish(),
+  invite_url: z.string().nullable(),
 });
 
 export type Reservation = z.infer<typeof reservation>;
@@ -67,17 +67,23 @@ export const validateSeatRequest = (inSubscription: Subscription) => {
   return undefined;
 };
 
-export const seat = z.object({
-  id: z.string(),
-  subscription_id: z.string().nullable(),
-  occupant: user.nullable(),
-  seating_strategy_name: z.string().nullable(),
-  seat_type: z.enum(["standard", "limited"]),
-  reservation: reservation.nullable(),
-  expires_utc: sqlDateString.nullable(),
-  created_utc: sqlDateString.nullable(),
-  redeemed_utc: sqlDateString.nullable(),
-});
+export const seat = z.custom<
+  DbSeat & {
+    reservation: SeatReservation | null;
+    occupant: Omit<SeatOccupant, "seat_id"> | null;
+  }
+>();
+// z.object({
+//   id: z.string(),
+//   subscription_id: z.string().nullable(),
+//   occupant: user.nullable(),
+//   seating_strategy_name: z.string().nullable(),
+//   seat_type: z.enum(["standard", "limited"]),
+//   reservation: reservation.nullable(),
+//   expires_utc: sqlDateString.nullable(),
+//   created_utc: sqlDateString.nullable(),
+//   redeemed_utc: sqlDateString.nullable(),
+// });
 
 export type Seat = z.infer<typeof seat>;
 

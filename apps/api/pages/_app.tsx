@@ -9,7 +9,6 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log("did we get a session", pageProps.session);
   return (
     <>
       {/* Google tag (gtag.js) - Google Analytics */}
