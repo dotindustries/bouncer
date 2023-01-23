@@ -1,6 +1,6 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404, noContentResult } from "./shared";
+import { error, error404, noContentResult, schemaForType } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 import type {
@@ -23,7 +23,16 @@ export type SeatCreationContext = {
   };
 };
 
-export const reservation = z.custom<DbSeatReservation>();
+// use like this:
+export const reservation = schemaForType<DbSeatReservation>()(
+  z.object({
+    seat_id: z.string(),
+    tenant_id: z.string().nullable(),
+    user_id: z.string().nullable(),
+    email: z.string().nullable(),
+    invite_url: z.string().nullable(),
+  })
+);
 
 // Reservation ([user_id] and [tenant_id]) or [email] is required.
 export type Reservation = z.infer<typeof reservation>;

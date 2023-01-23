@@ -1,7 +1,7 @@
-import { ctx } from "./../context";
-import { configApi } from "@dotinc/bouncer-core";
+import { ctx } from "../context";
+import { productApi } from "@dotinc/bouncer-core";
 
-export const configRouter = ctx.router(configApi);
+export const configRouter = ctx.router(productApi);
 
 configRouter.get("/products/:productId/config", async (req, res) => {
   // TODO: API Keys access: sys_ and pub_
@@ -43,27 +43,27 @@ configRouter.get("/products", async (req, res) => {
 
 configRouter.put("/products/:productId/config", async (req, res) => {
   // TODO: API Keys access: sys_ and pub_
-  const config = req.body;
+  const product = req.body;
 
-  if (req.params.productId !== config.id) {
+  if (req.params.productId !== product.id) {
     return res.status(400).json({
       code: 400,
-      message: `Invalid publisher configuration [${req.params.productId}] doesn't match id in patch [${config.id}]`,
+      message: `Invalid publisher configuration [${req.params.productId}] doesn't match id in patch [${product.id}]`,
     });
   }
   try {
-    return res.status(200).json(await req.repo.updateProduct(config));
+    return res.status(200).json(await req.repo.updateProduct(product));
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
-      message: `Failed to save publisher configuration [${config.id}]: ${e.message}`,
+      message: `Failed to save publisher configuration [${product.id}]: ${e.message}`,
     });
   }
 });
 
 configRouter.post("/products", async (req, res) => {
   // TODO: API Keys access: sys_
-  const config = req.body;
+  const product = req.body;
 
   let ownerId = "";
   if (typeof req.auth === "string") {
@@ -73,11 +73,15 @@ configRouter.post("/products", async (req, res) => {
   }
 
   try {
-    return res.status(200).json(await req.repo.createProduct(config, ownerId));
+    return res
+      .status(200)
+      .json(
+        await req.repo.createProduct({ ...product, owner_id: ownerId }, ownerId)
+      );
   } catch (e: any) {
     return res.status(500).json({
       code: 500,
-      message: `Failed to save publisher configuration [${config.id}]: ${e.message}`,
+      message: `Failed to save publisher configuration [${product.id}]: ${e.message}`,
     });
   }
 });

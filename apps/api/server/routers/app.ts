@@ -2,7 +2,7 @@ import { NextApiResponse } from "next";
 import { NextApiRequest } from "next";
 import { ctx } from "../context";
 import { subscriptionsRouter } from "./subscriptions";
-import { configRouter } from "./config";
+import { configRouter } from "./products";
 import { seatsRouter } from "./seats";
 import { repo } from "../db";
 import NextCors from "nextjs-cors";
