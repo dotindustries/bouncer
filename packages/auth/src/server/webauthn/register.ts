@@ -6,7 +6,7 @@ import {
 import { z } from "zod";
 import type { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { getServerSession } from "../get-session";
-import { AuthenticatorTransport, PrismaClient } from "@dotinc/bouncer-db";
+import { AuthenticatorTransport, prisma } from "@dotinc/bouncer-db";
 
 const registrationSchema = z.custom<RegistrationResponseJSON>();
 
@@ -16,7 +16,7 @@ const registrationSchema = z.custom<RegistrationResponseJSON>();
  * This function generates and returns registration options.
  */
 const handlePreRegister =
-  (domain: string, origin: string, appName: string, repo: PrismaClient) =>
+  (domain: string, origin: string, appName: string) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession({ req, res });
     const email = session?.user?.email;
@@ -24,7 +24,7 @@ const handlePreRegister =
       return res.status(401).json({ message: "Authentication is required" });
     }
 
-    const credentials = await repo.credential.findMany({
+    const credentials = await prisma.credential.findMany({
       include: {
         transports: {
           select: {
@@ -56,7 +56,7 @@ const handlePreRegister =
     }));
 
     try {
-      await repo.credentialChallenge.upsert({
+      await prisma.credentialChallenge.upsert({
         create: { userId: email, value: options.challenge },
         update: { value: options.challenge },
         where: { userId: email },
@@ -73,7 +73,7 @@ const handlePreRegister =
  * This function verifies and stores user's public key.
  */
 const handleRegister =
-  (domain: string, origin: string, appName: string, repo: PrismaClient) =>
+  (domain: string, origin: string, appName: string) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession({ req, res });
     const email = session?.user?.email;
@@ -82,7 +82,7 @@ const handleRegister =
         .status(401)
         .json({ success: false, message: "You are not connected." });
     }
-    const challenge = await repo.credentialChallenge.findFirst({
+    const challenge = await prisma.credentialChallenge.findFirst({
       where: { userId: email },
     });
 
@@ -108,7 +108,7 @@ const handleRegister =
         .json({ success: false, message: "Something went wrong" });
     }
     try {
-      await repo.credential.create({
+      await prisma.credential.create({
         data: {
           id: credential.id,
           publicKey: Buffer.from(info.credentialPublicKey),
@@ -137,19 +137,17 @@ export const WebauthnRegister =
     domain,
     origin,
     appName,
-    repo,
   }: {
     domain: string;
     origin: string;
     appName: string;
-    repo: PrismaClient;
   }) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
-      return handlePreRegister(domain, origin, appName, repo)(req, res);
+      return handlePreRegister(domain, origin, appName)(req, res);
     }
     if (req.method === "POST") {
-      return handleRegister(domain, origin, appName, repo)(req, res);
+      return handleRegister(domain, origin, appName)(req, res);
     }
     return res.status(404).json({ message: "Forbidden method." });
   };
