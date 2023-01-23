@@ -64,7 +64,7 @@ export interface Repository {
   ): Promise<(Subscription & { seatingConfig: SeatingConfig }) | null>;
   getSubscriptions(
     productId: string
-  ): Promise<((Subscription & { seatingConfig: SeatingConfig }) | null)[]>;
+  ): Promise<(Subscription & { seatingConfig: SeatingConfig })[]>;
   createSubscription(
     productId: string,
     sub: Subscription & { seatingConfig: SeatingConfig | null }

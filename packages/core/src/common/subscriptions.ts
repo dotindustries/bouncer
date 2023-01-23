@@ -1,7 +1,10 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { seatingConfiguration } from "./config";
-import { error, error404, sqlDateString } from "./shared";
+import type {
+  SeatingConfig as DbSeatingConfig,
+  Subscription as DbSubscription,
+} from "@dotinc/bouncer-db";
+import { error, error404 } from "./shared";
 
 export const subscriptionStates = z.enum([
   "purchased",
@@ -12,43 +15,19 @@ export const subscriptionStates = z.enum([
 
 export type SubscriptionStates = z.infer<typeof subscriptionStates>;
 
-export const subscription = z.object({
-  subscription_id: z.string(),
-  subscription_name: z.string().optional(),
-  tenant_id: z.string(),
-  tenant_name: z.string().optional(),
-  offer_id: z.string(),
-  plan_id: z.string(),
-  state: subscriptionStates,
-  admin_role_name: z.string().optional(),
-  user_role_name: z.string().optional(),
-  management_urls: z.record(z.string()).optional(),
-  admin_name: z.string().optional(),
-  admin_email: z.string().optional(),
-  total_seats: z.number().optional(),
-  is_being_configured: z.boolean().optional(),
-  is_free_trial: z.boolean(),
-  is_setup_complete: z.boolean().optional(),
-  is_test_subscription: z.boolean(),
-  created_utc: sqlDateString.optional(),
-  state_last_updated_utc: sqlDateString.optional(),
-  seating_config: seatingConfiguration.optional(),
-  subscriber_info: z.record(z.string()).optional(),
-  source_subscription: z.record(z.string()).optional(),
-});
+export const subscription = z.custom<
+  DbSubscription & {
+    seatingConfig: DbSeatingConfig;
+  }
+>();
 
 export type Subscription = z.infer<typeof subscription>;
 
-export const subscriptionPatch = subscription
-  .pick({ subscription_id: true })
-  .and(
-    subscription
-      .omit({
-        offer_id: true,
-        tenant_id: true,
-      })
-      .partial()
-  );
+export const subscriptionPatch = z.custom<
+  Pick<Subscription, "id"> &
+    Partial<Omit<Subscription, "offer_id" | "tenant_id">>
+>();
+
 export type SubscriptionPatch = z.infer<typeof subscriptionPatch>;
 
 export const validateSubscriptionPatch = (
@@ -67,7 +46,7 @@ export const validateSubscriptionPatch = (
     !patch.total_seats &&
     patch.is_being_configured === undefined &&
     patch.is_setup_complete === undefined &&
-    !patch.seating_config &&
+    !patch.seatingConfig &&
     !patch.subscriber_info &&
     !patch.tenant_name &&
     !patch.source_subscription

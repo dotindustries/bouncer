@@ -479,7 +479,7 @@ export const PrismaRepository: Repository = {
   },
   updateSubscription: async (patch) => {
     const sub = await prisma.subscription.findFirst({
-      where: { id: patch.subscription_id },
+      where: { id: patch.id },
       select: { product_id: true },
     });
     if (!sub) {
@@ -518,29 +518,29 @@ export const PrismaRepository: Repository = {
         //   we should consider only updating the timestamp if state is different.
         state: patch.state,
         state_last_updated_utc: getMysqlFormattedDateTime(),
-        ...(patch.seating_config
+        ...(patch.seatingConfig
           ? {
               seatingConfig: {
                 update: {
                   seat_reservation_expiry_in_days:
-                    patch.seating_config.seat_reservation_expiry_in_days ??
+                    patch.seatingConfig.seat_reservation_expiry_in_days ??
                     defaultSeatingConfig.seat_reservation_expiry_in_days,
                   default_seat_expiry_in_days:
-                    patch.seating_config.default_seat_expiry_in_days ??
+                    patch.seatingConfig.default_seat_expiry_in_days ??
                     defaultSeatingConfig.default_seat_expiry_in_days,
                   seating_strategy_name:
-                    patch.seating_config.seating_strategy_name ??
+                    patch.seatingConfig.seating_strategy_name ??
                     defaultSeatingConfig.seating_strategy_name,
                   limited_overflow_seating_enabled:
-                    patch.seating_config.limited_overflow_seating_enabled ??
+                    patch.seatingConfig.limited_overflow_seating_enabled ??
                     defaultSeatingConfig.limited_overflow_seating_enabled,
                   // these were originally not updated on patch
                   default_low_seat_warning_level_percent:
-                    patch.seating_config
+                    patch.seatingConfig
                       .default_low_seat_warning_level_percent ??
                     defaultSeatingConfig.default_low_seat_warning_level_percent,
                   low_seat_warning_level_pct:
-                    patch.seating_config.low_seat_warning_level_pct ??
+                    patch.seatingConfig.low_seat_warning_level_pct ??
                     defaultSeatingConfig.low_seat_warning_level_pct,
                 },
               },
@@ -548,7 +548,7 @@ export const PrismaRepository: Repository = {
           : {}),
       },
       where: {
-        id: patch.subscription_id,
+        id: patch.id,
       },
     });
   },
