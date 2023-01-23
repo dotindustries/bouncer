@@ -110,23 +110,36 @@ export const authOptions = ({
           return null;
         }
 
-        const user = {
+        return {
           id: authenticator.userId,
           email: authenticator.user.email,
+          // undefined cannot be serialized
+          // api:dev: error - SerializableError: Error serializing `.session.user.name` returned from `getServerSideProps` in "/".
+          // api:dev: Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
+          name: null,
+          image: null,
         };
-        console.log("returning authenticated user", user);
-        return user;
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   pages: {
     signIn: "/auth/signin",
   },
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    session({ session, user, token }) {
+      if (!session.user) {
+        return session;
       }
+
+      let userId = user ? user.id : token.sub;
+
+      if (userId) {
+        session.user.id = userId;
+      }
+
       return session;
     },
   },
