@@ -13,6 +13,7 @@
     "kill:dist": "npm exec --workspaces -- npx rimraf dist && npx rimraf dist",
     "kill": "npm run kill:node && npm run kill:turbo && npm run kill:dist",
     "build": "turbo run build",
+    "build:inf": "infisical run -- turbo run build",
     "dev": "turbo run dev --parallel",
     "dev:inf": "infisical run -- turbo run dev --parallel",
     "lint": "turbo lint",
