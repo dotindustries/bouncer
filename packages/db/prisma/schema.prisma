@@ -177,6 +177,50 @@ model User {
   accounts      Account[]
   sessions      Session[]
   products      Product[]
+  credentials Credential[]
+}
+
+enum AuthenticatorTransport {
+  ble
+  hybrid
+  internal
+  nfc
+  usb
+  cable
+}
+
+model CredentialTransports {
+  id String
+  transport AuthenticatorTransport
+
+  credential Credential @relation(fields: [id], references: [id])
+
+  @@unique([id, transport])
+}
+
+model Credential {
+  id     String  @id @default(cuid())
+  user   User @relation(fields: [userId], references: [id])
+  userId String
+
+  transports CredentialTransports[]
+
+  publicKey  Bytes   @db.Blob()
+  signCount  Int     @default(0)
+
+  name       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id])
+  @@index([userId])
+}
+
+model CredentialChallenge {
+  userId String @id
+  value String
+
+  @@index([userId])
 }
 
 model VerificationToken {

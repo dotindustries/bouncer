@@ -163,11 +163,11 @@ seatsRouter.patch(
     }
 
     if (user.email !== null && seat.occupant) {
-      seat.occupant.email = user.email;
+      seat.occupant.email = user.email ?? null;
     }
 
     if (user.user_name !== null && seat.occupant) {
-      seat.occupant.user_name = user.user_name;
+      seat.occupant.user_name = user.user_name ?? null;
     }
 
     const update = await req.repo.replaceSeat(seat);
@@ -226,7 +226,7 @@ seatsRouter.post(
     }
 
     if (isReservedFor(seat, user)) {
-      if (!subscription.seating_config) {
+      if (!subscription.seatingConfig) {
         return res.status(404).json({
           code: 404,
           message: `Seating configuration [${subscriptionId}] not found.`,
@@ -235,11 +235,17 @@ seatsRouter.post(
       }
       // update object to be saved
       seat.reservation = null;
-      seat.occupant = user;
-      seat.expires_utc = getMysqlFormattedDateTime(
-        calculateRedeemedSeatExpirationDate(subscription.seating_config)
+      seat.occupant = {
+        seat_id: seatId,
+        email: user.email ?? null,
+        tenant_id: user.tenant_id,
+        user_id: user.user_id,
+        user_name: user.user_name ?? null,
+      };
+      seat.expires_utc = calculateRedeemedSeatExpirationDate(
+        subscription.seatingConfig
       );
-      seat.redeemed_utc = getMysqlFormattedDateTime(new Date());
+      seat.redeemed_utc = new Date();
       seat.seat_type = "standard";
 
       // What happens if between the time a seat is reserved and the time it's redeemed
@@ -247,7 +253,7 @@ seatsRouter.post(
       // the subscription's current seating strategy but it's definitely open for discussion...
 
       seat.seating_strategy_name =
-        subscription.seating_config.seating_strategy_name;
+        subscription.seatingConfig.seating_strategy_name;
 
       const updatedSeat = await req.repo.replaceSeat(seat);
 
@@ -277,23 +283,18 @@ const equalsNotNil = (a: string | null, b: string | null) =>
   a && a.toLowerCase() === b?.toLowerCase();
 
 const isReservedForUserId = (seat: Seat, user: User) => {
-  const identifier = seat.reservation?.identifier;
+  const res = seat.reservation;
 
   return (
-    identifier &&
-    "user_id" in identifier &&
-    equalsNotNil(identifier.user_id, user.user_id) &&
-    equalsNotNil(identifier.tenant_id, user.tenant_id)
+    res &&
+    equalsNotNil(res.user_id, user.user_id) &&
+    equalsNotNil(res.tenant_id, user.tenant_id)
   );
 };
 
 const isReservedForEmail = (seat: Seat, user: User) => {
-  const reservation = seat.reservation;
-  return (
-    reservation &&
-    "email" in reservation.identifier &&
-    equalsNotNil(reservation.identifier.email, user.email ?? null)
-  );
+  const res = seat.reservation;
+  return res && equalsNotNil(res.email, user.email ?? null);
 };
 
 const calculateRedeemedSeatExpirationDate = (config: SeatingConfiguration) => {
@@ -357,7 +358,7 @@ seatsRouter.post(
       });
     }
 
-    if (!subscription.seating_config) {
+    if (!subscription.seatingConfig) {
       return res.status(404).json({
         code: 404,
         message: `Seating configuration [${subscriptionId}] not found.`,
@@ -369,13 +370,17 @@ seatsRouter.post(
     user.user_name ??= user.email;
 
     const seat: Seat = {
-      created_utc: getMysqlFormattedDateTime(new Date()),
-      expires_utc: getMysqlFormattedDateTime(
-        calculateNewSeatExpirationDate(subscription.seating_config)
-      ),
-      occupant: user,
-      seat_id: seatId,
-      seating_strategy_name: subscription.seating_config.seating_strategy_name,
+      created_utc: new Date(),
+      expires_utc: calculateNewSeatExpirationDate(subscription.seatingConfig),
+      occupant: {
+        seat_id: seatId,
+        tenant_id: user.tenant_id,
+        email: user.email ?? null,
+        user_id: user.user_id,
+        user_name: user.user_name ?? null,
+      },
+      id: seatId,
+      seating_strategy_name: subscription.seatingConfig.seating_strategy_name,
       seat_type: "standard",
       subscription_id: subscriptionId,
       reservation: null,
@@ -394,11 +399,10 @@ seatsRouter.post(
       );
       // TODO: push event seat_provided[subscription, seat, createSeat.seatingSummary]
       return res.status(200).json(seat);
-    } else if (subscription.seating_config.limited_overflow_seating_enabled) {
+    } else if (subscription.seatingConfig.limited_overflow_seating_enabled) {
       // try it again without a total seats count to create a limited seat
-      seat.expires_utc = getMysqlFormattedDateTime(
-        add(new Date(), { days: 1 })
-      ); // limited seats only last for one day
+      seat.expires_utc = add(new Date(), { days: 1 });
+      // limited seats only last for one day
       seat.seat_type = "limited";
 
       const createLimitedSeat = await req.repo.createSeat(seat, subscription);
@@ -517,7 +521,7 @@ seatsRouter.post(
       });
     }
 
-    if (!subscription.seating_config) {
+    if (!subscription.seatingConfig) {
       return res.status(404).json({
         code: 404,
         message: `Seating configuration [${subscriptionId}] not found.`,
@@ -527,17 +531,14 @@ seatsRouter.post(
 
     const now = new Date();
     const seat: Seat = {
-      expires_utc: getMysqlFormattedDateTime(
-        add(now, {
-          days:
-            subscription.seating_config.seat_reservation_expiry_in_days ?? 1,
-        })
-      ),
-      created_utc: getMysqlFormattedDateTime(now),
+      expires_utc: add(now, {
+        days: subscription.seatingConfig.seat_reservation_expiry_in_days ?? 1,
+      }),
+      created_utc: now,
       subscription_id: subscriptionId,
-      reservation: reservation,
-      seat_id: seatId,
-      seating_strategy_name: subscription.seating_config.seating_strategy_name,
+      reservation,
+      id: seatId,
+      seating_strategy_name: subscription.seatingConfig.seating_strategy_name,
       seat_type: "standard",
       redeemed_utc: null,
       occupant: null,

@@ -1,9 +1,9 @@
 import z from "zod";
 import { zodiosContext } from "@zodios/express";
 import { Repository } from "@dotinc/bouncer-core";
-import Passwordless from "supertokens-node/recipe/passwordless";
+import type { User } from "@dotinc/bouncer-auth";
 
-const user = z.custom<Passwordless.User>();
+const user = z.custom<User>();
 
 const repo = z.custom<Repository>();
 

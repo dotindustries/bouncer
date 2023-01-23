@@ -23,6 +23,12 @@ export const serverSchema = z.object({
     // VERCEL_URL doesn't include `https` so it cant be validated as a URL
     process.env.VERCEL ? z.string() : z.string().url()
   ),
+  APP_NAME: z.preprocess(
+    (str) => process.env.APP_NAME ?? "Bouncer",
+    z.string()
+  ),
+  EMAIL_SERVER: z.string(),
+  EMAIL_FROM: z.string(),
 });
 
 /**
@@ -33,7 +39,6 @@ export const serverSchema = z.object({
 export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID: z.string().optional(),
-  NEXT_PUBLIC_SUPER_TOKENS_APP_NAME: z.string().optional(),
 });
 
 /**
@@ -46,6 +51,4 @@ export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   NEXT_PUBLIC_GOOGLE_ANALYTICS_MID:
     process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MID,
-  NEXT_PUBLIC_SUPER_TOKENS_APP_NAME:
-    process.env.NEXT_PUBLIC_SUPER_TOKENS_APP_NAME,
 };

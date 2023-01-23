@@ -1,12 +1,12 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { error, error404, noContentResult, sqlDateString } from "./shared";
+import { error, error404, noContentResult, schemaForType } from "./shared";
 import type { Subscription } from "./subscriptions";
 import { user } from "./users";
 import type {
   Seat as DbSeat,
-  SeatOccupant,
-  SeatReservation,
+  SeatOccupant as DbSeatOccupant,
+  SeatReservation as DbSeatReservation,
 } from "@dotinc/bouncer-db";
 
 export type SeatingSummary = {
@@ -18,41 +18,35 @@ export type SeatCreationContext = {
   isSeatCreated: boolean;
   seatingSummary: SeatingSummary;
   createdSeat?: DbSeat & {
-    reservation: SeatReservation | null;
-    occupant: SeatOccupant | null;
+    reservation: DbSeatReservation | null;
+    occupant: DbSeatOccupant | null;
   };
 };
 
-export const reservation = z.object({
-  // Reservation ([user_id] and [tenant_id]) or [email] is required.
-  identifier: z.union([
-    z.object({
-      user_id: z.string(),
-      tenant_id: z.string(),
-    }),
-    z.object({
-      email: z.string(),
-    }),
-  ]),
-  invite_url: z.string().nullish(),
-});
+// use like this:
+export const reservation = schemaForType<DbSeatReservation>()(
+  z.object({
+    seat_id: z.string(),
+    tenant_id: z.string().nullable(),
+    user_id: z.string().nullable(),
+    email: z.string().nullable(),
+    invite_url: z.string().nullable(),
+  })
+);
 
+// Reservation ([user_id] and [tenant_id]) or [email] is required.
 export type Reservation = z.infer<typeof reservation>;
 
 export const validateSeatReservation = (
   reservation: Reservation,
   inSubscription: Subscription
 ) => {
-  if (
-    ("email" in reservation.identifier && !reservation.identifier.email) ||
-    ("tenant_id" in reservation.identifier &&
-      (!reservation.identifier.tenant_id || !reservation.identifier.user_id))
-  ) {
+  if (!reservation.email || !reservation.tenant_id || !reservation.user_id) {
     return "Reservation ([user_id] and [tenant_id]) or [email] is required.";
   }
   if (inSubscription.state != "active")
     return (
-      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `Subscription [${inSubscription.id}] is currently [${inSubscription.state}]; ` +
       `seats can be reserved only in ['active'] subscriptions.`
     );
   return undefined;
@@ -61,23 +55,18 @@ export const validateSeatReservation = (
 export const validateSeatRequest = (inSubscription: Subscription) => {
   if (inSubscription.state != "active")
     return (
-      `Subscription [${inSubscription.subscription_id}] is currently [${inSubscription.state}]; ` +
+      `Subscription [${inSubscription.id}] is currently [${inSubscription.state}]; ` +
       `seats can be reserved only in ['active'] subscriptions.`
     );
   return undefined;
 };
 
-export const seat = z.object({
-  seat_id: z.string(),
-  subscription_id: z.string().nullable(),
-  occupant: user.nullable(),
-  seating_strategy_name: z.string().nullable(),
-  seat_type: z.enum(["standard", "limited"]),
-  reservation: reservation.nullable(),
-  expires_utc: sqlDateString.nullable(),
-  created_utc: sqlDateString.nullable(),
-  redeemed_utc: sqlDateString.nullable(),
-});
+export const seat = z.custom<
+  DbSeat & {
+    reservation: DbSeatReservation | null;
+    occupant: DbSeatOccupant | null;
+  }
+>();
 
 export type Seat = z.infer<typeof seat>;
 

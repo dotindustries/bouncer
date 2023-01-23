@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { format } from "date-fns";
 
+export const schemaForType =
+  <T>() =>
+  <S extends z.ZodType<T, any, any>>(arg: S) => {
+    return arg;
+  };
+
 export const noContentResult = z.object({});
 
 export const error404 = z.object({
