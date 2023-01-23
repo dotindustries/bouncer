@@ -1,8 +1,17 @@
-import { Box, Button, Heading, HStack, useModals } from "@dotinc/bouncer-ui";
+import { RegisterWebAuthn, useSession } from "@dotinc/bouncer-auth";
+import {
+  Box,
+  Button,
+  Card,
+  Heading,
+  HStack,
+  useModals,
+} from "@dotinc/bouncer-ui";
 import { AddProductDialog } from "../products/AddProductDialog";
 
 export const DashboardPage = () => {
   const modals = useModals();
+  const sess = useSession();
 
   return (
     <Box px="8" py="4">
@@ -12,6 +21,12 @@ export const DashboardPage = () => {
           Add product
         </Button>
       </HStack>
+
+      <RegisterWebAuthn />
+
+      <Card>
+        <pre>{JSON.stringify(sess, null, "  ")}</pre>
+      </Card>
     </Box>
   );
 };

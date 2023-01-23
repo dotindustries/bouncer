@@ -17,7 +17,7 @@ import {
 } from "@dotinc/bouncer-ui";
 
 import { FiMenu, FiX, FiPlus } from "react-icons/fi";
-import { signOut } from "supertokens-auth-react/recipe/emailpassword";
+import { signOut } from "@dotinc/bouncer-auth";
 
 const links = [
   { label: "Dashboard", href: "/" },

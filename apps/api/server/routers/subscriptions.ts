@@ -64,7 +64,7 @@ subscriptionsRouter.post(
     } catch (e: any) {
       return res.status(500).json({
         code: 500,
-        message: `Failed to save subscription [${sub.subscription_id}]: ${e.message}`,
+        message: `Failed to save subscription [${sub.id}]: ${e.message}`,
       });
     }
   }
@@ -76,10 +76,10 @@ subscriptionsRouter.patch(
     // TODO: API Keys access: sys_ and pub_
     const patch = req.body;
 
-    if (req.params.subscriptionId !== patch.subscription_id) {
+    if (req.params.subscriptionId !== patch.id) {
       return res.status(400).json({
         code: 400,
-        message: `Invalid subscrition [${req.params.subscriptionId}] doesn't match id in patch [${patch.subscription_id}]`,
+        message: `Invalid subscrition [${req.params.subscriptionId}] doesn't match id in patch [${patch.id}]`,
       });
     }
 
@@ -105,7 +105,7 @@ subscriptionsRouter.patch(
     } catch (e: any) {
       return res.status(500).json({
         code: 500,
-        message: `Failed to update subscription [${sub.subscription_id}]: ${e.message}`,
+        message: `Failed to update subscription [${sub.id}]: ${e.message}`,
       });
     }
   }

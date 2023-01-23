@@ -1,16 +1,13 @@
-import { publisherConfiguration } from "@dotinc/bouncer-core";
+import { productConfiguration } from "@dotinc/bouncer-core";
 import { FormDialog, FormDialogProps } from "@dotinc/bouncer-ui";
 import { config } from "../api";
 
-const schema = publisherConfiguration.pick({
-  product_name: true,
-  publisher_name: true,
-});
+const schema = productConfiguration;
 
 export const AddProductDialog: React.FC<
   Omit<FormDialogProps, "onSubmit" | "schema">
 > = (props) => {
-  const mutation = config.usePublisherConfiguration();
+  const mutation = config.useCreateProductConfig();
   return (
     <FormDialog
       {...props}

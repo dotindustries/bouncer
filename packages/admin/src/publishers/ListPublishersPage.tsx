@@ -9,17 +9,17 @@ export const ListPublishersPage = () => {
     error,
     isLoading,
     invalidate,
-  } = config.usePublisherConfigurations();
+  } = config.useProducts();
 
   return (
     <Box px="8" py="4">
       <HStack>
-        <Heading>Publishers</Heading>
+        <Heading>Products</Heading>
       </HStack>
 
-      {publisherConfigurations?.map((publisherConfig) => (
-        <div key={publisherConfig.id}>
-          <pre>{JSON.stringify(publisherConfig, null, "  ")}</pre>
+      {publisherConfigurations?.map((productConfig) => (
+        <div key={productConfig.id}>
+          <pre>{JSON.stringify(productConfig, null, "  ")}</pre>
         </div>
       ))}
     </Box>

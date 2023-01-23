@@ -1,39 +1,75 @@
+import type { SeatCreationContext, SubscriptionPatch } from "./../common";
 import type {
-  PublisherConfiguration,
+  SeatOccupant,
   Seat,
+  Product,
+  SeatingConfig,
+  SeatReservation,
   Subscription,
-  SeatCreationContext,
-  SubscriptionPatch,
-} from "../common/index";
+} from "@dotinc/bouncer-db";
 
 export interface Repository {
-  createPublisher(
-    config: PublisherConfiguration
-  ): Promise<PublisherConfiguration>;
-  getPublisher(
-    publisherId: string
-  ): Promise<PublisherConfiguration | undefined>;
-  getPublishers(): Promise<PublisherConfiguration[]>;
-  updatePublisher(
-    update: PublisherConfiguration
-  ): Promise<PublisherConfiguration>;
-  getSeat(seatId: string, subscriptionId: string): Promise<Seat | undefined>;
+  createProduct(
+    config: Product & { seatingConfig: SeatingConfig },
+    ownerId: string
+  ): Promise<Product & { seatingConfig: SeatingConfig }>;
+  getProduct(
+    productId: string
+  ): Promise<(Product & { seatingConfig: SeatingConfig }) | null>;
+  getProducts(): Promise<(Product & { seatingConfig: SeatingConfig })[]>;
+  updateProduct(
+    update: Product & { seatingConfig: SeatingConfig }
+  ): Promise<Product & { seatingConfig: SeatingConfig }>;
+  getSeat(
+    seatId: string,
+    subscriptionId: string
+  ): Promise<
+    | (Seat & {
+        reservation: SeatReservation | null;
+        occupant: SeatOccupant | null;
+      })
+    | null
+  >;
   getSeats(
     subscriptionId: string,
     byUserId?: string,
     byEmail?: string
-  ): Promise<Seat[]>;
-  replaceSeat(update: Seat): Promise<Seat>;
+  ): Promise<
+    (Seat & {
+      reservation: SeatReservation | null;
+      occupant: SeatOccupant | null;
+    })[]
+  >;
+  replaceSeat(
+    update: Seat & {
+      reservation: SeatReservation | null;
+      occupant: SeatOccupant | null;
+    }
+  ): Promise<
+    Seat & {
+      reservation: SeatReservation | null;
+      occupant: SeatOccupant | null;
+    }
+  >;
   createSeat(
-    seat: Seat,
+    seat: Seat & {
+      reservation: SeatReservation | null;
+      occupant: SeatOccupant | null;
+    },
     subscription: Subscription
   ): Promise<SeatCreationContext>;
   deleteSeat(seatId: string, subscriptionId: string): Promise<void>;
-  getSubscription(id: string): Promise<Subscription | undefined>;
-  getSubscriptions(publisherId: string): Promise<Subscription[]>;
+  getSubscription(
+    id: string
+  ): Promise<(Subscription & { seatingConfig: SeatingConfig }) | null>;
+  getSubscriptions(
+    productId: string
+  ): Promise<(Subscription & { seatingConfig: SeatingConfig })[]>;
   createSubscription(
-    publisherId: string,
-    sub: Subscription
-  ): Promise<Subscription>;
-  updateSubscription(sub: SubscriptionPatch): Promise<Subscription>;
+    productId: string,
+    sub: Subscription & { seatingConfig: SeatingConfig | null }
+  ): Promise<Subscription & { seatingConfig: SeatingConfig }>;
+  updateSubscription(
+    sub: SubscriptionPatch
+  ): Promise<Subscription & { seatingConfig: SeatingConfig }>;
 }
