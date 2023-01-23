@@ -1,0 +1,44 @@
+{
+  "name": "@dotinc/bouncer-db",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "keywords": [
+    "saas",
+    "seat",
+    "manager",
+    "license",
+    "subscription",
+    "typescript",
+    "bouncer"
+  ],
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "prebuild": "yarn clean",
+    "clean": "rm -rf .turbo node_modules",
+    "db:generate": "yarn with-env prisma generate",
+    "db:push": "yarn with-env prisma db push --skip-generate",
+    "db:pull": "yarn with-env prisma db pull",
+    "dev": "yarn with-env prisma studio --port 5556",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotindustries/bouncer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dotindustries/bouncer/issues"
+  },
+  "homepage": "https://github.com/dotindustries/bouncer",
+  "dependencies": {
+    "@prisma/client": "^4.9.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.0.0",
+    "prisma": "^4.9.0",
+    "typescript": "^4.9.4"
+  }
+}

@@ -21,5 +21,8 @@ export default // withTM(
 defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
+  experimental: {
+    externalDir: true,
+  },
 });
 // );

@@ -2,7 +2,6 @@
   "name": "@dotinc/bouncer-client",
   "version": "0.3.1",
   "description": "Bouncer client library",
-  "private": false,
   "keywords": [
     "saas",
     "seat",

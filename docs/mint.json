@@ -15,7 +15,11 @@
     }
   },
   "api": {
-    "baseUrl": "https://bouncer.dot.industries/api/v1"
+    "baseUrl": "https://bouncer.dot.industries/api/v1",
+    "auth": {
+      "method": "key",
+      "name": "x-api-key"
+    }
   },
   "topbarCtaButton": {
     "type": "github",
@@ -35,19 +39,13 @@
   ],
   "navigation": [
     {
-      "group": "Configuration",
+      "group": "Products",
       "pages": [
-        "configuration/get-configuration",
-        "configuration/set-configuration"
+        "products/create-product",
+        "products/get-products",
+        "products/get-product",
+        "products/update-product"
       ]
-    },
-    {
-      "group": "Publishers",
-      "pages": ["publishers/publishers"]
-    },
-    {
-      "group": "Publisher",
-      "pages": ["publisher/publisher"]
     },
     {
       "group": "Seats",
@@ -55,24 +53,12 @@
         "seats/get-seat",
         "seats/update-seat",
         "seats/delete-seat",
-        "seats/get-seats"
+        "seats/get-seats",
+        "seats/user-seat",
+        "seats/request",
+        "seats/redeem",
+        "seats/reserve"
       ]
-    },
-    {
-      "group": "User-seat",
-      "pages": ["user-seat/user-seat"]
-    },
-    {
-      "group": "Redeem",
-      "pages": ["redeem/redeem"]
-    },
-    {
-      "group": "Request",
-      "pages": ["request/request"]
-    },
-    {
-      "group": "Reserve",
-      "pages": ["reserve/reserve"]
     },
     {
       "group": "Subscription",

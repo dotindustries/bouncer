@@ -3,7 +3,7 @@ import fs from "fs";
 import { Zodios, ZodiosOptions } from "@zodios/core";
 import { ZodError, ZodFormattedError } from "zod";
 import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
-import { configApi } from "@dotinc/bouncer-core";
+import { productApi } from "@dotinc/bouncer-core";
 import type { CancellablePromiseLike } from "../../utils/task-queue.js";
 import { AxiosError } from "axios";
 import jq from "node-jq";
@@ -22,7 +22,7 @@ export const formatErrors = (
     .filter(Boolean);
 
 const newConfig = (baseUrl: string, opts?: ZodiosOptions) =>
-  new Zodios(baseUrl, configApi, opts);
+  new Zodios(baseUrl, productApi, opts);
 
 const seatId = cuid();
 
