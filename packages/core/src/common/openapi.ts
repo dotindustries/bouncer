@@ -1,11 +1,11 @@
-import { toOpenApi, bearerAuthScheme } from "@zodios/openapi";
+import { toOpenApi, apiKeyAuthScheme } from "@zodios/openapi";
 import { merge, isErrorResult } from "openapi-merge";
 import type { Swagger } from "atlassian-openapi";
 import { seatsApi } from "./seats";
 import { subscriptionApi } from "./subscriptions";
 import { configApi } from "./config";
 
-const securityScheme = bearerAuthScheme();
+const securityScheme = apiKeyAuthScheme({ name: "x-api-key", in: "header" });
 
 const configOAS = toOpenApi(configApi, {
   info: {
