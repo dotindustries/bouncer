@@ -7,6 +7,9 @@ export { signIn, signOut, useSession } from "next-auth/react";
 export {
   startAuthentication,
   startRegistration,
+  browserSupportsWebAuthnAutofill,
+  platformAuthenticatorIsAvailable,
+  browserSupportsWebAuthn,
 } from "@simplewebauthn/browser";
 
 export type { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/typescript-types";
