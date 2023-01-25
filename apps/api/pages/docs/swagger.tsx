@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { apiDefinition } from "@dotinc/bouncer-core";
+import { api } from "@dotinc/bouncer-core";
 import { createSwaggerSpec } from "next-swagger-doc";
 import "swagger-ui-react/swagger-ui.css";
 
@@ -12,7 +12,7 @@ function ApiDoc({ spec }: InferGetStaticPropsType<typeof getStaticProps>) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const spec: Record<string, any> = createSwaggerSpec({
-    definition: apiDefinition,
+    definition: api,
   });
 
   return {

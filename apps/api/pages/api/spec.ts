@@ -1,6 +1,6 @@
-import { apiDefinition } from "@dotinc/bouncer-core";
+import { api } from "@dotinc/bouncer-core";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json(apiDefinition);
+  res.status(200).json(api);
 }
