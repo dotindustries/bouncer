@@ -1,13 +1,13 @@
 import { productConfiguration } from "@dotinc/bouncer-core";
 import { FormDialog, FormDialogProps } from "@dotinc/bouncer-ui";
-import { config } from "../api";
+import { products } from "../api";
 
 const schema = productConfiguration;
 
 export const AddProductDialog: React.FC<
   Omit<FormDialogProps, "onSubmit" | "schema">
 > = (props) => {
-  const mutation = config.useCreateProductConfig();
+  const mutation = products.useCreateProductConfig();
   return (
     <FormDialog
       {...props}

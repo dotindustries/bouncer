@@ -1,6 +1,6 @@
 import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
 import * as React from "react";
-import { config, seats } from "../api";
+import { products } from "../api";
 
 export const ListPublishersPage = () => {
   const [count, setCount] = React.useState(1);
@@ -9,7 +9,7 @@ export const ListPublishersPage = () => {
     error,
     isLoading,
     invalidate,
-  } = config.useProducts();
+  } = products.useProducts();
 
   return (
     <Box px="8" py="4">
