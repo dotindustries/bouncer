@@ -5,30 +5,49 @@ on: [push]
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 17.x]
+
     if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Prepare repository
-        run: git fetch --unshallow --tags
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Extract out parent branch
+        shell: bash
+        run: echo "##[set-output name=parent_branch;]$(git show-branch -a | grep '\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//')"
+        id: extract_parent_branch
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
 
-      - name: Run install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install # will run `yarn install` command
+      - name: Install dependencies
+        run: npm install -g yarn
 
-      - name: Build packages
-        uses: borales/actions-yarn@v4
+      - name: Lint, test and build (push)
+        if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        with:
-          cmd: yarn workspaces foreach run build --exclude api
+        run: yarn && yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }}
+
+      - name: Lint, test and build (pull request)
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn && yarn turbo run build --since=origin/${{ github.base_ref }} --filter=./packages/*
 
       - name: Create Release
         env:
