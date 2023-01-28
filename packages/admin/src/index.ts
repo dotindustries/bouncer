@@ -1,5 +1,6 @@
 // utils
 export { createPage } from "./utils/createPage";
+export { api, getBaseUrl } from "./utils/api";
 
 // auth & providers
 export { AuthPage, AuthProvider } from "./auth";

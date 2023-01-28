@@ -1,8 +1,8 @@
 import { WebauthnRegister } from "@dotinc/bouncer-auth/src/server";
 import { env } from "~/env/server.mjs";
-import { getBaseDomain } from "~/util/getBaseDomain";
+import { getBaseUrl } from "@dotinc/bouncer-admin";
 
-const domain = getBaseDomain()
+const domain = getBaseUrl()
   .replace(/(http|https):\/\//g, "")
   .replace(":3000", "");
 

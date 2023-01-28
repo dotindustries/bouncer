@@ -18,7 +18,7 @@
     "baseUrl": "./",
     "paths": {
       "~/env/*": ["./env/*"],
-      "~/util/*": ["./util/*"],
+      "~/utils/*": ["utils/*"],
       "@dotinc/bouncer-admin": ["../../packages/admin/src"],
       "@dotinc/bouncer-admin/backend": ["../../packages/admin/src/backend"]
     }
