@@ -1918,6 +1918,7 @@ __metadata:
     react-dom: 18.2.0
     react-icons: ^4.7.1
     rimraf: ^3.0.2
+    svix-react: ^1.4.2
     ts-toolbelt: ^9.6.0
     tsc-alias: ^1.7.0
     tslib: ^2.4.0
@@ -10984,6 +10985,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iframe-resizer-react@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "iframe-resizer-react@npm:1.1.0"
+  dependencies:
+    iframe-resizer: ^4.3.0
+    warning: ^4.0.3
+  peerDependencies:
+    prop-types: ">=15.7.2"
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 64ddf99d0246da71c5ef34fd6a9b35d14e9346bda0ff0e9f0f011041822eb99f477b8b8167a82126efdfc3a84eb428262518f9ade7601f0f208b69d4cdadb9f7
+  languageName: node
+  linkType: hard
+
+"iframe-resizer@npm:^4.3.0":
+  version: 4.3.2
+  resolution: "iframe-resizer@npm:4.3.2"
+  checksum: 762d934f4fbe7e4b76c0f4574c2a47ef0e3fc6c82564f512ec41e62b62501052d271fb8ca5d268535509c0088132493c0ac78312af0fe3f11bf65cd964dd11a0
+  languageName: node
+  linkType: hard
+
 "ignore-by-default@npm:^1.0.1":
   version: 1.0.1
   resolution: "ignore-by-default@npm:1.0.1"
@@ -16868,6 +16890,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"svix-react@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "svix-react@npm:1.4.2"
+  dependencies:
+    iframe-resizer-react: ^1.1.0
+  peerDependencies:
+    react: ">=17"
+    react-dom: ">=17"
+    svix: ">=0.70.0"
+  checksum: 49ef0960a766aa102c3b05a091a3661070d444714a64d76eb4f6a0187cb2fac6f95b906aaecabacc8154b0af6c8fcbf3cb73615c3254544ffafef88cec4a4e6d
+  languageName: node
+  linkType: hard
+
 "synckit@npm:^0.8.4":
   version: 0.8.4
   resolution: "synckit@npm:0.8.4"
@@ -18089,6 +18124,15 @@ __metadata:
   version: 1.0.0
   resolution: "walk-up-path@npm:1.0.0"
   checksum: b8019ac4fb9ba1576839ec66d2217f62ab773c1cc4c704bfd1c79b1359fef5366f1382d3ab230a66a14c3adb1bf0fe102d1fdaa3437881e69154dfd1432abd32
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
   languageName: node
   linkType: hard
 
