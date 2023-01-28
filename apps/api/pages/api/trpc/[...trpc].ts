@@ -1,5 +1,5 @@
 import { appRouter, createTRPCContext } from "@dotinc/bouncer-api";
-import { createNextApiHandler } from "@dotinc/bouncer-admin/src/server";
+import { createNextApiHandler } from "@dotinc/bouncer-admin/backend";
 
 // export API handler
 export default createNextApiHandler({
