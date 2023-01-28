@@ -32,22 +32,22 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install dependencies
+      - name: Setup env
         run: npm install -g yarn
 
-      - name: Lint, test and build (push)
+      - name: Install and build (push)
         if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn && yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }}
+        run: yarn && yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }} --filter=!api
 
-      - name: Lint, test and build (pull request)
+      - name: Install and build packages (pull request)
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn && yarn turbo run build --since=origin/${{ github.base_ref }} --filter=./packages/*
+        run: yarn && yarn turbo run build --since=origin/${{ github.base_ref }} --filter=!api
 
       - name: Create Release
         env:
