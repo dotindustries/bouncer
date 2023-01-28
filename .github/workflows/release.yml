@@ -18,36 +18,31 @@ jobs:
           fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: 📥 Monorepo install
+        uses: ./.github/actions/yarn-nm-install
 
       - name: Extract out parent branch
         shell: bash
         run: echo "##[set-output name=parent_branch;]$(git show-branch -a | grep '\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//')"
         id: extract_parent_branch
 
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
-
-      - name: Setup env
-        run: npm install -g yarn
-
       - name: Install and build (push)
         if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn && yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }} --filter=!api
+        run: yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }} --filter=!api
 
       - name: Install and build packages (pull request)
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn && yarn turbo run build --since=origin/${{ github.base_ref }} --filter=!api
+        run: yarn turbo run build --since=origin/${{ github.base_ref }} --filter=!api
 
       - name: Create Release
         env:
