@@ -1,6 +1,6 @@
-import { createPage, ListPublishersPage } from "@dotinc/bouncer-admin";
+import { createPage, ListProductsPage } from "@dotinc/bouncer-admin";
 
 export default createPage({
   protected: true,
-  renderComponent: ListPublishersPage,
+  renderComponent: ListProductsPage,
 });

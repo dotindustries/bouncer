@@ -10,4 +10,4 @@ export { AppProvider, Layout } from "./common";
 export { DashboardPage } from "./dashboard/DashboardPage";
 
 // publishers
-export { ListPublishersPage } from "./publishers/ListPublishersPage";
+export { ListProductsPage } from "./products/ListProductsPage";

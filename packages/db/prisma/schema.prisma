@@ -1,3 +1,7 @@
+generator zod {
+  provider       = "zod-prisma-types"
+}
+
 generator client {
   provider = "prisma-client-js"
   // output = "../node_modules/.prisma/client"
@@ -107,6 +111,14 @@ model Seat {
   occupant SeatOccupant?
 }
 
+
+enum SubscriptionState {
+  purchased
+  active
+  suspended
+  canceled
+}
+
 model Subscription {
   id                     String   @id @db.VarChar(30) @unique
   product_id             String   @db.VarChar(30)
@@ -119,7 +131,7 @@ model Subscription {
   tenant_name            String?   @db.VarChar(255)
   offer_id               String?   @db.VarChar(30)
   plan_id                String?   @db.VarChar(30)
-  state                  String    @db.VarChar(15)
+  state                  SubscriptionState
   admin_role_name        String?   @db.VarChar(50)
   user_role_name         String?   @db.VarChar(50)
   management_urls        Json?

@@ -1,15 +1,17 @@
 import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
 import * as React from "react";
-import { products } from "../api";
+import { api } from "../utils/api";
 
-export const ListPublishersPage = () => {
+export const ListProductsPage = () => {
   const [count, setCount] = React.useState(1);
+  const ctx = api.useContext();
+
+  const invalidate = ctx.products.all.invalidate;
   const {
     data: publisherConfigurations,
     error,
     isLoading,
-    invalidate,
-  } = products.useProducts();
+  } = api.products.all.useQuery();
 
   return (
     <Box px="8" py="4">

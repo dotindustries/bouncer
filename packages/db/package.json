@@ -37,6 +37,7 @@
     "@prisma/client": "^4.9.0"
   },
   "devDependencies": {
+    "zod-prisma-types": "^1.6.8",
     "dotenv-cli": "^7.0.0",
     "prisma": "^4.9.0",
     "typescript": "^4.9.4"
