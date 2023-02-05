@@ -33,6 +33,15 @@ export const seatReleasedEvent = z.object({
   seat,
 });
 
+export const eventSchemas = {
+  no_seat_available: noSeatAvailableEvent,
+  low_seat_warning_level_reached: lowSeatWarningLevelReachedEvent,
+  seat_provided: seatProvidedEvent,
+  seat_reserved: seatReservedEvent,
+  seat_redeemed: seatRedeemedEvent,
+  seat_released: seatReleasedEvent,
+};
+
 export type EventTypes = {
   no_seat_available: z.infer<typeof noSeatAvailableEvent>;
   low_seat_warning_level_reached: z.infer<

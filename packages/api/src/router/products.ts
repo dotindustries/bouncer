@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SeatingStrategyName } from "@dotinc/bouncer-db";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { productConfig } from "@dotinc/bouncer-core";
+import { deployEventTypes } from "@dotinc/bouncer-events";
 
 export const productsRouter = createTRPCRouter({
   all: protectedProcedure
@@ -118,6 +119,8 @@ export const productsRouter = createTRPCRouter({
     .input(productConfig.omit({ owner_id: true }))
     .output(productConfig)
     .mutation(async ({ ctx, input }) => {
+      await deployEventTypes();
+
       console.log("creating configuration", input.id);
       const created = await ctx.prisma.$transaction([
         ctx.prisma.seatingConfig.create({
@@ -164,6 +167,11 @@ export const productsRouter = createTRPCRouter({
           },
         }),
       ]);
+
+      await ctx.svix.application.create({
+        uid: input.id,
+        name: input.product_name,
+      });
 
       return created[1];
     }),

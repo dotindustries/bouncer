@@ -2029,6 +2029,7 @@ __metadata:
     svix: ^0.75.0
     typescript: ^4.9.4
     zod: ^3.20.2
+    zod-to-json-schema: ^3.20.2
   languageName: unknown
   linkType: soft
 
