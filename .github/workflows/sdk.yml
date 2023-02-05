@@ -1,24 +1,24 @@
 name: Generate SDKs
 
- on:
-   workflow_dispatch: {} # Allows manual triggering of the workflow to generate SDK
-   schedule:
-     - cron: 0 0 * * * # Runs every day at midnight
+on:
+  workflow_dispatch: {} # Allows manual triggering of the workflow to generate SDK
+  schedule:
+    - cron: 0 0 * * * # Runs every day at midnight
 
- jobs:
-   generate:
-     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v3.6 # Import the sdk generation workflow which will handle the generation of the SDKs and publishing to the package managers
-     with:
-       speakeasy_version: latest
-       openapi_doc_location: docs/openapi.json
-       languages: |-
-         - go
-         - python
-         - typescript
-         - java
-       publish_python: true
-       publish_typescript: true
-     secrets:
-       github_access_token: ${{ secrets.GITHUB_TOKEN }}
-       pypi_token: ${{ secrets.PYPI_TOKEN }}
-       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+jobs:
+  generate:
+    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v3.6 # Import the sdk generation workflow which will handle the generation of the SDKs and publishing to the package managers
+    with:
+      speakeasy_version: latest
+      openapi_doc_location: docs/openapi.json
+      languages: |-
+        - go
+        - python
+        - typescript
+        - java
+      publish_python: true
+      publish_typescript: true
+    secrets:
+      github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      pypi_token: ${{ secrets.PYPI_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
