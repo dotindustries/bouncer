@@ -1,4 +1,4 @@
-import { productConfig } from "@dotinc/bouncer-api/schemas";
+import { productConfig } from "@dotinc/bouncer-core";
 import { FormDialog, FormDialogProps } from "@dotinc/bouncer-ui";
 import { api } from "../utils/api";
 
