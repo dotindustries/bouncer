@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import type { SeatingStrategyName } from "@dotinc/bouncer-db";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { productConfig } from "../../schemas";
+import { productConfig } from "@dotinc/bouncer-core";
 
 export const productsRouter = createTRPCRouter({
   all: protectedProcedure

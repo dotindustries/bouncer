@@ -12,7 +12,7 @@ import type {
   SeatType as DbSeatType,
   SubscriptionState as DbSubscriptionState,
 } from "@dotinc/bouncer-db";
-import { schemaForType } from "./src/utils";
+import { schemaForType } from "./shared";
 
 export const seatingStrategyName = schemaForType<DbSeatingStrategyName>()(
   z.enum(["monthly_active_user", "first_come_first_served"])
@@ -112,10 +112,12 @@ export const productConfig = schemaForType<
 
 export type ProductConfig = z.infer<typeof productConfig>;
 
-export type SeatingSummary = {
-  standardSeatCount: number;
-  limitedSeatCount: number;
-};
+export const seatingSummary = z.object({
+  standardSeatCount: z.number(),
+  limitedSeatCount: z.number(),
+});
+
+export type SeatingSummary = z.infer<typeof seatingSummary>;
 
 export type SeatCreationContext = {
   isSeatCreated: boolean;

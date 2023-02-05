@@ -1,3 +1,4 @@
+import { publishSeatWarningEvents, publishEvent } from "@dotinc/bouncer-events";
 import { TRPCError } from "@trpc/server";
 import { add, endOfMonth } from "date-fns";
 import { z } from "zod";
@@ -20,7 +21,7 @@ import {
   Seat,
   seats,
   seat,
-} from "../../schemas";
+} from "@dotinc/bouncer-core";
 import { getSubscription } from "./subscriptions";
 
 export const validateSeatReservation = (
@@ -832,15 +833,18 @@ export const seatsRouter = createTRPCRouter({
 
       const createdSeat = await createSeat(ctx.prisma, seat, subscription);
 
-      // TODO: publish seat warning events
-      // await req.events.publishSeatWarningEvents(subscription, createSeat.seatingSummary)
+      await publishSeatWarningEvents(subscription, createdSeat.seatingSummary);
 
-      if (createdSeat.isSeatCreated) {
+      if (createdSeat.isSeatCreated && createdSeat.createdSeat) {
         console.log(
           `Seat [${input.seatId}] successfully provided in subscription [${input.subscriptionId}] to user [${input.user.user_id}]. ` +
             `This seat expires at [${seat.expires_utc}].`
         );
-        // TODO: push event seat_provided[subscription, seat, createSeat.seatingSummary]
+        await publishEvent(subscription.product_id, "seat_provided", {
+          subscription,
+          seat: createdSeat.createdSeat,
+          seatingSummary: createdSeat.seatingSummary,
+        });
         return seat;
       } else if (subscription.seatingConfig.limited_overflow_seating_enabled) {
         // try it again without a total seats count to create a limited seat
@@ -854,12 +858,16 @@ export const seatsRouter = createTRPCRouter({
           subscription
         );
 
-        if (createLimitedSeat.isSeatCreated) {
+        if (createLimitedSeat.isSeatCreated && createLimitedSeat.createdSeat) {
           console.log(
             `Limited seat [${input.seatId}] successfully provided in subscription [${input.subscriptionId}] to user [${input.user.user_id}]. ` +
               `This seat expires at [${seat.expires_utc}].`
           );
-          // TODO: push event seat_provided[subscription, seat, createLimitedSeat.seatingSummary]
+          await publishEvent(subscription.product_id, "seat_provided", {
+            subscription,
+            seat: createLimitedSeat.createdSeat,
+            seatingSummary: createLimitedSeat.seatingSummary,
+          });
           return seat;
         }
       }

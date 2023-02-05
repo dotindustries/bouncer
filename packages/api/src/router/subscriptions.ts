@@ -8,7 +8,7 @@ import {
   subscriptionPatch,
   SubscriptionPatch,
   subscriptionStates,
-} from "../../schemas";
+} from "@dotinc/bouncer-core";
 
 export const validateSubscriptionPatch = (
   sub: Subscription,
