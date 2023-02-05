@@ -8,7 +8,7 @@ import { z } from "zod";
  */
 export const server = z.object({
   SVIX_TOKEN: z.string(),
-  SVIX_SERVER_URL: z.string().url(),
+  SVIX_SERVER_URL: z.string().url().optional(),
 });
 
 /**
