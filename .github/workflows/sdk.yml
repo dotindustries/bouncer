@@ -7,7 +7,7 @@ on:
 
 jobs:
   generate:
-    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v3.6 # Import the sdk generation workflow which will handle the generation of the SDKs and publishing to the package managers
+    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v7 # Import the sdk generation workflow which will handle the generation of the SDKs and publishing to the package managers
     with:
       speakeasy_version: latest
       openapi_doc_location: docs/openapi.json
