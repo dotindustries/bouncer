@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { add, endOfMonth } from "date-fns";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import type {
+import {
   PrismaClient,
   Seat as DbSeat,
   SeatOccupant as DbSeatOccupant,
@@ -16,6 +16,10 @@ import {
   Reservation,
   Subscription,
   reservation,
+  SeatingSummary,
+  Seat,
+  seats,
+  seat,
 } from "../../schemas";
 import { getSubscription } from "./subscriptions";
 
@@ -42,20 +46,6 @@ export const validateSeatRequest = (inSubscription: Subscription) => {
     );
   return undefined;
 };
-
-// TODO: move to schemaForType<>
-export const seat = z.custom<
-  DbSeat & {
-    reservation: DbSeatReservation | null;
-    occupant: DbSeatOccupant | null;
-  }
->();
-
-export type Seat = z.infer<typeof seat>;
-
-export const seats = z.array(seat);
-
-export type Seats = z.infer<typeof seats>;
 
 const getSeats = (
   prisma: PrismaClient,
@@ -466,7 +456,7 @@ export const seatsRouter = createTRPCRouter({
       if (!userSeat) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `No seat found for user [${input.tenantId}/${input.userId}] in subscription [${subscriptionId}].`,
+          message: `No seat found for user [${input.tenantId}/${input.userId}] in subscription [${input.subscriptionId}].`,
         });
       }
 
@@ -506,12 +496,12 @@ export const seatsRouter = createTRPCRouter({
         });
       }
 
-      const seat = await getSeat(
+      const seatToUpdate = await getSeat(
         ctx.prisma,
         input.subscriptionId,
         input.seatId
       );
-      if (!seat) {
+      if (!seatToUpdate) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Seat [${input.seatId}] not found.`,
@@ -519,8 +509,8 @@ export const seatsRouter = createTRPCRouter({
       }
 
       if (
-        seat.occupant?.user_id !== input.user.user_id ||
-        seat.occupant?.tenant_id !== input.user.tenant_id
+        seatToUpdate.occupant?.user_id !== input.user.user_id ||
+        seatToUpdate.occupant?.tenant_id !== input.user.tenant_id
       ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -528,15 +518,15 @@ export const seatsRouter = createTRPCRouter({
         });
       }
 
-      if (input.user.email !== null && seat.occupant) {
-        seat.occupant.email = input.user.email ?? null;
+      if (input.user.email !== null && seatToUpdate.occupant) {
+        seatToUpdate.occupant.email = input.user.email ?? null;
       }
 
-      if (input.user.user_name !== null && seat.occupant) {
-        seat.occupant.user_name = input.user.user_name ?? null;
+      if (input.user.user_name !== null && seatToUpdate.occupant) {
+        seatToUpdate.occupant.user_name = input.user.user_name ?? null;
       }
 
-      return replaceSeat(ctx.prisma, seat);
+      return replaceSeat(ctx.prisma, seatToUpdate);
     }),
   redeemSeat: protectedProcedure
     .meta({
@@ -575,19 +565,19 @@ export const seatsRouter = createTRPCRouter({
         });
       }
 
-      const seat = await getSeat(
+      const seatToUpdate = await getSeat(
         ctx.prisma,
         input.subscriptionId,
         input.seatId
       );
-      if (!seat) {
+      if (!seatToUpdate) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Seat [${input.seatId}] not found.`,
         });
       }
 
-      if (isReservedFor(seat, input.user)) {
+      if (isReservedFor(seatToUpdate, input.user)) {
         if (!subscription.seatingConfig) {
           throw new TRPCError({
             code: "NOT_FOUND",
@@ -595,28 +585,28 @@ export const seatsRouter = createTRPCRouter({
           });
         }
         // update object to be saved
-        seat.reservation = null;
-        seat.occupant = {
+        seatToUpdate.reservation = null;
+        seatToUpdate.occupant = {
           seat_id: input.seatId,
           email: input.user.email ?? null,
           tenant_id: input.user.tenant_id,
           user_id: input.user.user_id,
           user_name: input.user.user_name ?? null,
         };
-        seat.expires_utc = calculateRedeemedSeatExpirationDate(
+        seatToUpdate.expires_utc = calculateRedeemedSeatExpirationDate(
           subscription.seatingConfig
         );
-        seat.redeemed_utc = new Date();
-        seat.seat_type = "standard";
+        seatToUpdate.redeemed_utc = new Date();
+        seatToUpdate.seat_type = "standard";
 
         // What happens if between the time a seat is reserved and the time it's redeemed
         // the subscription's seating strategy (or seating configuration for that matter) is changed? Right now, we honor
         // the subscription's current seating strategy but it's definitely open for discussion...
 
-        seat.seating_strategy_name =
+        seatToUpdate.seating_strategy_name =
           subscription.seatingConfig.seating_strategy_name;
 
-        const updatedSeat = await replaceSeat(ctx.prisma, seat);
+        const updatedSeat = await replaceSeat(ctx.prisma, seatToUpdate);
 
         console.log(
           `Seat [${input.seatId}] reservation succesfully redeemed in subscription [${input.subscriptionId}] by user [${input.user.user_id}]. ` +

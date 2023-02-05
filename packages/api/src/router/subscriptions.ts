@@ -104,7 +104,7 @@ const updateSubscription = async (
       admin_name: patch.admin_name,
       admin_email: patch.admin_email,
       tenant_name: patch.tenant_name,
-      // TODO: state might not change,
+      // FIXME: state might not change,
       //   we should consider only updating the timestamp if state is different.
       state: patch.state,
       state_last_updated_utc: new Date(),

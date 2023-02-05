@@ -14,11 +14,11 @@ import type {
 } from "@dotinc/bouncer-db";
 import { schemaForType } from "./src/utils";
 
-export const seatingStrategyNameSchema = schemaForType<DbSeatingStrategyName>()(
+export const seatingStrategyName = schemaForType<DbSeatingStrategyName>()(
   z.enum(["monthly_active_user", "first_come_first_served"])
 );
 
-export const seatTypeSchema = schemaForType<DbSeatType>()(
+export const seatType = schemaForType<DbSeatType>()(
   z.enum(["standard", "limited"])
 );
 
@@ -126,6 +126,16 @@ export type SeatCreationContext = {
   };
 };
 
+export const occupant = schemaForType<DbSeatOccupant>()(
+  z.object({
+    seat_id: z.string(),
+    user_id: z.string(),
+    tenant_id: z.string(),
+    email: z.string().nullable(),
+    user_name: z.string().nullable(),
+  })
+);
+
 // use like this:
 export const reservation = schemaForType<DbSeatReservation>()(
   z.object({
@@ -139,6 +149,30 @@ export const reservation = schemaForType<DbSeatReservation>()(
 
 // Reservation ([user_id] and [tenant_id]) or [email] is required.
 export type Reservation = z.infer<typeof reservation>;
+export const seat = schemaForType<
+  DbSeat & {
+    reservation: DbSeatReservation | null;
+    occupant: DbSeatOccupant | null;
+  }
+>()(
+  z.object({
+    id: z.string(),
+    seating_strategy_name: seatingStrategyName,
+    subscription_id: z.string().nullable(),
+    created_utc: z.date().nullable(),
+    seat_type: seatType,
+    expires_utc: z.date().nullable(),
+    redeemed_utc: z.date().nullable(),
+    reservation: reservation.nullable(),
+    occupant: occupant.nullable(),
+  })
+);
+
+export type Seat = z.infer<typeof seat>;
+
+export const seats = z.array(seat);
+
+export type Seats = z.infer<typeof seats>;
 
 export const subscription = schemaForType<
   DbSubscription & { seatingConfig: DbSeatingConfig }
