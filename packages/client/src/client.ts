@@ -1,47 +1,27 @@
-import { Zodios, ZodiosOptions } from "@zodios/core";
-
-import {
-  seatsApi,
-  Reservation,
-  User,
-  user,
-  subscriptionApi,
-  Subscription,
-} from "@dotinc/bouncer-core";
-
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import { user } from "@dotinc/bouncer-api";
+import type { AppRouter, User } from "@dotinc/bouncer-api";
 import type { InferParams, InferQueries, InferQueryParams } from "./types";
 
-export interface BouncerClientOptions extends ZodiosOptions {
+export interface BouncerClientOptions {
   apiKey: string;
   baseUrl?: string;
   attr?: User;
 }
 
 export const createClient = (options: BouncerClientOptions) => {
-  const {
-    apiKey,
-    baseUrl = "/api/v1",
-    axiosConfig,
-    axiosInstance,
-    validate,
-    attr,
-  } = options;
+  const { apiKey, baseUrl = "https://localhost:3000/api/v1", attr } = options;
 
   let _attr = attr && user.parse(attr);
 
-  const zodiosOptions: ZodiosOptions = {
-    axiosInstance,
-    validate,
-    axiosConfig: {
-      ...axiosConfig,
-      headers: {
-        ...axiosConfig?.headers,
-        "x-api-key": apiKey,
-      },
-    },
-  };
-
-  const api = new Zodios(baseUrl, seatsApi, zodiosOptions);
+  const api = createTRPCProxyClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: baseUrl,
+        maxURLLength: 2083,
+      }),
+    ],
+  });
 
   const { redeemSeat, requestSeat, reserveSeat, releaseSeat, userSeat } = api;
 

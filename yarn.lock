@@ -1981,14 +1981,14 @@ __metadata:
   dependencies:
     "@dotinc/bouncer-api": "workspace:*"
     "@dotinc/bouncer-core": "workspace:*"
-    axios: 1.1.3
+    "@trpc/client": ^10.9.1
     rimraf: ^3.0.2
     ts-toolbelt: ^9.6.0
     tsc-alias: ^1.7.0
     tslib: ^2.4.0
     tsup: ^6.3.0
     typescript: ^4.8.4
-    zod: ^3.19.1
+    zod: ^3.20.2
   languageName: unknown
   linkType: soft
 
@@ -4975,6 +4975,15 @@ __metadata:
   peerDependencies:
     "@trpc/server": 10.9.0
   checksum: 6f7ed55a98089b356befd3af68f04375f0bf75cff7df1488c7ce5021c7d1278b048756f89dcddd2a624e8fb191395e978580caa9852b56a2b7b46274a01c74ec
+  languageName: node
+  linkType: hard
+
+"@trpc/client@npm:^10.9.1":
+  version: 10.9.1
+  resolution: "@trpc/client@npm:10.9.1"
+  peerDependencies:
+    "@trpc/server": 10.9.1
+  checksum: e333fd82e792e03613da4dcc24d497374d06a7b10db665c597f8a362703eb7b8bea3ae3e60f69de603b50bcd613574bbcd840da7c1a586f95589a94049323491
   languageName: node
   linkType: hard
 
