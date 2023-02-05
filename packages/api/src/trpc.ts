@@ -26,7 +26,7 @@ import micromatch from "micromatch";
 
 type CreateContextOptions = {
   session: Session | null;
-  auth: string | User | undefined;
+  auth: string | User | null;
 };
 
 /**
@@ -58,17 +58,17 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerSession({ req, res });
 
-  let auth: string | User | undefined;
+  let auth: string | User | null;
   // check if we hav a request with an api key
   const apiKeyHeader = req.headers["x-api-key"];
 
   if (apiKeyHeader && typeof apiKeyHeader === "string") {
     const split = apiKeyHeader.split(" ");
-    auth = split[1];
+    auth = split[1] ?? null;
   }
   // check if we have a direct user from the web ui instead
   else {
-    auth = session?.user;
+    auth = session?.user ?? null;
   }
 
   return createInnerTRPCContext({
@@ -140,7 +140,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 /**
- *
+ * An array of the root API_KEY list, the root api keys resolve to the first user of the validateEmailWithACL list
  */
 const apiKeys = env.API_KEYS.split(",");
 
@@ -156,33 +156,58 @@ const validateEmailWithACL = (email: string) => {
   return micromatch.isMatch(email, acl);
 };
 
+const userByApiKey = (apiKey: string) => {
+  // TODO: turn this whitelisted root key check to
+  //   A) whitelisted root check and B) user lookup by api key on db: where: { apiKey: {value: apiKey}}
+
+  // root key check
+  if (!apiKeys.includes(apiKey)) {
+    return null;
+  }
+  const emails = env.AUTH_ACL.split(",");
+  if (emails.length < 1) {
+    return null;
+  }
+
+  return prisma.user.findFirst({
+    where: {
+      email: emails[0],
+    },
+  });
+};
+
 /**
  * Reusable middleware that enforces a valid API_KEY is present or that
  * the current user is authorized
  */
-export const enforceRootApiKeyOrACL = t.middleware(({ ctx, next }) => {
+export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   if (!ctx.auth) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
 
-  if (typeof ctx.auth === "string" && !apiKeys.includes(ctx.auth)) {
-    // api key is not valid
-    throw new TRPCError({ code: "FORBIDDEN" });
-  } else if (typeof ctx.auth !== "string" && ctx.auth?.email) {
-    if (!validateEmailWithACL(ctx.auth.email)) {
+  let auth: User;
+
+  if (typeof ctx.auth === "string") {
+    // only run db query if the key is whitelisted
+    const apiKeyUser = await userByApiKey(ctx.auth);
+    if (!apiKeyUser) {
+      // api key is not bound to user
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+    auth = apiKeyUser; // pass the valid user
+  } else {
+    // coming from a session, a user is already present
+    // check if the user is a valid admin
+    if (!ctx.auth.email || !validateEmailWithACL(ctx.auth.email)) {
       // user is not whitelisted
       throw new TRPCError({ code: "FORBIDDEN" });
     }
-  } else {
-    // user e-mail is not set or  -- should be unreachable
-    throw new TRPCError({ code: "FORBIDDEN" });
+    auth = ctx.auth; // pass the valid user
   }
-
-  // TODO: api key should return a user
 
   return next({
     ctx: {
-      auth: ctx.auth /* 👈 TODO: this should return a auth as non-nullable */,
+      auth /* auth as non-nullable user */,
     },
   });
 });
@@ -191,20 +216,14 @@ export const enforceRootApiKeyOrACL = t.middleware(({ ctx, next }) => {
  * Protected (authed) procedure
  *
  * If you want a query or mutation to ONLY be accessible to logged in users, use
- * this. It verifies the session is valid and guarantees ctx.session.user is not
- * null
+ * this. It verifies that either a session is valid and guarantees ctx.auth is not
+ * null and set to a user.
+ *
+ * Checks against the whitelisting of the server config (API_KEYS and AUTH_ACL)
+ * An API_KEY is always tied to a user
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
-
-/**
- * Protected (authed) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users and permissions
- * to be checked against the whitelisting of the server config (API_KEYS and AUTH_ACL), use this.
- * It verifies that either a session is valid and guarantees
- */
-export const rootAdminProcedure = t.procedure
-  .use(enforceUserIsAuthed)
-  .use(enforceRootApiKeyOrACL);
+export const protectedProcedure = t.procedure
+  // .use(enforceUserIsAuthed) --> session is indirectly checked via ACL
+  .use(enforceApiKeyOrACL);

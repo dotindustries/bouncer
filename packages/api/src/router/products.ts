@@ -160,7 +160,7 @@ export const productsRouter = createTRPCRouter({
             contact_support_email: input.contact_support_email,
             contact_support_url: input.contact_support_url,
             is_setup_complete: input.is_setup_complete,
-            owner_id: ctx.session.user.id,
+            owner_id: ctx.auth.id,
           },
         }),
       ]);
