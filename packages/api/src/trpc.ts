@@ -23,6 +23,9 @@ import type { Session, User } from "@dotinc/bouncer-auth";
 import { svix } from "@dotinc/bouncer-events";
 import { prisma } from "@dotinc/bouncer-db";
 import micromatch from "micromatch";
+import { getLogger } from "@dotinc/bouncer-core";
+
+const logger = getLogger("trpc");
 
 type CreateContextOptions = {
   session: Session | null;
@@ -63,8 +66,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const apiKeyHeader = req.headers["x-api-key"];
 
   if (apiKeyHeader && typeof apiKeyHeader === "string") {
-    const split = apiKeyHeader.split(" ");
-    auth = split[1] ?? null;
+    auth = apiKeyHeader;
   }
   // check if we have a direct user from the web ui instead
   else {
@@ -162,10 +164,12 @@ const userByApiKey = (apiKey: string) => {
 
   // root key check
   if (!apiKeys.includes(apiKey)) {
+    logger.error({ apiKey }, "request x-api-key is not whitelisted");
     return null;
   }
   const emails = env.AUTH_ACL.split(",");
   if (emails.length < 1) {
+    logger.error({ acl: env.AUTH_ACL }, "AUTH_ACL is not configured properly");
     return null;
   }
 
@@ -182,7 +186,10 @@ const userByApiKey = (apiKey: string) => {
  */
 export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   if (!ctx.auth) {
-    throw new TRPCError({ code: "FORBIDDEN" });
+    logger.error(
+      "UNAUTHORIZED: Session is not available and x-api-key is not defined"
+    );
+    throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   let auth: User;
@@ -191,6 +198,10 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
     // only run db query if the key is whitelisted
     const apiKeyUser = await userByApiKey(ctx.auth);
     if (!apiKeyUser) {
+      logger.error(
+        { apiKey: ctx.auth },
+        "FORBIDDEN: x-api-key is not bound to user"
+      );
       // api key is not bound to user
       throw new TRPCError({ code: "FORBIDDEN" });
     }
@@ -199,6 +210,10 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
     // coming from a session, a user is already present
     // check if the user is a valid admin
     if (!ctx.auth.email || !validateEmailWithACL(ctx.auth.email)) {
+      logger.error(
+        { email: ctx.auth.email },
+        "FORBIDDEN: current user e-mail is not set or not whitelisted"
+      );
       // user is not whitelisted
       throw new TRPCError({ code: "FORBIDDEN" });
     }
