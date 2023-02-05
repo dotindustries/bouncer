@@ -1914,8 +1914,6 @@ __metadata:
     "@trpc/react-query": ^10.9.0
     "@trpc/server": ^10.9.0
     "@types/react": ^18.0.24
-    "@zodios/core": 10.3.1
-    "@zodios/react": 10.3.3
     axios: 1.1.3
     next: 13.1.4
     react: ^18.2.0
@@ -1982,7 +1980,6 @@ __metadata:
   resolution: "@dotinc/bouncer-client@workspace:packages/client"
   dependencies:
     "@dotinc/bouncer-core": "workspace:*"
-    "@zodios/core": 10.5.2
     axios: 1.1.3
     rimraf: ^3.0.2
     ts-toolbelt: ^9.6.0
@@ -2000,8 +1997,6 @@ __metadata:
   dependencies:
     "@dotinc/bouncer-db": "workspace:*"
     "@types/express": ^4.17.14
-    "@zodios/core": 10.5.2
-    "@zodios/openapi": ^10.4.6
     atlassian-openapi: ^1.0.17
     axios: 1.1.3
     date-fns: ^2.29.3
@@ -2080,7 +2075,6 @@ __metadata:
     "@types/ink-divider": ^2.0.2
     "@types/react": ^18.0.24
     "@types/update-notifier": ^5.1.0
-    "@zodios/core": 10.5.2
     ava: ^5.0.1
     axios: 1.1.3
     chalk: ^4.1.2
@@ -5638,61 +5632,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zodios/core@npm:10.3.1":
-  version: 10.3.1
-  resolution: "@zodios/core@npm:10.3.1"
-  peerDependencies:
-    axios: ^0.x || ^1.0.0
-    zod: ^3.x
-  checksum: 873ff7f9e5528e5ab593b0e31b0f7a6fe28436edd3d27c82127c6ff548a19bde7cf2847096bee2e625d46d93da12d0d9b244a05fc0a0f1aa44527ecf1b480617
-  languageName: node
-  linkType: hard
-
-"@zodios/core@npm:10.5.2":
-  version: 10.5.2
-  resolution: "@zodios/core@npm:10.5.2"
-  peerDependencies:
-    axios: ^0.x || ^1.0.0
-    zod: ^3.x
-  checksum: 9a65cb674b76b609efb046ffc3c39ecae9e80b5711a925536ec3a76c861b1c794b2fd6402e4a44606e04bacadf39ad94b9669dc4f7d318b67dcb15f91d35c199
-  languageName: node
-  linkType: hard
-
-"@zodios/express@npm:10.4.3":
-  version: 10.4.3
-  resolution: "@zodios/express@npm:10.4.3"
-  peerDependencies:
-    "@zodios/core": ">=10.4.4 <11.0.0"
-    express: 4.x
-    zod: ^3.x
-  checksum: 8cd7696208de1b23678eea033c803cc7cf9e66547c44b32c37d13cb175ea66b48289ebdcda7d4a3dbc87d6d47fb507d777d9b3b6983ecdfc743838ba7bb8601c
-  languageName: node
-  linkType: hard
-
-"@zodios/openapi@npm:^10.4.6":
-  version: 10.4.7
-  resolution: "@zodios/openapi@npm:10.4.7"
-  dependencies:
-    openapi-types: 12.0.2
-    zod-to-json-schema: 3.19.1
-  peerDependencies:
-    "@zodios/core": ">=10.5.2 <11.0.0"
-    zod: ^3.x
-  checksum: f27ef765151d10a0a608928d56c75b1dd4ca5a88ff91246d2fdf7f000af9a086466630e3a3ce5f87ae4541144e907c38b1fe8fc01db2202f4e22222550ff2d9e
-  languageName: node
-  linkType: hard
-
-"@zodios/react@npm:10.3.3":
-  version: 10.3.3
-  resolution: "@zodios/react@npm:10.3.3"
-  peerDependencies:
-    "@tanstack/react-query": 4.x
-    "@zodios/core": ">=10.2.0 <11.0.0"
-    react: ">=16.8.0"
-  checksum: 24d6a10b7e534c48ccca73304a09831456a71f6a36a98273460b93c797e80ebfb3e9491dde17037294414d62146d97756945e98b43f7dbdba71ef2ec1a02d177
-  languageName: node
-  linkType: hard
-
 "JSONStream@npm:^1.0.4":
   version: 1.3.5
   resolution: "JSONStream@npm:1.3.5"
@@ -5951,9 +5890,6 @@ __metadata:
     "@types/react": 18.0.24
     "@types/react-dom": 18.0.7
     "@vercel/analytics": ^0.1.1
-    "@zodios/core": 10.5.2
-    "@zodios/express": 10.4.3
-    "@zodios/react": 10.3.3
     axios: 1.1.3
     date-fns: ^2.29.3
     eslint: 8.26.0
@@ -14383,13 +14319,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-types@npm:12.0.2":
-  version: 12.0.2
-  resolution: "openapi-types@npm:12.0.2"
-  checksum: 097edc46adb5a8fc2a3419e2e0adbb5516737fd83b4041ec62ee28427e85d9f18c6ead9231b9d1c8f718d86eeccf3c0997437414011d8bb1597387a047493fea
-  languageName: node
-  linkType: hard
-
 "openapi-types@npm:^12.0.2, openapi-types@npm:^12.1.0":
   version: 12.1.0
   resolution: "openapi-types@npm:12.1.0"
@@ -19094,15 +19023,6 @@ __metadata:
   bin:
     zod-prisma-types: dist/bin.js
   checksum: 07e181cb3d9350e73ad66e0925fddeece41db74c347294fccb8e113b83a9bd8afc308fcc4e0f8552d42a502a9fadff1b53ddc784259008452448e0b1536306f1
-  languageName: node
-  linkType: hard
-
-"zod-to-json-schema@npm:3.19.1":
-  version: 3.19.1
-  resolution: "zod-to-json-schema@npm:3.19.1"
-  peerDependencies:
-    zod: ^3.19.0
-  checksum: 22c07668e3c28c9d7c9bd3ad04a354ea017b6fc8b4df77ed29d11e42c4c03181612319db374932a1f8b5c37ef861157938dced9d848cad5281ee1540a156995c
   languageName: node
   linkType: hard
 
