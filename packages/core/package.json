@@ -32,8 +32,6 @@
   "homepage": "https://github.com/dotindustries/bouncer",
   "dependencies": {
     "@dotinc/bouncer-db": "workspace:*",
-    "@zodios/core": "10.5.2",
-    "@zodios/openapi": "^10.4.6",
     "axios": "1.1.3",
     "date-fns": "^2.29.3",
     "openapi-merge": "^1.3.2"

@@ -1,6 +1,5 @@
 import { createClient } from "@dotinc/bouncer-client";
 import fs from "fs";
-import { Zodios, ZodiosOptions } from "@zodios/core";
 import { ZodError, ZodFormattedError } from "zod";
 import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
 import { productApi } from "@dotinc/bouncer-core";

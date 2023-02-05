@@ -1,14 +1,16 @@
-import type { AppProps } from "next/app";
+import type { Session } from "next-auth";
+import type { AppType } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 
-import { AppProvider, AuthProvider, Layout } from "@dotinc/bouncer-admin";
+import { AppProvider, AuthProvider, Layout, api } from "@dotinc/bouncer-admin";
 
 import { env } from "~/env/client.mjs";
 import Script from "next/script";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps,
+}) => {
   return (
     <>
       {/* Google tag (gtag.js) - Google Analytics */}
@@ -45,6 +47,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </AuthProvider>
     </>
   );
-}
+};
 
-export default MyApp;
+export default api.withTRPC(MyApp);
