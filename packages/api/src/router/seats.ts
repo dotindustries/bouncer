@@ -614,7 +614,10 @@ export const seatsRouter = createTRPCRouter({
             `This seat expires at [${updatedSeat.expires_utc}].`
         );
 
-        // TODO: push event seat_redeemed[subscription, seat]
+        await publishEvent(subscription.product_id, "seat_redeemed", {
+          subscription,
+          seat: updatedSeat,
+        });
 
         return updatedSeat;
       } else {
@@ -658,7 +661,10 @@ export const seatsRouter = createTRPCRouter({
           ctx.prisma.seat.delete({ where: { id: input.seatId } }), // FIXME: composite key add subscriptionId?
         ]);
 
-        // TODO: push event seat_released[subscription, seat]
+        await publishEvent(subscription.product_id, "seat_released", {
+          subscription,
+          seat,
+        });
       }
     }),
   reserveSeat: protectedProcedure
@@ -735,15 +741,18 @@ export const seatsRouter = createTRPCRouter({
 
       const createdSeat = await createSeat(ctx.prisma, seat, subscription);
 
-      // TODO: publish seat warning events
-      // await req.events.publishSeatWarningEvents(subscription, createSeat.seatingSummary)
+      await publishSeatWarningEvents(subscription, createdSeat.seatingSummary);
 
-      if (createdSeat.isSeatCreated) {
+      if (createdSeat.isSeatCreated && createdSeat.createdSeat) {
         console.log(
           `Seat [${input.seatId}] successfully reserved in subscription [${input.subscriptionId}]. ` +
             `This reservation expires at [${seat.expires_utc}].`
         );
-        // TODO: push event seat_reserved[subscription, seat, createSeat.seatingSummary]
+        await publishEvent(subscription.product_id, "seat_reserved", {
+          subscription,
+          seat: createdSeat.createdSeat,
+          seatingSummary: createdSeat.seatingSummary,
+        });
         return seat;
       }
 
