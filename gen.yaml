@@ -1,0 +1,12 @@
+go:
+  packagename: dot.industries/bouncer-sdk
+
+python:
+  packagename: bouncer-client-sdk
+
+typescript:
+  packagename: "@dotinc/bouncer-sdk"
+
+java:
+  packagename: industries.dot.bouncer
+  projectname: bouncer-client-sdk
