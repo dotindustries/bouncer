@@ -21,7 +21,7 @@ import { signOut } from "@dotinc/bouncer-auth";
 
 const links = [
   { label: "Dashboard", href: "/" },
-  { label: "Publishers", href: "/publishers" },
+  { label: "Products", href: "/products" },
 ];
 
 interface NavLinkProps {
@@ -59,7 +59,7 @@ export const NavBar = () => {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>Logo</Box>
+            <Box>Usher</Box>
             <HStack
               as={"nav"}
               spacing={4}

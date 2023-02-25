@@ -7,7 +7,7 @@ import { z } from "zod";
  * This way you can ensure the app isn't built with invalid env vars.
  */
 export const server = z.object({
-  SVIX_TOKEN: z.string(),
+  SVIX_TOKEN: z.string().optional(),
   SVIX_SERVER_URL: z.string().url().optional(),
 });
 

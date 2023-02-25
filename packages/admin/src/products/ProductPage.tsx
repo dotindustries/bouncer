@@ -1,9 +1,8 @@
-import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
 import { DevPortalButton } from "src/dashboard/DevPortal";
-import { api } from "src/utils/api";
 import { AppPortal } from "svix-react";
-
-import "svix-react/style.css";
+import { Box, Button, Heading, HStack, Loader } from "@dotinc/bouncer-ui";
+import { EditProductForm } from "./EditProductForm";
+import { api } from "src/utils/api";
 
 const SvixEmbed = ({ svixAppId }: { svixAppId: string }) => {
   const { data: appPortal, status } = api.admin.eventPortal.useQuery({
@@ -16,6 +15,18 @@ const SvixEmbed = ({ svixAppId }: { svixAppId: string }) => {
 };
 
 export const ProductPage = ({ productId }: { productId: string }) => {
+  const {
+    data: product,
+    isLoading,
+    status,
+  } = api.products.byId.useQuery({
+    productId,
+  });
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Box px="8" py="4">
       <HStack>
@@ -25,6 +36,8 @@ export const ProductPage = ({ productId }: { productId: string }) => {
       </HStack>
 
       <SvixEmbed svixAppId={productId} />
+
+      <EditProductForm product={product} />
     </Box>
   );
 };

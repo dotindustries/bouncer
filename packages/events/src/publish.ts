@@ -1,5 +1,6 @@
 import { svix } from "./index";
 import { SeatingSummary, Subscription, EventTypes } from "@dotinc/bouncer-core";
+import { env } from "./env.mjs";
 
 export const publishSeatWarningEvents = async (
   subscription: Subscription,
@@ -43,6 +44,14 @@ export const publishEvent = async (
   eventType: EventTypeKeys,
   data: EventTypes[EventTypeKeys]
 ) => {
+  if (!svix) {
+    console.warn(
+      "SVIX not configured, skipping event publish: ",
+      eventType,
+      data
+    );
+    return;
+  }
   const payload = {
     ...data,
   };

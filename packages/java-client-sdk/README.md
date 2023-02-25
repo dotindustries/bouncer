@@ -6,7 +6,7 @@
 ### Gradle
 
 ```groovy
-implementation 'industries.dot.bouncer:bouncer-client-sdk:'
+implementation 'industries.dot.bouncer:bouncer-client-sdk:0.1.0'
 ```
 <!-- End SDK Installation -->
 

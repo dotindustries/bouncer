@@ -14,3 +14,5 @@ export { ListProductsPage } from "./products/ListProductsPage";
 
 // dev portal
 export { SpeakeasyLoginRedirect, DevPortalButton } from "./dashboard/DevPortal";
+
+export { ProductPage } from "./products/ProductPage";
