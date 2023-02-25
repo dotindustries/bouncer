@@ -1,4 +1,5 @@
-import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
+import { Box, Button, Heading, HStack, Loader } from "@dotinc/bouncer-ui";
+import { EditProductForm } from "./EditProductForm";
 import { api } from "../utils/api";
 // import { AppPortal } from "svix-react";
 
@@ -13,6 +14,18 @@ import { api } from "../utils/api";
 // };
 
 export const ProductPage = ({ productId }: { productId: string }) => {
+  const {
+    data: product,
+    isLoading,
+    status,
+  } = api.products.byId.useQuery({
+    productId,
+  });
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Box px="8" py="4">
       <HStack>
@@ -21,6 +34,8 @@ export const ProductPage = ({ productId }: { productId: string }) => {
       </HStack>
 
       {/* <SvixEmbed svixAppId={productId} /> */}
+
+      <EditProductForm product={product} />
     </Box>
   );
 };
