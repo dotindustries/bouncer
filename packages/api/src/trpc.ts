@@ -45,9 +45,11 @@ if (env.SPEAKEASY_API_KEY) {
 
 const logger = getLogger("trpc");
 
+type ApiAuthUser = User & { productId?: string };
+
 type CreateContextOptions = {
   session: Session | null;
-  auth: string | User | null;
+  auth: string | ApiAuthUser | null;
   req: NextApiRequest & { controller?: MiddlewareController };
   res: NextApiResponse;
 };
@@ -80,7 +82,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerSession({ req, res });
 
-  let auth: string | User | null;
+  let auth: string | ApiAuthUser | null;
   // check if we hav a request with an api key
   const apiKeyHeader = req.headers["x-api-key"];
 
@@ -111,6 +113,8 @@ import { OpenApiMeta } from "trpc-openapi";
 import superjson from "superjson";
 import { env } from "./env.mjs";
 import { validateEmailWithACL } from "./utils";
+import jwt from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
 
 const t = initTRPC
   .meta<OpenApiMeta>()
@@ -146,7 +150,6 @@ export const publicProcedure = t.procedure;
 
 const speakeasyMiddleware = t.middleware(({ ctx, next }) => {
   if (env.SPEAKEASY_API_KEY) {
-    logger.info("injecting controller to request");
     const handler = speakeasy.expressMiddleware();
     handler(ctx.req as any, ctx.res as any, next);
   } else {
@@ -177,31 +180,108 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+// https://mojoauth.com/blog/jwt-validation-with-jwks-nodejs/
+const speakeasyClaimsByApiKey = async (apiKey: string) => {
+  if (!env.SPEAKEASY_WORKSPACE_ID) {
+    logger.error("SPEAKEASY_WORKSPACE_ID is not set and cannot accept api key");
+    return null;
+  }
+
+  // process jwt token
+  const decodedToken = jwt.decode(apiKey, { complete: true });
+  if (!decodedToken) {
+    logger.error({ apiKey }, "Failed to decode jwt");
+    return null;
+  }
+  const kid = decodedToken.header.kid;
+  logger.debug({ jwtHeader: decodedToken.header }, "Decoded jwt headers");
+
+  const issuer = `https://app.speakeasyapi.dev/v1/auth/oauth/${env.SPEAKEASY_WORKSPACE_ID}`;
+  const audience = env.SPEAKEASY_WORKSPACE_ID;
+
+  const client = jwksClient({
+    jwksUri: `https://app.speakeasyapi.dev/v1/auth/oauth/${env.SPEAKEASY_WORKSPACE_ID}/.well-known/jwks.json`,
+    requestHeaders: {}, // Optional
+    cache: true,
+    cacheMaxAge: 300000, // cache for 5 min -- vercel will throw away the function anyhow
+    timeout: 30000, // Defaults to 30s
+  });
+
+  const signingKey = await client.getSigningKey(kid);
+  const publicKey = signingKey.getPublicKey();
+
+  const decoded = jwt.verify(apiKey, publicKey, {
+    issuer,
+    audience,
+  });
+
+  if (typeof decoded === "string") {
+    logger.error({ decoded }, "We failed to properly decode the claim");
+    return null;
+  }
+
+  logger.debug(
+    { productId: decoded.productId, userId: decoded.userId },
+    "We decoded the api key successfully"
+  );
+
+  return {
+    productId: decoded.productId as string,
+    userId: decoded.userId as string,
+  };
+};
+
 /**
  * An array of the root API_KEY list, the root api keys resolve to the first user of the validateEmailWithACL list
  */
 const apiKeys = env.API_KEYS.split(",");
 
-const userByApiKey = (apiKey: string) => {
-  // TODO: turn this whitelisted root key check to
-  //   A) whitelisted root check and B) user lookup by api key on db: where: { apiKey: {value: apiKey}}
+const userByApiKey = async (apiKey: string) => {
+  const isRootApiKey = apiKeys.includes(apiKey);
 
-  // root key check
-  if (!apiKeys.includes(apiKey)) {
-    logger.error({ apiKey }, "request x-api-key is not whitelisted");
-    return null;
-  }
-  const emails = env.AUTH_ACL.split(",");
-  if (emails.length < 1) {
-    logger.error({ acl: env.AUTH_ACL }, "AUTH_ACL is not configured properly");
-    return null;
+  if (isRootApiKey) {
+    const emails = env.AUTH_ACL.split(",");
+    if (emails.length < 1) {
+      logger.error(
+        { acl: env.AUTH_ACL },
+        "AUTH_ACL is not configured properly"
+      );
+      return null;
+    }
+
+    return prisma.user.findFirst({
+      where: {
+        email: emails[0],
+      },
+    });
   }
 
-  return prisma.user.findFirst({
-    where: {
-      email: emails[0],
-    },
-  });
+  const speakeasyUserData = await speakeasyClaimsByApiKey(apiKey);
+
+  if (speakeasyUserData) {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: speakeasyUserData.userId,
+      },
+    });
+    if (!user) {
+      logger.error(
+        { speakeasyUserData },
+        "The user from the valid jwt is not a user of the system."
+      );
+      return null;
+    }
+    return {
+      productId: speakeasyUserData.productId,
+      ...user,
+    };
+  }
+
+  logger.error(
+    { apiKey },
+    "request x-api-key is not a valid root key and not a speakeasy api key"
+  );
+  return null;
 };
 
 /**
@@ -216,7 +296,7 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  let auth: User;
+  let auth: ApiAuthUser;
 
   if (typeof ctx.auth === "string") {
     logger.info({ token: ctx.auth }, "Verifying x-api-key");

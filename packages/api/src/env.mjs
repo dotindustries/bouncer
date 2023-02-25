@@ -11,7 +11,8 @@ export const server = z.object({
   AUTH_ACL: z.string(),
   SPEAKEASY_API_KEY: z.string().optional(),
   SPEAKEASY_API_ID: z.string().optional(),
-  SPEAKEASY_APP_VERSION_ID: z.string().optional()
+  SPEAKEASY_APP_VERSION_ID: z.string().optional(),
+  SPEAKEASY_WORKSPACE_ID: z.string().optional(),
 });
 
 /**
@@ -31,6 +32,10 @@ export const client = z.object({
 const processEnv = {
   API_KEYS: process.env.API_KEYS,
   AUTH_ACL: process.env.AUTH_ACL,
+  SPEAKEASY_API_KEY: process.env.SPEAKEASY_API_KEY,
+  SPEAKEASY_API_ID: process.env.SPEAKEASY_API_ID,
+  SPEAKEASY_APP_VERSION_ID: process.env.SPEAKEASY_APP_VERSION_ID,
+  SPEAKEASY_WORKSPACE_ID: process.env.SPEAKEASY_WORKSPACE_ID,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
