@@ -9,10 +9,11 @@ declare global {
 
 export const svix =
   global.svix ||
-  (env.SVIX_TOKEN &&
-    new Svix(env.SVIX_TOKEN, {
-      serverUrl: env.SVIX_SERVER_URL,
-    }));
+  (env.SVIX_TOKEN
+    ? new Svix(env.SVIX_TOKEN, {
+        serverUrl: env.SVIX_SERVER_URL,
+      })
+    : undefined);
 
 export type {} from "svix";
 

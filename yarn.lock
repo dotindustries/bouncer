@@ -1920,7 +1920,7 @@ __metadata:
     react-dom: 18.2.0
     react-icons: ^4.7.1
     rimraf: ^3.0.2
-    svix-react: ^1.4.2
+    svix-react: ^1.5.0
     ts-toolbelt: ^9.6.0
     tsc-alias: ^1.7.0
     tslib: ^2.4.0
@@ -2031,7 +2031,7 @@ __metadata:
   resolution: "@dotinc/bouncer-events@workspace:packages/events"
   dependencies:
     "@dotinc/bouncer-core": "workspace:*"
-    svix: ^0.75.0
+    svix: ^0.80.0
     typescript: ^4.9.4
     zod: ^3.20.2
   languageName: unknown
@@ -17358,29 +17358,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svix-react@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "svix-react@npm:1.4.2"
+"svix-react@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "svix-react@npm:1.5.0"
   dependencies:
     iframe-resizer-react: ^1.1.0
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
     svix: ">=0.70.0"
-  checksum: 49ef0960a766aa102c3b05a091a3661070d444714a64d76eb4f6a0187cb2fac6f95b906aaecabacc8154b0af6c8fcbf3cb73615c3254544ffafef88cec4a4e6d
+  checksum: c626bc8be42512c6e9196697e1fbafba2ab1a69926dc7a116fb3cbc9ca507fa7e5c43906473f79559c473ae08cd5c13fc9171fc2c0fb4f59332d20ae7bfb51f0
   languageName: node
   linkType: hard
 
-"svix@npm:^0.75.0":
-  version: 0.75.0
-  resolution: "svix@npm:0.75.0"
+"svix@npm:^0.80.0":
+  version: 0.80.0
+  resolution: "svix@npm:0.80.0"
   dependencies:
     "@stablelib/base64": ^1.0.0
     es6-promise: ^4.2.4
     fast-sha256: ^1.3.0
     svix-fetch: ^3.0.0
     url-parse: ^1.4.3
-  checksum: f152f6040f4a4ac2ad93d535a1a9aff8d289ba7feeeacabbcedcfc447f5994da460eff63c15c97627f911b9bec22dfb1c61530ebaf68a4d6eb6e7abccaf1be09
+  checksum: 7ebb3c4a3907214c255221c04de82dc94c41b6b19f2e068fb0fda999e023c8b87d20d3d7d9fa966e6d323b74c6954303d6c763ae7b09610be19c16704e624ed6
   languageName: node
   linkType: hard
 

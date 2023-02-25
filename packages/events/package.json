@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@dotinc/bouncer-core": "workspace:*",
-    "svix": "^0.75.0",
+    "svix": "^0.80.0",
     "zod": "^3.20.2"
   },
   "devDependencies": {

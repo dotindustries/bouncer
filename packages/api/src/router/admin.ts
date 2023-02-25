@@ -3,12 +3,104 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { add } from "date-fns";
 import { EmbedAccessTokenRequest } from "@speakeasy-api/speakeasy-schemas/registry/embedaccesstoken/embedaccesstoken_pb";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import {
+  getLogger,
+  lowSeatWarningLevelReachedEvent,
+  noSeatAvailableEvent,
+  seatProvidedEvent,
+  seatRedeemedEvent,
+  seatReleasedEvent,
+  seatReservedEvent,
+} from "@dotinc/bouncer-core";
+
+const logger = getLogger("trpc");
 
 export const adminRouter = createTRPCRouter({
+  setUpEventTypes: protectedProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.svix) return;
+
+    const noSeatAvailableSchema = zodToJsonSchema(noSeatAvailableEvent);
+    const lowSeatWarningSchema = zodToJsonSchema(
+      lowSeatWarningLevelReachedEvent
+    );
+    const seatProvidedSchema = zodToJsonSchema(seatProvidedEvent);
+    const seatReservedSchema = zodToJsonSchema(seatReservedEvent);
+    const seatRedeemedSchema = zodToJsonSchema(seatRedeemedEvent);
+    const seatReleasedSchema = zodToJsonSchema(seatReleasedEvent);
+
+    const creates = [
+      ctx.svix.eventType.create({
+        name: "no_seat_available",
+        description:
+          "Event fired when there are no available seats left on the subscription.",
+        schemas: {
+          default: noSeatAvailableSchema,
+        },
+      }),
+      ctx.svix.eventType.create({
+        name: "low_seat_warning_level_reached",
+        description:
+          "Event fired when the low seat level for a subscription is reached.",
+        schemas: {
+          default: lowSeatWarningSchema,
+        },
+      }),
+      ctx.svix.eventType.create({
+        name: "seat_provided",
+        description:
+          "Event fired when a seat has been allocated on a subscription.",
+        schemas: {
+          default: seatProvidedSchema,
+        },
+      }),
+      ctx.svix.eventType.create({
+        name: "seat_reserved",
+        description:
+          "Event fired when a seat has been reserved on a subscription.",
+        schemas: {
+          default: seatReservedSchema,
+        },
+      }),
+      ctx.svix.eventType.create({
+        name: "seat_redeemed",
+        description:
+          "Event fired when a seat has been redeemed on a subscription.",
+        schemas: {
+          default: seatRedeemedSchema,
+        },
+      }),
+      ctx.svix.eventType.create({
+        name: "seat_released",
+        description:
+          "Event fired when a seat has been released on a subscription.",
+        schemas: {
+          default: seatReleasedSchema,
+        },
+      }),
+    ];
+
+    const results = await Promise.all(creates);
+
+    logger.info(
+      {
+        schemas: [
+          noSeatAvailableSchema,
+          lowSeatWarningSchema,
+          seatProvidedSchema,
+          seatReservedSchema,
+          seatRedeemedSchema,
+          seatReleasedSchema,
+        ],
+        results,
+      },
+      "Event types created in svix"
+    );
+  }),
   eventPortal: protectedProcedure
     .input(z.object({ productId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.svix.authentication.appPortalAccess(input.productId, {});
+      return ctx.svix?.authentication.appPortalAccess(input.productId, {});
     }),
   // method based on
   // https://docs.speakeasyapi.dev/docs/integrate-speakeasy/manage-api-keys/#setting-custom-jwt-claims
