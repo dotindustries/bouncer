@@ -21,7 +21,7 @@ export const ListProductsPage = () => {
       {
         id: "product_name",
         Header: "Product name",
-        href: (cell: any) => `/products/${cell.id}}`,
+        href: (cell: any) => `/products/${cell.id}`,
       },
       {
         id: "publisher_name",
