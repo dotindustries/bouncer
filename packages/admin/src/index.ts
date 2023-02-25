@@ -11,3 +11,4 @@ export { DashboardPage } from "./dashboard/DashboardPage";
 
 // publishers
 export { ListProductsPage } from "./products/ListProductsPage";
+export { ProductPage } from "./products/ProductPage";

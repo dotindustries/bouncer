@@ -5,28 +5,31 @@ import {
   Card,
   Heading,
   HStack,
+  Loader,
   useModals,
 } from "@dotinc/bouncer-ui";
 import { AddProductDialog } from "../products/AddProductDialog";
 
 export const DashboardPage = () => {
   const modals = useModals();
-  const sess = useSession();
+  const session = useSession({ required: true });
+
+  if (session.status === "loading") {
+    return <Loader />;
+  }
 
   return (
     <Box px="8" py="4">
-      <HStack>
-        <Heading flex="1">Dashboard</Heading>
+      <HStack mb="4">
+        <Heading flex="1" size="md">
+          Dashboard
+        </Heading>
         <Button variant="primary" onClick={() => modals.open(AddProductDialog)}>
           Add product
         </Button>
       </HStack>
 
       <RegisterWebAuthn />
-
-      <Card>
-        <pre>{JSON.stringify(sess, null, "  ")}</pre>
-      </Card>
     </Box>
   );
 };

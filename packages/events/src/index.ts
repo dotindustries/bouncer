@@ -9,12 +9,13 @@ declare global {
 
 export const svix =
   global.svix ||
-  new Svix(env.SVIX_TOKEN, {
-    serverUrl: env.SVIX_SERVER_URL,
-  });
+  (env.SVIX_TOKEN &&
+    new Svix(env.SVIX_TOKEN, {
+      serverUrl: env.SVIX_SERVER_URL,
+    }));
 
 export type {} from "svix";
 
-if (process.env.NODE_ENV !== "production") {
+if (svix && process.env.NODE_ENV !== "production") {
   global.svix = svix;
 }

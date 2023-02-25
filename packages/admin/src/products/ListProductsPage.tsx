@@ -1,29 +1,53 @@
-import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
+import {
+  Box,
+  Button,
+  DataTable,
+  Heading,
+  HStack,
+  Loader,
+  useModals,
+} from "@dotinc/bouncer-ui";
 import * as React from "react";
+import { AddProductDialog } from "./AddProductDialog";
 import { api } from "../utils/api";
 
 export const ListProductsPage = () => {
-  const [count, setCount] = React.useState(1);
-  const ctx = api.useContext();
+  const modals = useModals();
 
-  const invalidate = ctx.products.all.invalidate;
-  const {
-    data: publisherConfigurations,
-    error,
-    isLoading,
-  } = api.products.all.useQuery();
+  const { data, error, isLoading } = api.products.all.useQuery();
+
+  const columns = React.useMemo(
+    () => [
+      {
+        id: "product_name",
+        Header: "Product name",
+        href: (cell: any) => `/products/${cell.id}}`,
+      },
+      {
+        id: "publisher_name",
+        Header: "Publisher name",
+      },
+    ],
+    []
+  );
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Box px="8" py="4">
-      <HStack>
-        <Heading>Products</Heading>
+      <HStack mb="4">
+        <Heading flex="1" size="md">
+          Dashboard
+        </Heading>
+        <Button variant="primary" onClick={() => modals.open(AddProductDialog)}>
+          Add product
+        </Button>
       </HStack>
 
-      {publisherConfigurations?.map((productConfig) => (
-        <div key={productConfig.id}>
-          <pre>{JSON.stringify(productConfig, null, "  ")}</pre>
-        </div>
-      ))}
+      {/* @ts-ignore: types are incorrect somehow */}
+      <DataTable columns={columns} data={data} />
     </Box>
   );
 };

@@ -23,6 +23,7 @@ defineNextConfig({
   swcMinify: true,
   experimental: {
     externalDir: true,
+    esmExternals: "loose",
   },
 });
 // );

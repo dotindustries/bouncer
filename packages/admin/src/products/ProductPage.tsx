@@ -1,18 +1,16 @@
 import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
-import { api } from "src/utils/api";
-import { AppPortal } from "svix-react";
+import { api } from "../utils/api";
+// import { AppPortal } from "svix-react";
 
-import "svix-react/style.css";
-
-const SvixEmbed = ({ svixAppId }: { svixAppId: string }) => {
-  const { data: appPortal, status } = api.admin.eventPortal.useQuery({
-    productId: svixAppId,
-  });
-  if (status === "loading") {
-    return null;
-  }
-  return <AppPortal url={appPortal?.url} />;
-};
+// const SvixEmbed = ({ svixAppId }: { svixAppId: string }) => {
+//   const { data: appPortal, status } = api.admin.eventPortal.useQuery({
+//     productId: svixAppId,
+//   });
+//   if (status === "loading") {
+//     return null;
+//   }
+//   return <AppPortal url={appPortal?.url} />;
+// };
 
 export const ProductPage = ({ productId }: { productId: string }) => {
   return (
@@ -22,7 +20,7 @@ export const ProductPage = ({ productId }: { productId: string }) => {
         <Button variant="primary">Add subscription</Button>
       </HStack>
 
-      <SvixEmbed svixAppId={productId} />
+      {/* <SvixEmbed svixAppId={productId} /> */}
     </Box>
   );
 };
