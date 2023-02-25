@@ -1,3 +1,5 @@
+import { NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1)
@@ -17,6 +19,9 @@
  *
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import speakeasy, {
+  MiddlewareController,
+} from "@speakeasy-api/speakeasy-typescript-sdk";
 
 import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 import type { Session, User } from "@dotinc/bouncer-auth";
@@ -25,11 +30,27 @@ import { prisma } from "@dotinc/bouncer-db";
 import micromatch from "micromatch";
 import { getLogger } from "@dotinc/bouncer-core";
 
+// Configure the global speakeasy SDK instance
+if (env.SPEAKEASY_API_KEY) {
+  speakeasy.configure({
+    apiKey: env.SPEAKEASY_API_KEY, // retrieve from Speakeasy API dashboard.
+    apiID: env.SPEAKEASY_API_ID ?? "development", // enter a name that you'd like to associate captured requests with.
+    // This name will show up in the Speakeasy dashboard. e.g. "PetStore" might be a good ApiID for a Pet Store's API.
+    // No spaces allowed.
+    versionID: env.SPEAKEASY_APP_VERSION_ID ?? "development", // enter a version that you would like to associate captured requests with.
+    // The combination of ApiID (name) and VersionID will uniquely identify your requests in the Speakeasy Dashboard.
+    // e.g. "v1.0.0". You can have multiple versions for the same ApiID (if running multiple versions of your API)
+    port: 3000, // The port number your express app is listening on (required to build full URLs on non-standard ports)
+  });
+}
+
 const logger = getLogger("trpc");
 
 type CreateContextOptions = {
   session: Session | null;
   auth: string | User | null;
+  req: NextApiRequest & { controller?: MiddlewareController };
+  res: NextApiResponse;
 };
 
 /**
@@ -43,8 +64,7 @@ type CreateContextOptions = {
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: opts.session,
-    auth: opts.auth,
+    ...opts,
     prisma,
     svix,
   };
@@ -76,6 +96,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   return createInnerTRPCContext({
     session,
     auth,
+    req,
+    res,
   });
 };
 
@@ -121,6 +143,14 @@ export const createTRPCRouter = t.router;
  * can still access user session data if they are logged in
  */
 export const publicProcedure = t.procedure;
+
+const speakeasyMiddleware = t.middleware(({ ctx, next }) => {
+  if (env.SPEAKEASY_API_KEY) {
+    const handler = speakeasy.expressMiddleware();
+    handler(ctx.req as any, ctx.res as any, next);
+  }
+  return next();
+});
 
 /**
  * Reusable middleware that enforces users are logged in before running the
@@ -195,6 +225,13 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   let auth: User;
 
   if (typeof ctx.auth === "string") {
+    // speakeasy API Key is a JWT token
+    // jwks: input token to library to verify signature of jwt via uri of speakeasy
+    // decode JWT
+    // look up custom claims
+    //    product_id
+    //    user_id
+
     // only run db query if the key is whitelisted
     const apiKeyUser = await userByApiKey(ctx.auth);
     if (!apiKeyUser) {
@@ -240,5 +277,6 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure
+  .use(speakeasyMiddleware) // --> load trace headers
   // .use(enforceUserIsAuthed) --> session is indirectly checked via ACL
   .use(enforceApiKeyOrACL);

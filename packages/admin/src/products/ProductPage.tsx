@@ -1,4 +1,5 @@
 import { Box, Button, Heading, HStack } from "@dotinc/bouncer-ui";
+import { DevPortalButton } from "src/dashboard/DevPortal";
 import { api } from "src/utils/api";
 import { AppPortal } from "svix-react";
 
@@ -20,6 +21,7 @@ export const ProductPage = ({ productId }: { productId: string }) => {
       <HStack>
         <Heading flex="1">Product</Heading>
         <Button variant="primary">Add subscription</Button>
+        <DevPortalButton />
       </HStack>
 
       <SvixEmbed svixAppId={productId} />

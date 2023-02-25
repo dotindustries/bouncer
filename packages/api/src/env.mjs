@@ -9,6 +9,9 @@ import { z } from "zod";
 export const server = z.object({
   API_KEYS: z.string(),
   AUTH_ACL: z.string(),
+  SPEAKEASY_API_KEY: z.string().optional(),
+  SPEAKEASY_API_ID: z.string().optional(),
+  SPEAKEASY_APP_VERSION_ID: z.string().optional()
 });
 
 /**

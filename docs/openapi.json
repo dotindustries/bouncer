@@ -1,15 +1,11 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Bouncer API",
-    "description": "SaaS seat management API",
+    "title": "Usher",
+    "description": "Usher - SaaS seat management API",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "https://bouncer.dot.industries/api/v1"
-    }
-  ],
+  "servers": [{ "url": "http://localhost:3000" }],
   "paths": {
     "/products": {
       "get": {
@@ -25,22 +21,11 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "owner_id": {
-                        "type": "string"
-                      },
-                      "product_name": {
-                        "type": "string"
-                      },
-                      "publisher_name": {
-                        "type": "string"
-                      },
-                      "home_page_url": {
-                        "type": "string",
-                        "nullable": true
-                      },
+                      "id": { "type": "string" },
+                      "owner_id": { "type": "string" },
+                      "product_name": { "type": "string" },
+                      "publisher_name": { "type": "string" },
+                      "home_page_url": { "type": "string", "nullable": true },
                       "contact_page_url": {
                         "type": "string",
                         "nullable": true
@@ -104,9 +89,7 @@
                       "seatingConfig": {
                         "type": "object",
                         "properties": {
-                          "owner_id": {
-                            "type": "string"
-                          },
+                          "owner_id": { "type": "string" },
                           "default_low_seat_warning_level_percent": {
                             "type": "number"
                           },
@@ -180,9 +163,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       },
       "post": {
@@ -194,47 +175,23 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "product_name": {
-                    "type": "string"
-                  },
-                  "publisher_name": {
-                    "type": "string"
-                  },
-                  "home_page_url": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "contact_page_url": {
-                    "type": "string",
-                    "nullable": true
-                  },
+                  "id": { "type": "string" },
+                  "product_name": { "type": "string" },
+                  "publisher_name": { "type": "string" },
+                  "home_page_url": { "type": "string", "nullable": true },
+                  "contact_page_url": { "type": "string", "nullable": true },
                   "privacy_notice_page_url": {
                     "type": "string",
                     "nullable": true
                   },
-                  "contact_sales_email": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "contact_sales_url": {
-                    "type": "string",
-                    "nullable": true
-                  },
+                  "contact_sales_email": { "type": "string", "nullable": true },
+                  "contact_sales_url": { "type": "string", "nullable": true },
                   "contact_support_email": {
                     "type": "string",
                     "nullable": true
                   },
-                  "contact_support_url": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "is_setup_complete": {
-                    "type": "boolean",
-                    "nullable": true
-                  },
+                  "contact_support_url": { "type": "string", "nullable": true },
+                  "is_setup_complete": { "type": "boolean", "nullable": true },
                   "on_access_denied_url": {
                     "type": "string",
                     "nullable": true
@@ -270,9 +227,7 @@
                   "seatingConfig": {
                     "type": "object",
                     "properties": {
-                      "owner_id": {
-                        "type": "string"
-                      },
+                      "owner_id": { "type": "string" },
                       "default_low_seat_warning_level_percent": {
                         "type": "number"
                       },
@@ -353,26 +308,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "owner_id": {
-                      "type": "string"
-                    },
-                    "product_name": {
-                      "type": "string"
-                    },
-                    "publisher_name": {
-                      "type": "string"
-                    },
-                    "home_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "contact_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "id": { "type": "string" },
+                    "owner_id": { "type": "string" },
+                    "product_name": { "type": "string" },
+                    "publisher_name": { "type": "string" },
+                    "home_page_url": { "type": "string", "nullable": true },
+                    "contact_page_url": { "type": "string", "nullable": true },
                     "privacy_notice_page_url": {
                       "type": "string",
                       "nullable": true
@@ -381,10 +322,7 @@
                       "type": "string",
                       "nullable": true
                     },
-                    "contact_sales_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "contact_sales_url": { "type": "string", "nullable": true },
                     "contact_support_email": {
                       "type": "string",
                       "nullable": true
@@ -432,9 +370,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -507,9 +443,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -521,9 +455,7 @@
             "name": "productId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -534,26 +466,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "owner_id": {
-                      "type": "string"
-                    },
-                    "product_name": {
-                      "type": "string"
-                    },
-                    "publisher_name": {
-                      "type": "string"
-                    },
-                    "home_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "contact_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "id": { "type": "string" },
+                    "owner_id": { "type": "string" },
+                    "product_name": { "type": "string" },
+                    "publisher_name": { "type": "string" },
+                    "home_page_url": { "type": "string", "nullable": true },
+                    "contact_page_url": { "type": "string", "nullable": true },
                     "privacy_notice_page_url": {
                       "type": "string",
                       "nullable": true
@@ -562,10 +480,7 @@
                       "type": "string",
                       "nullable": true
                     },
-                    "contact_sales_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "contact_sales_url": { "type": "string", "nullable": true },
                     "contact_support_email": {
                       "type": "string",
                       "nullable": true
@@ -613,9 +528,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -688,9 +601,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       },
       "put": {
@@ -705,22 +616,11 @@
                   "productConfig": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "owner_id": {
-                        "type": "string"
-                      },
-                      "product_name": {
-                        "type": "string"
-                      },
-                      "publisher_name": {
-                        "type": "string"
-                      },
-                      "home_page_url": {
-                        "type": "string",
-                        "nullable": true
-                      },
+                      "id": { "type": "string" },
+                      "owner_id": { "type": "string" },
+                      "product_name": { "type": "string" },
+                      "publisher_name": { "type": "string" },
+                      "home_page_url": { "type": "string", "nullable": true },
                       "contact_page_url": {
                         "type": "string",
                         "nullable": true
@@ -784,9 +684,7 @@
                       "seatingConfig": {
                         "type": "object",
                         "properties": {
-                          "owner_id": {
-                            "type": "string"
-                          },
+                          "owner_id": { "type": "string" },
                           "default_low_seat_warning_level_percent": {
                             "type": "number"
                           },
@@ -868,9 +766,7 @@
             "name": "productId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -881,26 +777,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "owner_id": {
-                      "type": "string"
-                    },
-                    "product_name": {
-                      "type": "string"
-                    },
-                    "publisher_name": {
-                      "type": "string"
-                    },
-                    "home_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "contact_page_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "id": { "type": "string" },
+                    "owner_id": { "type": "string" },
+                    "product_name": { "type": "string" },
+                    "publisher_name": { "type": "string" },
+                    "home_page_url": { "type": "string", "nullable": true },
+                    "contact_page_url": { "type": "string", "nullable": true },
                     "privacy_notice_page_url": {
                       "type": "string",
                       "nullable": true
@@ -909,10 +791,7 @@
                       "type": "string",
                       "nullable": true
                     },
-                    "contact_sales_url": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "contact_sales_url": { "type": "string", "nullable": true },
                     "contact_support_email": {
                       "type": "string",
                       "nullable": true
@@ -960,9 +839,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -1035,9 +912,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -1049,25 +924,19 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "userId",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "userEmail",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1080,9 +949,7 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
+                      "id": { "type": "string" },
                       "seating_strategy_name": {
                         "type": "string",
                         "enum": [
@@ -1090,10 +957,7 @@
                           "first_come_first_served"
                         ]
                       },
-                      "subscription_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
+                      "subscription_id": { "type": "string", "nullable": true },
                       "created_utc": {
                         "type": "string",
                         "format": "date-time",
@@ -1116,25 +980,11 @@
                       "reservation": {
                         "type": "object",
                         "properties": {
-                          "seat_id": {
-                            "type": "string"
-                          },
-                          "tenant_id": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "user_id": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "email": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "invite_url": {
-                            "type": "string",
-                            "nullable": true
-                          }
+                          "seat_id": { "type": "string" },
+                          "tenant_id": { "type": "string", "nullable": true },
+                          "user_id": { "type": "string", "nullable": true },
+                          "email": { "type": "string", "nullable": true },
+                          "invite_url": { "type": "string", "nullable": true }
                         },
                         "required": [
                           "seat_id",
@@ -1149,23 +999,11 @@
                       "occupant": {
                         "type": "object",
                         "properties": {
-                          "seat_id": {
-                            "type": "string"
-                          },
-                          "user_id": {
-                            "type": "string"
-                          },
-                          "tenant_id": {
-                            "type": "string"
-                          },
-                          "email": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "user_name": {
-                            "type": "string",
-                            "nullable": true
-                          }
+                          "seat_id": { "type": "string" },
+                          "user_id": { "type": "string" },
+                          "tenant_id": { "type": "string" },
+                          "email": { "type": "string", "nullable": true },
+                          "user_name": { "type": "string", "nullable": true }
                         },
                         "required": [
                           "seat_id",
@@ -1195,9 +1033,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -1209,17 +1045,13 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1230,17 +1062,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -1263,25 +1090,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1296,23 +1109,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1341,9 +1142,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       },
       "patch": {
@@ -1358,18 +1157,10 @@
                   "user": {
                     "type": "object",
                     "properties": {
-                      "user_id": {
-                        "type": "string"
-                      },
-                      "user_name": {
-                        "type": "string"
-                      },
-                      "tenant_id": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string"
-                      }
+                      "user_id": { "type": "string" },
+                      "user_name": { "type": "string" },
+                      "tenant_id": { "type": "string" },
+                      "email": { "type": "string" }
                     },
                     "required": ["user_id", "tenant_id"],
                     "additionalProperties": false
@@ -1386,17 +1177,13 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1407,17 +1194,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -1440,25 +1222,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1473,23 +1241,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1518,9 +1274,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       },
       "delete": {
@@ -1530,31 +1284,21 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
             "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
+            "content": { "application/json": { "schema": {} } }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -1566,25 +1310,19 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "tenantId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1595,17 +1333,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -1628,25 +1361,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1661,23 +1380,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1706,9 +1413,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -1725,18 +1430,10 @@
                   "user": {
                     "type": "object",
                     "properties": {
-                      "user_id": {
-                        "type": "string"
-                      },
-                      "user_name": {
-                        "type": "string"
-                      },
-                      "tenant_id": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string"
-                      }
+                      "user_id": { "type": "string" },
+                      "user_name": { "type": "string" },
+                      "tenant_id": { "type": "string" },
+                      "email": { "type": "string" }
                     },
                     "required": ["user_id", "tenant_id"],
                     "additionalProperties": false
@@ -1753,17 +1450,13 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1774,17 +1467,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -1807,25 +1495,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1840,23 +1514,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -1885,9 +1547,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -1904,25 +1564,11 @@
                   "reservation": {
                     "type": "object",
                     "properties": {
-                      "seat_id": {
-                        "type": "string"
-                      },
-                      "tenant_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "user_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "email": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "invite_url": {
-                        "type": "string",
-                        "nullable": true
-                      }
+                      "seat_id": { "type": "string" },
+                      "tenant_id": { "type": "string", "nullable": true },
+                      "user_id": { "type": "string", "nullable": true },
+                      "email": { "type": "string", "nullable": true },
+                      "invite_url": { "type": "string", "nullable": true }
                     },
                     "required": [
                       "seat_id",
@@ -1945,17 +1591,13 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1966,17 +1608,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -1999,25 +1636,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -2032,23 +1655,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -2077,9 +1688,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -2096,18 +1705,10 @@
                   "user": {
                     "type": "object",
                     "properties": {
-                      "user_id": {
-                        "type": "string"
-                      },
-                      "user_name": {
-                        "type": "string"
-                      },
-                      "tenant_id": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string"
-                      }
+                      "user_id": { "type": "string" },
+                      "user_name": { "type": "string" },
+                      "tenant_id": { "type": "string" },
+                      "email": { "type": "string" }
                     },
                     "required": ["user_id", "tenant_id"],
                     "additionalProperties": false
@@ -2124,17 +1725,13 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "seatId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -2145,17 +1742,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "seating_strategy_name": {
                       "type": "string",
                       "enum": ["monthly_active_user", "first_come_first_served"]
                     },
-                    "subscription_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
+                    "subscription_id": { "type": "string", "nullable": true },
                     "created_utc": {
                       "type": "string",
                       "format": "date-time",
@@ -2178,25 +1770,11 @@
                     "reservation": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_id": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "invite_url": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "tenant_id": { "type": "string", "nullable": true },
+                        "user_id": { "type": "string", "nullable": true },
+                        "email": { "type": "string", "nullable": true },
+                        "invite_url": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -2211,23 +1789,11 @@
                     "occupant": {
                       "type": "object",
                       "properties": {
-                        "seat_id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "tenant_id": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string",
-                          "nullable": true
-                        },
-                        "user_name": {
-                          "type": "string",
-                          "nullable": true
-                        }
+                        "seat_id": { "type": "string" },
+                        "user_id": { "type": "string" },
+                        "tenant_id": { "type": "string" },
+                        "email": { "type": "string", "nullable": true },
+                        "user_name": { "type": "string", "nullable": true }
                       },
                       "required": [
                         "seat_id",
@@ -2256,9 +1822,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -2270,9 +1834,7 @@
             "name": "productId",
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -2285,16 +1847,12 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
+                      "id": { "type": "string" },
                       "state": {
                         "type": "string",
                         "enum": ["purchased", "active", "suspended", "canceled"]
                       },
-                      "product_id": {
-                        "type": "string"
-                      },
+                      "product_id": { "type": "string" },
                       "is_setup_complete": {
                         "type": "boolean",
                         "nullable": true
@@ -2304,63 +1862,27 @@
                         "format": "date-time",
                         "nullable": true
                       },
-                      "tenant_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "subscriber_info": {
-                        "nullable": true
-                      },
-                      "source_subscription": {
-                        "nullable": true
-                      },
+                      "tenant_id": { "type": "string", "nullable": true },
+                      "subscriber_info": { "nullable": true },
+                      "source_subscription": { "nullable": true },
                       "subscription_name": {
                         "type": "string",
                         "nullable": true
                       },
-                      "tenant_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "offer_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "plan_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "admin_role_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "user_role_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "management_urls": {
-                        "nullable": true
-                      },
-                      "admin_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "admin_email": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "total_seats": {
-                        "type": "integer",
-                        "nullable": true
-                      },
+                      "tenant_name": { "type": "string", "nullable": true },
+                      "offer_id": { "type": "string", "nullable": true },
+                      "plan_id": { "type": "string", "nullable": true },
+                      "admin_role_name": { "type": "string", "nullable": true },
+                      "user_role_name": { "type": "string", "nullable": true },
+                      "management_urls": { "nullable": true },
+                      "admin_name": { "type": "string", "nullable": true },
+                      "admin_email": { "type": "string", "nullable": true },
+                      "total_seats": { "type": "integer", "nullable": true },
                       "is_being_configured": {
                         "type": "boolean",
                         "nullable": true
                       },
-                      "is_free_trial": {
-                        "type": "boolean",
-                        "nullable": true
-                      },
+                      "is_free_trial": { "type": "boolean", "nullable": true },
                       "is_test_subscription": {
                         "type": "boolean",
                         "nullable": true
@@ -2373,9 +1895,7 @@
                       "seatingConfig": {
                         "type": "object",
                         "properties": {
-                          "owner_id": {
-                            "type": "string"
-                          },
+                          "owner_id": { "type": "string" },
                           "default_low_seat_warning_level_percent": {
                             "type": "number"
                           },
@@ -2448,9 +1968,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -2462,9 +1980,7 @@
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -2475,16 +1991,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "state": {
                       "type": "string",
                       "enum": ["purchased", "active", "suspended", "canceled"]
                     },
-                    "product_id": {
-                      "type": "string"
-                    },
+                    "product_id": { "type": "string" },
                     "is_setup_complete": {
                       "type": "boolean",
                       "nullable": true
@@ -2494,63 +2006,24 @@
                       "format": "date-time",
                       "nullable": true
                     },
-                    "tenant_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "subscriber_info": {
-                      "nullable": true
-                    },
-                    "source_subscription": {
-                      "nullable": true
-                    },
-                    "subscription_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "tenant_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "offer_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "plan_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "user_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "management_urls": {
-                      "nullable": true
-                    },
-                    "admin_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_email": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "total_seats": {
-                      "type": "integer",
-                      "nullable": true
-                    },
+                    "tenant_id": { "type": "string", "nullable": true },
+                    "subscriber_info": { "nullable": true },
+                    "source_subscription": { "nullable": true },
+                    "subscription_name": { "type": "string", "nullable": true },
+                    "tenant_name": { "type": "string", "nullable": true },
+                    "offer_id": { "type": "string", "nullable": true },
+                    "plan_id": { "type": "string", "nullable": true },
+                    "admin_role_name": { "type": "string", "nullable": true },
+                    "user_role_name": { "type": "string", "nullable": true },
+                    "management_urls": { "nullable": true },
+                    "admin_name": { "type": "string", "nullable": true },
+                    "admin_email": { "type": "string", "nullable": true },
+                    "total_seats": { "type": "integer", "nullable": true },
                     "is_being_configured": {
                       "type": "boolean",
                       "nullable": true
                     },
-                    "is_free_trial": {
-                      "type": "boolean",
-                      "nullable": true
-                    },
+                    "is_free_trial": { "type": "boolean", "nullable": true },
                     "is_test_subscription": {
                       "type": "boolean",
                       "nullable": true
@@ -2563,9 +2036,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -2637,9 +2108,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     },
@@ -2656,16 +2125,12 @@
                   "subscription": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
+                      "id": { "type": "string" },
                       "state": {
                         "type": "string",
                         "enum": ["purchased", "active", "suspended", "canceled"]
                       },
-                      "product_id": {
-                        "type": "string"
-                      },
+                      "product_id": { "type": "string" },
                       "is_setup_complete": {
                         "type": "boolean",
                         "nullable": true
@@ -2675,63 +2140,27 @@
                         "format": "date-time",
                         "nullable": true
                       },
-                      "tenant_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "subscriber_info": {
-                        "nullable": true
-                      },
-                      "source_subscription": {
-                        "nullable": true
-                      },
+                      "tenant_id": { "type": "string", "nullable": true },
+                      "subscriber_info": { "nullable": true },
+                      "source_subscription": { "nullable": true },
                       "subscription_name": {
                         "type": "string",
                         "nullable": true
                       },
-                      "tenant_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "offer_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "plan_id": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "admin_role_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "user_role_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "management_urls": {
-                        "nullable": true
-                      },
-                      "admin_name": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "admin_email": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "total_seats": {
-                        "type": "integer",
-                        "nullable": true
-                      },
+                      "tenant_name": { "type": "string", "nullable": true },
+                      "offer_id": { "type": "string", "nullable": true },
+                      "plan_id": { "type": "string", "nullable": true },
+                      "admin_role_name": { "type": "string", "nullable": true },
+                      "user_role_name": { "type": "string", "nullable": true },
+                      "management_urls": { "nullable": true },
+                      "admin_name": { "type": "string", "nullable": true },
+                      "admin_email": { "type": "string", "nullable": true },
+                      "total_seats": { "type": "integer", "nullable": true },
                       "is_being_configured": {
                         "type": "boolean",
                         "nullable": true
                       },
-                      "is_free_trial": {
-                        "type": "boolean",
-                        "nullable": true
-                      },
+                      "is_free_trial": { "type": "boolean", "nullable": true },
                       "is_test_subscription": {
                         "type": "boolean",
                         "nullable": true
@@ -2744,9 +2173,7 @@
                       "seatingConfig": {
                         "type": "object",
                         "properties": {
-                          "owner_id": {
-                            "type": "string"
-                          },
+                          "owner_id": { "type": "string" },
                           "default_low_seat_warning_level_percent": {
                             "type": "number"
                           },
@@ -2827,17 +2254,13 @@
             "name": "productId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -2848,16 +2271,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "state": {
                       "type": "string",
                       "enum": ["purchased", "active", "suspended", "canceled"]
                     },
-                    "product_id": {
-                      "type": "string"
-                    },
+                    "product_id": { "type": "string" },
                     "is_setup_complete": {
                       "type": "boolean",
                       "nullable": true
@@ -2867,63 +2286,24 @@
                       "format": "date-time",
                       "nullable": true
                     },
-                    "tenant_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "subscriber_info": {
-                      "nullable": true
-                    },
-                    "source_subscription": {
-                      "nullable": true
-                    },
-                    "subscription_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "tenant_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "offer_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "plan_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "user_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "management_urls": {
-                      "nullable": true
-                    },
-                    "admin_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_email": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "total_seats": {
-                      "type": "integer",
-                      "nullable": true
-                    },
+                    "tenant_id": { "type": "string", "nullable": true },
+                    "subscriber_info": { "nullable": true },
+                    "source_subscription": { "nullable": true },
+                    "subscription_name": { "type": "string", "nullable": true },
+                    "tenant_name": { "type": "string", "nullable": true },
+                    "offer_id": { "type": "string", "nullable": true },
+                    "plan_id": { "type": "string", "nullable": true },
+                    "admin_role_name": { "type": "string", "nullable": true },
+                    "user_role_name": { "type": "string", "nullable": true },
+                    "management_urls": { "nullable": true },
+                    "admin_name": { "type": "string", "nullable": true },
+                    "admin_email": { "type": "string", "nullable": true },
+                    "total_seats": { "type": "integer", "nullable": true },
                     "is_being_configured": {
                       "type": "boolean",
                       "nullable": true
                     },
-                    "is_free_trial": {
-                      "type": "boolean",
-                      "nullable": true
-                    },
+                    "is_free_trial": { "type": "boolean", "nullable": true },
                     "is_test_subscription": {
                       "type": "boolean",
                       "nullable": true
@@ -2936,9 +2316,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -3010,9 +2388,7 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       },
       "patch": {
@@ -3028,11 +2404,7 @@
                     "allOf": [
                       {
                         "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "id": { "type": "string" } },
                         "required": ["id"],
                         "additionalProperties": false
                       },
@@ -3050,9 +2422,7 @@
                                   "canceled"
                                 ]
                               },
-                              "product_id": {
-                                "type": "string"
-                              },
+                              "product_id": { "type": "string" },
                               "is_setup_complete": {
                                 "type": "boolean",
                                 "nullable": true
@@ -3062,12 +2432,8 @@
                                 "format": "date-time",
                                 "nullable": true
                               },
-                              "subscriber_info": {
-                                "nullable": true
-                              },
-                              "source_subscription": {
-                                "nullable": true
-                              },
+                              "subscriber_info": { "nullable": true },
+                              "source_subscription": { "nullable": true },
                               "subscription_name": {
                                 "type": "string",
                                 "nullable": true
@@ -3076,10 +2442,7 @@
                                 "type": "string",
                                 "nullable": true
                               },
-                              "plan_id": {
-                                "type": "string",
-                                "nullable": true
-                              },
+                              "plan_id": { "type": "string", "nullable": true },
                               "admin_role_name": {
                                 "type": "string",
                                 "nullable": true
@@ -3088,9 +2451,7 @@
                                 "type": "string",
                                 "nullable": true
                               },
-                              "management_urls": {
-                                "nullable": true
-                              },
+                              "management_urls": { "nullable": true },
                               "admin_name": {
                                 "type": "string",
                                 "nullable": true
@@ -3123,9 +2484,7 @@
                               "seatingConfig": {
                                 "type": "object",
                                 "properties": {
-                                  "owner_id": {
-                                    "type": "string"
-                                  },
+                                  "owner_id": { "type": "string" },
                                   "default_low_seat_warning_level_percent": {
                                     "type": "number"
                                   },
@@ -3178,9 +2537,7 @@
                               "seatingConfig": {
                                 "type": "object",
                                 "properties": {
-                                  "owner_id": {
-                                    "type": "string"
-                                  },
+                                  "owner_id": { "type": "string" },
                                   "default_low_seat_warning_level_percent": {
                                     "type": "number"
                                   },
@@ -3237,17 +2594,13 @@
             "name": "productId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "subscriptionId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -3258,16 +2611,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
+                    "id": { "type": "string" },
                     "state": {
                       "type": "string",
                       "enum": ["purchased", "active", "suspended", "canceled"]
                     },
-                    "product_id": {
-                      "type": "string"
-                    },
+                    "product_id": { "type": "string" },
                     "is_setup_complete": {
                       "type": "boolean",
                       "nullable": true
@@ -3277,63 +2626,24 @@
                       "format": "date-time",
                       "nullable": true
                     },
-                    "tenant_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "subscriber_info": {
-                      "nullable": true
-                    },
-                    "source_subscription": {
-                      "nullable": true
-                    },
-                    "subscription_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "tenant_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "offer_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "plan_id": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "user_role_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "management_urls": {
-                      "nullable": true
-                    },
-                    "admin_name": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "admin_email": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "total_seats": {
-                      "type": "integer",
-                      "nullable": true
-                    },
+                    "tenant_id": { "type": "string", "nullable": true },
+                    "subscriber_info": { "nullable": true },
+                    "source_subscription": { "nullable": true },
+                    "subscription_name": { "type": "string", "nullable": true },
+                    "tenant_name": { "type": "string", "nullable": true },
+                    "offer_id": { "type": "string", "nullable": true },
+                    "plan_id": { "type": "string", "nullable": true },
+                    "admin_role_name": { "type": "string", "nullable": true },
+                    "user_role_name": { "type": "string", "nullable": true },
+                    "management_urls": { "nullable": true },
+                    "admin_name": { "type": "string", "nullable": true },
+                    "admin_email": { "type": "string", "nullable": true },
+                    "total_seats": { "type": "integer", "nullable": true },
                     "is_being_configured": {
                       "type": "boolean",
                       "nullable": true
                     },
-                    "is_free_trial": {
-                      "type": "boolean",
-                      "nullable": true
-                    },
+                    "is_free_trial": { "type": "boolean", "nullable": true },
                     "is_test_subscription": {
                       "type": "boolean",
                       "nullable": true
@@ -3346,9 +2656,7 @@
                     "seatingConfig": {
                       "type": "object",
                       "properties": {
-                        "owner_id": {
-                          "type": "string"
-                        },
+                        "owner_id": { "type": "string" },
                         "default_low_seat_warning_level_percent": {
                           "type": "number"
                         },
@@ -3420,28 +2728,17 @@
               }
             }
           },
-          "default": {
-            "$ref": "#/components/responses/error"
-          }
+          "default": { "$ref": "#/components/responses/error" }
         }
       }
     }
   },
   "components": {
     "securitySchemes": {
-      "api_key": {
-        "type": "apiKey",
-        "name": "X-API-KEY",
-        "in": "header"
-      },
+      "api_key": { "type": "apiKey", "name": "X-API-KEY", "in": "header" },
       "speakeasy_api_key": {
         "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "",
-            "scopes": {}
-          }
-        }
+        "flows": { "implicit": { "authorizationUrl": "", "scopes": {} } }
       }
     },
     "responses": {
@@ -3452,21 +2749,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "message": {
-                  "type": "string"
-                },
-                "code": {
-                  "type": "string"
-                },
+                "message": { "type": "string" },
+                "code": { "type": "string" },
                 "issues": {
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    },
+                    "properties": { "message": { "type": "string" } },
                     "required": ["message"],
                     "additionalProperties": false
                   }
@@ -3480,7 +2769,5 @@
       }
     }
   },
-  "externalDocs": {
-    "url": "https://bouncer.mintlify.com"
-  }
+  "externalDocs": { "url": "https://bouncer.mintlify.com" }
 }

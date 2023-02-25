@@ -13,9 +13,9 @@ export const createOpenApiNextHandler = () =>
 
 // https://github.com/jlalmes/trpc-openapi/issues/239
 const doc = generateOpenApiDocument(appRouter, {
-  title: "Bouncer API",
+  title: "Usher",
   version: "1.0.0",
-  description: "SaaS seat management API",
+  description: "Usher - SaaS seat management API",
   baseUrl: "http://localhost:3000",
   docsUrl: "https://bouncer.mintlify.com",
 });
