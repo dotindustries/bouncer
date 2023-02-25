@@ -2,8 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { add } from "date-fns";
-import { EmbedAccessTokenRequest } from "@speakeasy-api/speakeasy-schemas/registry/embedaccesstoken/embedaccesstoken_pb";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { EmbedAccessTokenRequest } from "@speakeasy-api/speakeasy-schemas/registry/embedaccesstoken/embedaccesstoken_pb";
 import {
   getLogger,
   lowSeatWarningLevelReachedEvent,
@@ -13,12 +13,21 @@ import {
   seatReleasedEvent,
   seatReservedEvent,
 } from "@dotinc/bouncer-core";
+import { validateEmailWithACL } from "../utils";
 
 const logger = getLogger("trpc");
 
 export const adminRouter = createTRPCRouter({
   setUpEventTypes: protectedProcedure.mutation(async ({ ctx }) => {
     if (!ctx.svix) return;
+
+    // only admins can set up event types
+    if (!ctx.auth.email || !validateEmailWithACL(ctx.auth.email)) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Only site admins can set up event types.",
+      });
+    }
 
     const noSeatAvailableSchema = zodToJsonSchema(noSeatAvailableEvent);
     const lowSeatWarningSchema = zodToJsonSchema(
@@ -108,7 +117,10 @@ export const adminRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .query(async ({ ctx, input }) => {
       if (!input.productId) {
-        return "";
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid product id",
+        });
       }
       // String customerId="some-customer-id";
       const customerId = `${input.productId}${ctx.auth.id}`;
@@ -126,8 +138,18 @@ export const adminRouter = createTRPCRouter({
         ctx.auth.name ?? ctx.auth.email ?? ctx.auth.id
       }`;
 
+      logger.info(
+        {
+          displayName,
+          customerId,
+        },
+        "Creating speakeasy portal login token"
+      );
       const req = new EmbedAccessTokenRequest();
 
+      if (!ctx.req.controller) {
+        return "";
+      }
       // Restrict data by time (last 24 hours)
       // Instant startTime=Instant.now().minusSeconds(60*60*24);
       // filterBuilder.withTimeFilter(startTime,SpeakeasyAccessTokenFilterOperator.GreaterThan);
@@ -157,9 +179,14 @@ export const adminRouter = createTRPCRouter({
       // Map<String, Boolean> permissions = new HashMap<>();
       // permissions.put("end_user:api_keys:read", true)
 
+      const permissionsMap = req.getPermissionsMap();
+      // https://docs.speakeasyapi.dev/docs/integrate-speakeasy/manage-api-keys/#setting-custom-permissions-for-portal-users
+      permissionsMap.set("end_user:api_keys:write", true);
+      permissionsMap.set("end_user:api_keys:read", true);
+
       // String accessToken=controller.getPortalLoginToken(customerId, "Some User Display Name", jwtCustomClaims,
       //          permissions, filterBuilder.build());
       // build response
-      return ctx.req.controller?.getSDKInstance().getEmbedAccessToken(req);
+      return ctx.req.controller.getSDKInstance().getEmbedAccessToken(req);
     }),
 });

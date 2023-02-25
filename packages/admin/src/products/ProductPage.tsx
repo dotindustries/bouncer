@@ -5,6 +5,7 @@ import { DevPortalButton } from "../dashboard/DevPortal";
 import { api } from "../utils/api";
 import { memo, useMemo, useState } from "react";
 import { useAsyncMemo } from "../utils/use-async-memo";
+import { env } from "../env.mjs";
 
 const useSvixPortalToken = (productId: string) => {
   const apiCtx = api.useContext();
@@ -49,16 +50,19 @@ export const ProductPage = ({ productId }: { productId: string }) => {
   const { mutate: createEventTypes, isLoading: isCreatingEventTypes } =
     api.admin.setUpEventTypes.useMutation();
 
-  if (isLoading) {
+  if (isLoading || !product) {
     return <Loader />;
   }
 
   return (
     <Box px="8" py="4">
       <HStack>
-        <Heading flex="1">{product?.product_name}</Heading>
+        <Heading flex="1">{product.product_name}</Heading>
         <Button variant="primary">Add subscription</Button>
-        <DevPortalButton />
+        {/* Only show dev portal button if set up is complete */}
+        {env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN && (
+          <DevPortalButton productId={product.id} />
+        )}
       </HStack>
 
       <Box py="4">

@@ -1,7 +1,8 @@
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { api, RouterInputs } from "../utils/api";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@dotinc/bouncer-ui";
+import { api, RouterInputs } from "../utils/api";
+import { env } from "../env.mjs";
 
 const useRedirectUrl = (callbackUrl: string, productId: string) => {
   const { data: token } = api.admin.speakeasyPortalLoginToken.useQuery({
@@ -64,8 +65,13 @@ const getRedirectUrl = async (
   callbackUrl: string,
   productId: string
 ) => {
+  if (!env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN) {
+    console.warn("NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN env var is not set");
+    return ""; // nothing to do
+  }
+
   const host = new URL(callbackUrl).host;
-  if (host.endsWith("usher.portal.speakeasyapi.dev")) {
+  if (host.endsWith(env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN)) {
     try {
       const token = await getSpeakeasyPortalLoginToken({
         productId,
@@ -86,16 +92,16 @@ const getRedirectUrl = async (
   return "";
 };
 
-export const DevPortalButton = () => {
+export const DevPortalButton = ({ productId }: { productId: string }) => {
   const apiCtx = api.useContext();
   const openDevPortal = async () => {
     const url = await getRedirectUrl(
       apiCtx.admin.speakeasyPortalLoginToken.fetch,
-      "https://usher.portal.speakeasyapi.dev",
-      "productId"
+      `https://${env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN}`,
+      productId
     );
     if (url) {
-      window.location.replace(url);
+      window.open(url, "_blank");
     }
   };
   return (

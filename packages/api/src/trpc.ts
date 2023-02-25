@@ -27,7 +27,6 @@ import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 import type { Session, User } from "@dotinc/bouncer-auth";
 import { svix } from "@dotinc/bouncer-events";
 import { prisma } from "@dotinc/bouncer-db";
-import micromatch from "micromatch";
 import { getLogger } from "@dotinc/bouncer-core";
 
 // Configure the global speakeasy SDK instance
@@ -111,6 +110,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import { OpenApiMeta } from "trpc-openapi";
 import superjson from "superjson";
 import { env } from "./env.mjs";
+import { validateEmailWithACL } from "./utils";
 
 const t = initTRPC
   .meta<OpenApiMeta>()
@@ -146,8 +146,14 @@ export const publicProcedure = t.procedure;
 
 const speakeasyMiddleware = t.middleware(({ ctx, next }) => {
   if (env.SPEAKEASY_API_KEY) {
+    logger.info("injecting controller to request");
     const handler = speakeasy.expressMiddleware();
     handler(ctx.req as any, ctx.res as any, next);
+  } else {
+    logger.warn(
+      { key: env.SPEAKEASY_API_KEY, id: env.SPEAKEASY_API_ID },
+      "Speakeasy config not ready, controller is not set up"
+    );
   }
   return next();
 });
@@ -175,18 +181,6 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * An array of the root API_KEY list, the root api keys resolve to the first user of the validateEmailWithACL list
  */
 const apiKeys = env.API_KEYS.split(",");
-
-const validateEmailWithACL = (email: string) => {
-  const authAcl = env.AUTH_ACL || undefined;
-
-  if (!authAcl) {
-    return false;
-  }
-
-  const acl = authAcl.split(",");
-
-  return micromatch.isMatch(email, acl);
-};
 
 const userByApiKey = (apiKey: string) => {
   // TODO: turn this whitelisted root key check to
@@ -225,6 +219,7 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   let auth: User;
 
   if (typeof ctx.auth === "string") {
+    logger.info({ token: ctx.auth }, "Verifying x-api-key");
     // speakeasy API Key is a JWT token
     // jwks: input token to library to verify signature of jwt via uri of speakeasy
     // decode JWT
