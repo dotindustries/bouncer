@@ -1,4 +1,5 @@
 import { signIn, useSession } from "@dotinc/bouncer-auth";
+import { Box } from "@dotinc/bouncer-ui";
 import { useRouter } from "next/router";
 
 export const Authenticated: React.FC<React.PropsWithChildren> = ({
@@ -11,6 +12,14 @@ export const Authenticated: React.FC<React.PropsWithChildren> = ({
       return signIn();
     },
   });
+
+  if (status === "loading") {
+    return (
+      <Box flex={1} w="100%" h="100%" alignItems="center" justifyItems="center">
+        <p>not working css - full page loading screen...</p>
+      </Box>
+    );
+  }
 
   if (status === "authenticated") {
     return <>{children}</>;
