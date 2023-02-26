@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { Button } from "@dotinc/bouncer-ui";
 import { api, RouterInputs } from "../utils/api";
 import { env } from "../env.mjs";
@@ -25,20 +25,19 @@ const useRedirectUrl = (callbackUrl: string, productId: string) => {
 
 export const SpeakeasyLoginRedirect = () => {
   // TODO: add product selector before starting redirect
-  // if (host.endsWith("your-company-name.portal.speakeasyapi.dev")) {
-  // }
-  const searchParams = useSearchParams();
-  const [internalSearchParams, setInternalSearchParams] = useState(
-    new URLSearchParams(searchParams)
-  );
+  const router = useRouter();
+  let { callbackUrl } = router.query;
 
-  let callbackUrl: string;
-  if (internalSearchParams.has("callbackUrl")) {
-    callbackUrl = internalSearchParams.get("callbackUrl")!!;
-  } else {
+  if (!callbackUrl || Array.isArray(callbackUrl)) {
     callbackUrl = "";
   }
 
+  const host = new URL(callbackUrl)?.host ?? "";
+  if (
+    env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN &&
+    host.endsWith(env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN)
+  ) {
+  }
   const redirectUrl = useRedirectUrl(callbackUrl, "productId");
 
   useEffect(() => {
@@ -47,8 +46,7 @@ export const SpeakeasyLoginRedirect = () => {
       window.location.replace(redirectUrl);
     }
 
-    internalSearchParams.delete("callbackUrl");
-    setInternalSearchParams(internalSearchParams);
+    router.query;
   }, [redirectUrl]);
 
   return <></>;
