@@ -15,7 +15,7 @@
     "noErrorTruncation": true,
     "jsx": "preserve",
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": "./src"
   },
   "include": ["src"]
 }

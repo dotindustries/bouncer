@@ -8,6 +8,7 @@ import {
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Link from "next/link";
+import theme from "../theme/theme";
 
 const LinkComponent = (props: LinkProps) => {
   return (
@@ -24,7 +25,7 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <SaasProvider linkComponent={LinkComponent}>
+      <SaasProvider linkComponent={LinkComponent} theme={theme}>
         <ModalsProvider>{children}</ModalsProvider>
       </SaasProvider>
     </QueryClientProvider>
