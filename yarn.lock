@@ -1958,6 +1958,7 @@ __metadata:
     trpc-panel: ^1.2.6
     typescript: ^4.9.4
     zod: ^3.20.0
+    zod-to-json-schema: ^3.20.4
   languageName: unknown
   linkType: soft
 
@@ -6745,7 +6746,7 @@ __metadata:
     lerna: ^6.4.1
     prettier: ^2.8.3
     rimraf: ^3.0.2
-    turbo: ^1.7.0
+    turbo: ^1.8.2
     typescript: ^4.9.4
   languageName: unknown
   linkType: soft
@@ -18184,58 +18185,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-darwin-64@npm:1.7.0"
+"turbo-darwin-64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-darwin-64@npm:1.8.2"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-darwin-arm64@npm:1.7.0"
+"turbo-darwin-arm64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-darwin-arm64@npm:1.8.2"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-linux-64@npm:1.7.0"
+"turbo-linux-64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-linux-64@npm:1.8.2"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-linux-arm64@npm:1.7.0"
+"turbo-linux-arm64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-linux-arm64@npm:1.8.2"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-windows-64@npm:1.7.0"
+"turbo-windows-64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-windows-64@npm:1.8.2"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:1.7.0":
-  version: 1.7.0
-  resolution: "turbo-windows-arm64@npm:1.7.0"
+"turbo-windows-arm64@npm:1.8.2":
+  version: 1.8.2
+  resolution: "turbo-windows-arm64@npm:1.8.2"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "turbo@npm:1.7.0"
+"turbo@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "turbo@npm:1.8.2"
   dependencies:
-    turbo-darwin-64: 1.7.0
-    turbo-darwin-arm64: 1.7.0
-    turbo-linux-64: 1.7.0
-    turbo-linux-arm64: 1.7.0
-    turbo-windows-64: 1.7.0
-    turbo-windows-arm64: 1.7.0
+    turbo-darwin-64: 1.8.2
+    turbo-darwin-arm64: 1.8.2
+    turbo-linux-64: 1.8.2
+    turbo-linux-arm64: 1.8.2
+    turbo-windows-64: 1.8.2
+    turbo-windows-arm64: 1.8.2
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -18251,7 +18252,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: effefebefeb7531bb33205e368b2b3571fee9e8face3530af25126d4162527f105a5fe7777509a99288326be3b6e28953c7ceacab2c2ef74abb0604c8ec9bbe7
+  checksum: 3267d34f1df7033dd8a08adc238d397a813e0abeefb90d4f6513034ba0f8cabfbf4b0b459be0eb4f1a1e9e9c895b591c41d0fba2bb07b433434ae3394177ec80
   languageName: node
   linkType: hard
 
@@ -19366,6 +19367,15 @@ __metadata:
   peerDependencies:
     zod: ^3.20.0
   checksum: ddc65aac7412a72b8e24adb57bc80713f4cf13759c258ec2b6b72e3a2e670201b430a67c8a0ae1f17edd7eaa10f4ae966eb35e334eb7abd83f309d987b7193e3
+  languageName: node
+  linkType: hard
+
+"zod-to-json-schema@npm:^3.20.4":
+  version: 3.20.4
+  resolution: "zod-to-json-schema@npm:3.20.4"
+  peerDependencies:
+    zod: ^3.20.0
+  checksum: 55bc649dbc82ce25fbfbfdd42ca530d883d83be5d02cb81e89f6401d54bca151fc6b8cc57999c75eb6a3dcaa3f000697315fbd4f505637472621570ed52784d8
   languageName: node
   linkType: hard
 

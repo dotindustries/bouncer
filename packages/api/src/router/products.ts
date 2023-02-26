@@ -17,9 +17,22 @@ export const productsRouter = createTRPCRouter({
           seatingConfig: true,
         },
         where: {
-          // users should only see their products
-          // system admins can see all products
-          ...(ctx.isSystemAdmin ? {} : { owner_id: ctx.auth.id }),
+          ...(ctx.isSystemAdmin
+            ? {} // system admins can see all products
+            : {
+                OR: [
+                  {
+                    owner_id: ctx.auth.id, // users should only see their products
+                  },
+                  {
+                    members: {
+                      some: {
+                        user_id: ctx.auth.id, // or where they are members of a product
+                      },
+                    },
+                  },
+                ],
+              }),
         },
       });
     }),
