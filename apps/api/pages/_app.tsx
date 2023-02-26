@@ -40,6 +40,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <AuthProvider session={pageProps.session}>
         <AppProvider>
           <Layout>
+            {/* TODO: Speakeasy login redirect should display product selector modal if we got here from speakeasy */}
+            {/* <SpeakeasyLoginRedirect /> */}
             <Component {...pageProps} />
             <Analytics />
           </Layout>

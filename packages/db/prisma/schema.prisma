@@ -38,8 +38,23 @@ model Product {
 
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   owner User @relation(fields: [owner_id], references: [id])
+  members ProductMembers[]
 
   @@index([owner_id])
+}
+
+model ProductMembers {
+  assignedAt DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id])
+  product_id String
+
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@id([product_id, user_id])
+  @@index([product_id])
+  @@index([user_id])
 }
 
 enum SeatingStrategyName {
@@ -190,6 +205,8 @@ model User {
   sessions      Session[]
   products      Product[]
   credentials Credential[]
+
+  accessibleProducts ProductMembers[]
 }
 
 enum AuthenticatorTransport {

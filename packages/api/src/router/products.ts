@@ -2,7 +2,9 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import type { SeatingStrategyName } from "@dotinc/bouncer-db";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { productConfig } from "@dotinc/bouncer-core";
+import { getLogger, productConfig } from "@dotinc/bouncer-core";
+
+const logger = getLogger("trpc");
 
 export const productsRouter = createTRPCRouter({
   all: protectedProcedure
@@ -13,6 +15,24 @@ export const productsRouter = createTRPCRouter({
       return ctx.prisma.product.findMany({
         include: {
           seatingConfig: true,
+        },
+        where: {
+          ...(ctx.isSystemAdmin
+            ? {} // system admins can see all products
+            : {
+                OR: [
+                  {
+                    owner_id: ctx.auth.id, // users should only see their products
+                  },
+                  {
+                    members: {
+                      some: {
+                        user_id: ctx.auth.id, // or where they are members of a product
+                      },
+                    },
+                  },
+                ],
+              }),
         },
       });
     }),
@@ -33,6 +53,7 @@ export const productsRouter = createTRPCRouter({
           seatingConfig: true,
         },
       });
+
       if (!product) {
         throw new TRPCError({
           message: `Product [${input.productId}] not found.`,
@@ -164,6 +185,11 @@ export const productsRouter = createTRPCRouter({
           },
         }),
       ]);
+
+      await ctx.svix?.application.create({
+        uid: input.id,
+        name: input.product_name,
+      });
 
       return created[1];
     }),
