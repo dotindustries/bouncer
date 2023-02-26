@@ -3,7 +3,7 @@ export { createPage } from "./utils/createPage";
 export { api, getBaseUrl } from "./utils/api";
 
 // auth & providers
-export { AuthPage, AuthProvider } from "./auth";
+export { AuthPage } from "./auth";
 export { AppProvider, Layout } from "./common";
 
 // dashboard

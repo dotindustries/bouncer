@@ -1,15 +1,14 @@
-import type { Session } from "next-auth";
 import type { AppType } from "next/app";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
-
-import { AppProvider, AuthProvider, Layout, api } from "@dotinc/bouncer-admin";
-
+import { AppProvider, Layout, api } from "@dotinc/bouncer-admin";
 import { env } from "~/env/client.mjs";
 import Script from "next/script";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
-  pageProps,
+  pageProps: { session, ...pageProps },
 }) => {
   return (
     <>
@@ -37,7 +36,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         </>
       )}
 
-      <AuthProvider session={pageProps.session}>
+      <SessionProvider session={session}>
         <AppProvider>
           <Layout>
             {/* TODO: Speakeasy login redirect should display product selector modal if we got here from speakeasy */}
@@ -46,7 +45,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
             <Analytics />
           </Layout>
         </AppProvider>
-      </AuthProvider>
+      </SessionProvider>
     </>
   );
 };

@@ -23,7 +23,6 @@ export const DashboardPage = () => {
   });
 
   useEffect(() => {
-    console.log(session, products);
     if (
       session.status === "authenticated" &&
       products.isFetched &&
