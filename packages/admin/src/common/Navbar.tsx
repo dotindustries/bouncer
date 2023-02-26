@@ -18,11 +18,9 @@ import {
 
 import { FiMenu, FiX, FiPlus } from "react-icons/fi";
 import { signOut } from "@dotinc/bouncer-auth";
+import { ProductsMenu } from "./ProductsMenu";
 
-const links = [
-  { label: "Dashboard", href: "/" },
-  { label: "Products", href: "/products" },
-];
+const links: any[] = [];
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -49,7 +47,12 @@ export const NavBar = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box
+        bg={useColorModeValue("gray.100", "black")}
+        px={4}
+        borderBottom="1px"
+        borderColor="whiteAlpha.300"
+      >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <IconButton
             size={"md"}
@@ -65,6 +68,7 @@ export const NavBar = () => {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
+              <ProductsMenu />
               {links.map(({ label, href }) => (
                 <NavLink key={href} href={href}>
                   {label}

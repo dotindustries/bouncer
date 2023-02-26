@@ -1928,14 +1928,20 @@ __metadata:
     typescript: ^4.8.4
     zod: ^3.19.1
   peerDependencies:
+    "@tanstack/react-query": 4.22.0
+    "@trpc/client": ^10.9.0
+    "@trpc/next": ^10.9.0
+    "@trpc/react-query": ^10.9.0
+    "@trpc/server": ^10.9.0
     next: ">=12"
+    next-auth: ^4.18.8
     react: ^18.2.0
     react-dom: 18.2.0
     zod: ^3.19.1
   languageName: unknown
   linkType: soft
 
-"@dotinc/bouncer-api@workspace:*, @dotinc/bouncer-api@workspace:packages/api":
+"@dotinc/bouncer-api@workspace:packages/api":
   version: 0.0.0-use.local
   resolution: "@dotinc/bouncer-api@workspace:packages/api"
   dependencies:
@@ -1987,16 +1993,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@dotinc/bouncer-client@workspace:packages/client"
   dependencies:
-    "@dotinc/bouncer-api": "workspace:*"
     "@dotinc/bouncer-core": "workspace:*"
-    "@trpc/client": ^10.9.1
     rimraf: ^3.0.2
     ts-toolbelt: ^9.6.0
     tsc-alias: ^1.7.0
     tslib: ^2.4.0
     tsup: ^6.3.0
     typescript: ^4.8.4
-    zod: ^3.20.2
   languageName: unknown
   linkType: soft
 
@@ -5120,15 +5123,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:^10.9.1":
-  version: 10.9.1
-  resolution: "@trpc/client@npm:10.9.1"
-  peerDependencies:
-    "@trpc/server": 10.9.1
-  checksum: e333fd82e792e03613da4dcc24d497374d06a7b10db665c597f8a362703eb7b8bea3ae3e60f69de603b50bcd613574bbcd840da7c1a586f95589a94049323491
-  languageName: node
-  linkType: hard
-
 "@trpc/next@npm:^10.9.0":
   version: 10.9.0
   resolution: "@trpc/next@npm:10.9.0"
@@ -6084,6 +6078,10 @@ __metadata:
     "@dotinc/bouncer-auth": "workspace:*"
     "@dotinc/bouncer-core": "workspace:*"
     "@tanstack/react-query": 4.22.0
+    "@trpc/client": ^10.9.0
+    "@trpc/next": ^10.9.0
+    "@trpc/react-query": ^10.9.0
+    "@trpc/server": ^10.9.0
     "@types/express": 4.17.14
     "@types/micromatch": ^4.0.2
     "@types/node": 18.11.4

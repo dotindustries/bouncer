@@ -20,7 +20,7 @@
     "db:generate": "yarn with-env prisma generate",
     "db:push": "yarn with-env prisma db push --skip-generate",
     "db:pull": "yarn with-env prisma db pull",
-    "dev": "yarn with-env prisma studio --port 5556",
+    "studio": "yarn with-env prisma studio --port 5556",
     "with-env": "dotenv -e ../../.env --"
   },
   "repository": {

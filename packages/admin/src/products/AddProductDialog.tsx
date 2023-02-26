@@ -49,7 +49,7 @@ export const AddProductDialog: React.FC<AddProductDialogProps> = (props) => {
 
     const result = await promise;
     if (result) {
-      router.push("/products/" + result.id);
+      router.push("/" + result.id);
     }
 
     return true;
