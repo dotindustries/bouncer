@@ -1,93 +1,79 @@
-import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import { user } from "@dotinc/bouncer-api";
-import type { AppRouter, User } from "@dotinc/bouncer-api";
-import type { InferParams, InferQueries, InferQueryParams } from "./types";
+import { User, user } from "@dotinc/bouncer-core";
 
 export interface BouncerClientOptions {
   apiKey: string;
   baseUrl?: string;
-  attr?: User;
+  fetch?: typeof fetch;
+  attr?: Record<string, any>;
 }
 
 export const createClient = (options: BouncerClientOptions) => {
   const { apiKey, baseUrl = "https://localhost:3000/api/v1", attr } = options;
 
+  const fetchImpl = options.fetch || fetch;
+
   let _attr = attr && user.parse(attr);
 
-  const api = createTRPCProxyClient<AppRouter>({
-    links: [
-      httpBatchLink({
-        url: baseUrl,
-        maxURLLength: 2083,
-      }),
-    ],
-  });
-
-  const { redeemSeat, requestSeat, reserveSeat, releaseSeat, userSeat } = api;
+  const request = async (path: string, method = "GET", data: any) => {
+    return fetchImpl(`${baseUrl}/${path}`, {
+      method,
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + apiKey,
+      },
+    });
+  };
 
   const seats = {
-    userSeat: async (
-      params: Omit<InferQueryParams<typeof userSeat>, "userId" | "tenantId">
-    ) => {
+    userSeat: async (params: any) => {
       const attr = user.parse(_attr);
-      return userSeat({
-        params: {
-          ...params,
-          userId: attr.user_id,
-          tenantId: attr.tenant_id,
-        },
+      return request("/seats/user", "GET", {
+        ...params,
+        userId: attr.user_id,
+        tenantId: attr.tenant_id,
       });
     },
-    redeem: async (params: InferParams<typeof redeemSeat>) => {
+    redeem: async (params: any) => {
       const attr = user.parse(_attr);
-      return redeemSeat(attr, {
-        params,
+      return request("/seats/redeem", "POST", {
+        attr,
+        ...params,
       });
     },
-    request: async (params: InferParams<typeof requestSeat>) => {
+    request: async (params: any) => {
       const attr = user.parse(_attr);
-      return requestSeat(attr, {
-        params,
+      return request("/seats/request", "POST", {
+        attr,
+        ...params,
       });
     },
-    reserve: (
-      params: InferParams<typeof reserveSeat>,
-      reservation: Reservation
-    ) => {
-      return reserveSeat(reservation, {
-        params,
+    reserve: (params: any, reservation: any) => {
+      return request("/seats/reserve", "POST", {
+        reservation,
+        ...params,
       });
     },
-    release: (params: InferParams<typeof releaseSeat>) => {
-      return releaseSeat(undefined, {
-        params,
-      });
+    release: (params: any) => {
+      return request("/seats/request", "POST", params);
     },
   };
 
-  const subApi = new Zodios(baseUrl, subscriptionApi, zodiosOptions);
-
-  const {
-    subscriptions: allSubscriptions,
-    createSubscription,
-    updateSubscription,
-  } = subApi;
-
   const subscriptions = {
-    subscriptions: async (queries: InferQueries<typeof allSubscriptions>) => {
-      return allSubscriptions({ queries });
+    subscriptions: async (params: any) => {
+      return request("/subscriptions", "GET", params);
     },
-    createSubscription: async (
-      params: InferParams<typeof createSubscription>,
-      subscription: Subscription
-    ) => {
-      return createSubscription(subscription, { params });
+    createSubscription: async (params: any, subscription: any) => {
+      return request("/subscriptions", "POST", {
+        params,
+        subscription,
+      });
     },
-    updateSubscription: async (
-      params: InferParams<typeof updateSubscription>,
-      subscription: Subscription
-    ) => {
-      return updateSubscription(subscription, { params });
+    updateSubscription: async (params: any, subscription: any) => {
+      return request("/subscriptions", "POST", {
+        params,
+        subscription,
+      });
     },
   };
 
