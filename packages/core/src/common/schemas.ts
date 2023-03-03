@@ -93,6 +93,7 @@ export const productConfig = schemaForType<
     product_name: z.string(),
     publisher_name: z.string(),
     billing_manager_email: z.string(),
+    metadata: z.custom<Prisma.JsonValue>().nullable(),
     home_page_url: z.string().nullable().optional(),
     contact_page_url: z.string().nullable().optional(),
     privacy_notice_page_url: z.string().nullable().optional(),

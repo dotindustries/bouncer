@@ -335,7 +335,7 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   return next({
     ctx: {
       auth /* auth as non-nullable user */,
-      isSystemAdmin: auth.email && validateEmailWithACL(auth.email),
+      isSystemAdmin: auth.email ? validateEmailWithACL(auth.email) : false,
     },
   });
 });

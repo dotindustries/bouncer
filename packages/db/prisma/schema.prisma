@@ -45,6 +45,7 @@ model Product {
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   owner User @relation(fields: [owner_id], references: [id])
   members ProductMembers[]
+  subscriptions Subscription[]
 
   @@index([owner_id])
 }
@@ -77,7 +78,7 @@ model SeatingConfig {
   seat_reservation_expiry_in_days        Int?
   default_seat_expiry_in_days            Int?
 
-  publisher    Product?      
+  product    Product?
   subscription Subscription?
 
   @@index([owner_id])
@@ -166,6 +167,7 @@ model Subscription {
 
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   seatSummary   SeatSummary?
+  product       Product @relation(fields: [product_id], references: [id])
 }
 
 // NextAuth.js Models

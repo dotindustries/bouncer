@@ -15,6 +15,8 @@ export const productsRouter = createTRPCRouter({
       return ctx.prisma.product.findMany({
         include: {
           seatingConfig: true,
+          owner: true,
+          members: true,
         },
         where: {
           ...(ctx.isSystemAdmin
@@ -48,9 +50,27 @@ export const productsRouter = createTRPCRouter({
       const product = await ctx.prisma.product.findFirst({
         where: {
           id: input.productId,
+          ...(ctx.isSystemAdmin
+            ? {} // system admins can see all products
+            : {
+                OR: [
+                  {
+                    owner_id: ctx.auth.id, // users should only see their products
+                  },
+                  {
+                    members: {
+                      some: {
+                        user_id: ctx.auth.id, // or where they are members of a product
+                      },
+                    },
+                  },
+                ],
+              }),
         },
         include: {
           seatingConfig: true,
+          owner: true,
+          members: true,
         },
       });
 
@@ -131,6 +151,22 @@ export const productsRouter = createTRPCRouter({
         },
         where: {
           id: input.productId,
+          ...(ctx.isSystemAdmin
+            ? {} // system admins can see all products
+            : {
+                OR: [
+                  {
+                    owner_id: ctx.auth.id, // users should only see their products
+                  },
+                  {
+                    members: {
+                      some: {
+                        user_id: ctx.auth.id, // or where they are members of a product
+                      },
+                    },
+                  },
+                ],
+              }),
         },
       });
     }),
@@ -140,6 +176,7 @@ export const productsRouter = createTRPCRouter({
     .output(productConfig)
     .mutation(async ({ ctx, input }) => {
       console.log("creating configuration", input.id);
+
       const created = await ctx.prisma.$transaction([
         ctx.prisma.seatingConfig.create({
           data: {

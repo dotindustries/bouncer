@@ -1,6 +1,6 @@
 import * as z from "zod"
 import * as imports from "../zod-utils"
-import { CompleteSeatingConfig, SeatingConfigModel, CompleteUser, UserModel, CompleteProductMembers, ProductMembersModel } from "./index"
+import { CompleteSeatingConfig, SeatingConfigModel, CompleteUser, UserModel, CompleteProductMembers, ProductMembersModel, CompleteSubscription, SubscriptionModel } from "./index"
 
 // Helper schema for JSON fields
 type Literal = boolean | number | string
@@ -37,6 +37,7 @@ export interface CompleteProduct extends z.infer<typeof _ProductModel> {
   seatingConfig: CompleteSeatingConfig
   owner: CompleteUser
   members: CompleteProductMembers[]
+  subscriptions: CompleteSubscription[]
 }
 
 /**
@@ -48,4 +49,5 @@ export const ProductModel: z.ZodSchema<CompleteProduct> = z.lazy(() => _ProductM
   seatingConfig: SeatingConfigModel,
   owner: UserModel,
   members: ProductMembersModel.array(),
+  subscriptions: SubscriptionModel.array(),
 }))

@@ -16,6 +16,7 @@ import { api } from "../../utils/api";
 import { env } from "../../env.mjs";
 import { ProductWebhooks } from "./Webhooks";
 import { BillingPage } from "../../BillingPage";
+import { ListSubscriptions } from "../../subscriptions/ListSubscriptions";
 
 export const ProductPage = ({ productId }: { productId: string }) => {
   const {
@@ -49,10 +50,12 @@ export const ProductPage = ({ productId }: { productId: string }) => {
             <Tab>Overview</Tab>
             <Tab>Edit</Tab>
             <Tab>Webhooks</Tab>
-            <Tab>Plan</Tab>
+            <Tab>Billing</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel></TabPanel>
+            <TabPanel>
+              <ListSubscriptions productId={product.id} />
+            </TabPanel>
             <TabPanel>
               <EditProductForm product={product} />
             </TabPanel>

@@ -1,7 +1,7 @@
 import * as z from "zod"
 import * as imports from "../zod-utils"
 import { SubscriptionState } from "@prisma/client"
-import { CompleteSeatingConfig, SeatingConfigModel, CompleteSeatSummary, SeatSummaryModel } from "./index"
+import { CompleteSeatingConfig, SeatingConfigModel, CompleteSeatSummary, SeatSummaryModel, CompleteProduct, ProductModel } from "./index"
 
 // Helper schema for JSON fields
 type Literal = boolean | number | string
@@ -37,6 +37,7 @@ export const _SubscriptionModel = z.object({
 export interface CompleteSubscription extends z.infer<typeof _SubscriptionModel> {
   seatingConfig: CompleteSeatingConfig
   seatSummary?: CompleteSeatSummary | null
+  product: CompleteProduct
 }
 
 /**
@@ -47,4 +48,5 @@ export interface CompleteSubscription extends z.infer<typeof _SubscriptionModel>
 export const SubscriptionModel: z.ZodSchema<CompleteSubscription> = z.lazy(() => _SubscriptionModel.extend({
   seatingConfig: SeatingConfigModel,
   seatSummary: SeatSummaryModel.nullish(),
+  product: ProductModel,
 }))

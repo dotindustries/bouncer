@@ -1,3 +1,4 @@
+import { _SeatSummaryModel } from "@dotinc/bouncer-db/zod";
 import { TRPCError } from "@trpc/server";
 import { PrismaClient } from "@dotinc/bouncer-db";
 import { z } from "zod";
@@ -54,12 +55,32 @@ export const validateSubscriptionPatch = (
 
 export const getSubscription = (
   prisma: PrismaClient,
-  subscriptionId: string
+  subscriptionId: string,
+  currentUserId: string,
+  isSystemAdmin: boolean
 ) => {
   return prisma.subscription.findFirst({
     include: { seatingConfig: true },
     where: {
       id: subscriptionId,
+      product: {
+        ...(isSystemAdmin
+          ? {} // system admins can see all products
+          : {
+              OR: [
+                {
+                  owner_id: currentUserId, // users should only see their products
+                },
+                {
+                  members: {
+                    some: {
+                      user_id: currentUserId, // or where they are members of a product
+                    },
+                  },
+                },
+              ],
+            }),
+      },
     },
   });
 };
@@ -145,11 +166,31 @@ const updateSubscription = async (
 const createSubscription = async (
   prisma: PrismaClient,
   sub: Subscription,
-  productId: string
+  productId: string,
+  currentUserId: string,
+  isSystemAdmin: boolean
 ) => {
   const defaultSeatingConfig = await prisma.seatingConfig.findFirst({
     where: {
       owner_id: productId,
+      product: {
+        ...(isSystemAdmin
+          ? {} // system admins can see all products
+          : {
+              OR: [
+                {
+                  owner_id: currentUserId, // users should only see their products
+                },
+                {
+                  members: {
+                    some: {
+                      user_id: currentUserId, // or where they are members of a product
+                    },
+                  },
+                },
+              ],
+            }),
+      },
     },
   });
 
@@ -218,11 +259,37 @@ export const subscriptionRouter = createTRPCRouter({
   all: protectedProcedure
     .meta({ openapi: { method: "GET", path: "/subscriptions" } })
     .input(z.object({ productId: z.string() }))
-    .output(z.array(subscription))
+    .output(
+      z.array(
+        subscription.extend({
+          seatSummary: _SeatSummaryModel.nullable(),
+        })
+      )
+    )
     .query(({ ctx, input }) => {
       return ctx.prisma.subscription.findMany({
-        include: { seatingConfig: true },
-        where: { product_id: input.productId },
+        include: { seatingConfig: true, seatSummary: true },
+        where: {
+          product_id: input.productId,
+          product: {
+            ...(ctx.isSystemAdmin
+              ? {} // system admins can see all products
+              : {
+                  OR: [
+                    {
+                      owner_id: ctx.auth.id, // users should only see their products
+                    },
+                    {
+                      members: {
+                        some: {
+                          user_id: ctx.auth.id, // or where they are members of a product
+                        },
+                      },
+                    },
+                  ],
+                }),
+          },
+        },
       });
     }),
   byId: protectedProcedure
@@ -237,7 +304,12 @@ export const subscriptionRouter = createTRPCRouter({
     .output(subscription)
     .query(async ({ ctx, input }) => {
       try {
-        const sub = await getSubscription(ctx.prisma, input.subscriptionId);
+        const sub = await getSubscription(
+          ctx.prisma,
+          input.subscriptionId,
+          ctx.auth.id,
+          ctx.isSystemAdmin
+        );
         if (!sub) {
           throw new TRPCError({
             code: "NOT_FOUND",
@@ -272,7 +344,9 @@ export const subscriptionRouter = createTRPCRouter({
         return await createSubscription(
           ctx.prisma,
           input.subscription,
-          input.productId
+          input.productId,
+          ctx.auth.id,
+          ctx.isSystemAdmin
         );
       } catch (e: any) {
         throw new TRPCError({
@@ -297,7 +371,12 @@ export const subscriptionRouter = createTRPCRouter({
     )
     .output(subscription)
     .mutation(async ({ ctx, input }) => {
-      const sub = await getSubscription(ctx.prisma, input.subscriptionId);
+      const sub = await getSubscription(
+        ctx.prisma,
+        input.subscriptionId,
+        ctx.auth.id,
+        ctx.isSystemAdmin
+      );
       if (!sub) {
         throw new TRPCError({
           code: "NOT_FOUND",

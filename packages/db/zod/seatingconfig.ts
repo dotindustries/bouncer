@@ -14,7 +14,7 @@ export const _SeatingConfigModel = z.object({
 })
 
 export interface CompleteSeatingConfig extends z.infer<typeof _SeatingConfigModel> {
-  publisher?: CompleteProduct | null
+  product?: CompleteProduct | null
   subscription?: CompleteSubscription | null
 }
 
@@ -24,6 +24,6 @@ export interface CompleteSeatingConfig extends z.infer<typeof _SeatingConfigMode
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const SeatingConfigModel: z.ZodSchema<CompleteSeatingConfig> = z.lazy(() => _SeatingConfigModel.extend({
-  publisher: ProductModel.nullish(),
+  product: ProductModel.nullish(),
   subscription: SubscriptionModel.nullish(),
 }))
