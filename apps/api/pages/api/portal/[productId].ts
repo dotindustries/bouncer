@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "@dotinc/bouncer-auth/src/server/get-session";
 import { env } from "~/env/server.mjs";
-import { getStripeCustomerIdFromUserId } from "@dotinc/bouncer-payment/src/server";
+import { getStripeCustomerIdFromProductId } from "@dotinc/bouncer-payment/src/server";
 import stripe from "@dotinc/bouncer-payment/src/server/sdk";
 
 export default async function handler(
@@ -24,7 +24,7 @@ export default async function handler(
     return res.status(401).json({ message: "Not authenticated" });
 
   // If accessing a user's portal
-  const customerId = await getStripeCustomerIdFromUserId(productId);
+  const customerId = await getStripeCustomerIdFromProductId(productId);
   if (!customerId)
     return res.status(400).json({ message: "CustomerId not found in stripe" });
 

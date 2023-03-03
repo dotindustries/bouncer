@@ -1,7 +1,7 @@
 import { Prisma, prisma } from "@dotinc/bouncer-db";
 import stripe from "./sdk";
 
-export async function getStripeCustomerIdFromUserId(productId: string) {
+export async function getStripeCustomerIdFromProductId(productId: string) {
   // Get user
   const product = await prisma.product.findUnique({
     where: {
