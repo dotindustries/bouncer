@@ -13,6 +13,7 @@ import type {
   SeatType as DbSeatType,
   SubscriptionState as DbSubscriptionState,
 } from "@dotinc/bouncer-db";
+
 import { schemaForType } from "./shared";
 
 export const seatingStrategyName = schemaForType<DbSeatingStrategyName>()(
@@ -91,6 +92,7 @@ export const productConfig = schemaForType<
     owner_id: z.string(),
     product_name: z.string(),
     publisher_name: z.string(),
+    billing_manager_email: z.string(),
     home_page_url: z.string().nullable().optional(),
     contact_page_url: z.string().nullable().optional(),
     privacy_notice_page_url: z.string().nullable().optional(),

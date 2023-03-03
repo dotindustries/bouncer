@@ -321,10 +321,10 @@ export const enforceApiKeyOrACL = t.middleware(async ({ ctx, next }) => {
   } else {
     // coming from a session, a user is already present
     // check if the user is a valid admin
-    if (!ctx.auth.email || !validateEmailWithACL(ctx.auth.email)) {
+    if (!ctx.auth.email) {
       logger.error(
         { email: ctx.auth.email },
-        "FORBIDDEN: current user e-mail is not set or not whitelisted"
+        "FORBIDDEN: current user e-mail is not set"
       );
       // user is not whitelisted
       throw new TRPCError({ code: "FORBIDDEN" });

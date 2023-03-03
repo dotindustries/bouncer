@@ -13,6 +13,7 @@
     "@dotinc/bouncer-admin": "workspace:*",
     "@dotinc/bouncer-auth": "workspace:*",
     "@dotinc/bouncer-core": "workspace:*",
+    "@dotinc/bouncer-payment": "workspace:*",
     "@tanstack/react-query": "4.24.10",
     "@trpc/client": "^10.12.0",
     "@trpc/next": "^10.12.0",

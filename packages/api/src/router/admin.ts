@@ -44,7 +44,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when there are no available seats left on the subscription.",
         schemas: {
-          default: noSeatAvailableSchema,
+          "1": noSeatAvailableSchema,
         },
       }),
       ctx.svix.eventType.create({
@@ -52,7 +52,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when the low seat level for a subscription is reached.",
         schemas: {
-          default: lowSeatWarningSchema,
+          "1": lowSeatWarningSchema,
         },
       }),
       ctx.svix.eventType.create({
@@ -60,7 +60,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when a seat has been allocated on a subscription.",
         schemas: {
-          default: seatProvidedSchema,
+          "1": seatProvidedSchema,
         },
       }),
       ctx.svix.eventType.create({
@@ -68,7 +68,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when a seat has been reserved on a subscription.",
         schemas: {
-          default: seatReservedSchema,
+          "1": seatReservedSchema,
         },
       }),
       ctx.svix.eventType.create({
@@ -76,7 +76,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when a seat has been redeemed on a subscription.",
         schemas: {
-          default: seatRedeemedSchema,
+          "1": seatRedeemedSchema,
         },
       }),
       ctx.svix.eventType.create({
@@ -84,7 +84,7 @@ export const adminRouter = createTRPCRouter({
         description:
           "Event fired when a seat has been released on a subscription.",
         schemas: {
-          default: seatReleasedSchema,
+          "1": seatReleasedSchema,
         },
       }),
     ];

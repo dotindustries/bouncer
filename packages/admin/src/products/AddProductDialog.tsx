@@ -16,6 +16,7 @@ const schema = productConfig.pick({
   id: true,
   product_name: true,
   publisher_name: true,
+  billing_manager_email: true,
 });
 
 export interface AddProductDialogProps
@@ -74,6 +75,7 @@ export const AddProductDialog: React.FC<AddProductDialogProps> = (props) => {
         />
         <Field name="product_name" label="Product name" />
         <Field name="publisher_name" label="Publisher name" />
+        <Field name="billing_manager_email" label="Billing manager e-mail" />
       </FormLayout>
     </FormDialog>
   );

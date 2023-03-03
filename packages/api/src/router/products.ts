@@ -164,6 +164,7 @@ export const productsRouter = createTRPCRouter({
           data: {
             id: input.id,
             product_name: input.product_name,
+            billing_manager_email: input.billing_manager_email,
             on_access_denied_url: input.on_access_denied_url,
             on_access_granted_url: input.on_access_granted_url,
             on_no_seat_available_url: input.on_no_seat_available_url,

@@ -1,7 +1,9 @@
 generator zod {
-  provider       = "zod-prisma-types"
+  provider      = "zod-prisma"
+  output        = "../zod"
+  imports       = "../zod-utils"
+  relationModel = "default"
 }
-
 generator client {
   provider = "prisma-client-js"
   // output = "../node_modules/.prisma/client"
@@ -18,6 +20,7 @@ model Product {
   owner_id                String   @db.VarChar(30)
   product_name            String   @db.VarChar(255)
   publisher_name          String   @db.VarChar(255)
+  billing_manager_email   String   @db.VarChar(255)
   home_page_url           String?  @db.VarChar(500)
   contact_page_url        String?  @db.VarChar(500)
   privacy_notice_page_url String?  @db.VarChar(500)
@@ -35,6 +38,9 @@ model Product {
   on_subscription_suspended_url String? @db.VarChar(500)
   on_subscription_not_found_url String? @db.VarChar(500)
   on_no_subscriptions_found_url String? @db.VarChar(500)
+
+  /// @zod.custom(imports.productMetadata)
+  metadata             Json?
 
   seatingConfig SeatingConfig @relation(fields: [id], references: [owner_id])
   owner User @relation(fields: [owner_id], references: [id])

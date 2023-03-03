@@ -15,6 +15,7 @@ import { DevPortalButton } from "../../dashboard/DevPortal";
 import { api } from "../../utils/api";
 import { env } from "../../env.mjs";
 import { ProductWebhooks } from "./Webhooks";
+import { BillingPage } from "../../BillingPage";
 
 export const ProductPage = ({ productId }: { productId: string }) => {
   const {
@@ -29,6 +30,8 @@ export const ProductPage = ({ productId }: { productId: string }) => {
     return <Loader />;
   }
 
+  const devPortalSetupComplete = !!env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN;
+
   return (
     <Box px="8" py="4">
       <HStack>
@@ -37,9 +40,7 @@ export const ProductPage = ({ productId }: { productId: string }) => {
         </Heading>
         <Button variant="primary">Add subscription</Button>
         {/* Only show dev portal button if set up is complete */}
-        {env.NEXT_PUBLIC_SPEAKEASY_DEV_PORTAL_DOMAIN && (
-          <DevPortalButton productId={product.id} />
-        )}
+        {devPortalSetupComplete && <DevPortalButton productId={product.id} />}
       </HStack>
 
       <Box py="4">
@@ -48,6 +49,7 @@ export const ProductPage = ({ productId }: { productId: string }) => {
             <Tab>Overview</Tab>
             <Tab>Edit</Tab>
             <Tab>Webhooks</Tab>
+            <Tab>Plan</Tab>
           </TabList>
           <TabPanels>
             <TabPanel></TabPanel>
@@ -56,6 +58,9 @@ export const ProductPage = ({ productId }: { productId: string }) => {
             </TabPanel>
             <TabPanel>
               <ProductWebhooks product={product} />
+            </TabPanel>
+            <TabPanel>
+              <BillingPage productId={product.id} />
             </TabPanel>
           </TabPanels>
         </Tabs>
