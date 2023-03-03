@@ -1,7 +1,9 @@
 import {
   Box,
   Button,
+  ColumnDef,
   DataTable,
+  EmptyState,
   Heading,
   HStack,
   Loader,
@@ -16,16 +18,18 @@ export const ListProductsPage = () => {
 
   const { data, error, isLoading } = api.products.all.useQuery();
 
-  const columns = React.useMemo(
+  const columns = React.useMemo<ColumnDef<any>[]>(
     () => [
       {
-        id: "product_name",
-        Header: "Product name",
-        href: (cell: any) => `/products/${cell.id}`,
+        accessorKey: "product_name",
+        header: "Product name",
+        meta: {
+          href: (cell: any) => `/products/${cell.id}`,
+        },
       },
       {
-        id: "publisher_name",
-        Header: "Publisher name",
+        accessorKey: "publisher_name",
+        header: "Publisher name",
       },
     ],
     []
@@ -33,6 +37,10 @@ export const ListProductsPage = () => {
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (!data || error) {
+    return <EmptyState title="Invalid product" />;
   }
 
   return (
@@ -46,7 +54,6 @@ export const ListProductsPage = () => {
         </Button>
       </HStack>
 
-      {/* @ts-ignore: types are incorrect somehow */}
       <DataTable columns={columns} data={data} />
     </Box>
   );

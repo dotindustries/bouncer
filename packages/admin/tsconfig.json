@@ -14,7 +14,8 @@
     "isolatedModules": true,
     "noErrorTruncation": true,
     "jsx": "preserve",
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "."
   },
   "include": ["src"]
 }

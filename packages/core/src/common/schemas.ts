@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { nanoid } from "nanoid";
 import type {
   AuthenticatorTransport as DbAuthenticatorTransport,
   Prisma,
@@ -88,7 +87,7 @@ export const productConfig = schemaForType<
   Partial<DbProduct> & { seatingConfig: Partial<SeatingConfig> }
 >()(
   z.object({
-    id: z.string().default(() => nanoid()),
+    id: z.string(),
     owner_id: z.string(),
     product_name: z.string(),
     publisher_name: z.string(),
