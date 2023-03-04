@@ -1,5 +1,4 @@
 export { RegisterWebAuthn } from "./src/RegisterWebAuthn";
-export { AuthProvider } from "./src/AuthProvider";
 
 export type { Session } from "next-auth";
 export { signIn, signOut, useSession } from "next-auth/react";

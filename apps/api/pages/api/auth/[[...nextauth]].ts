@@ -1,10 +1,10 @@
 import NextAuth from "next-auth";
 
 import { authOptions } from "@dotinc/bouncer-auth/src/server";
-import { getBaseDomain } from "~/util/getBaseDomain";
 import { env } from "~/env/server.mjs";
+import { getBaseUrl } from "@dotinc/bouncer-admin";
 
-const domain = getBaseDomain()
+const domain = getBaseUrl()
   .replace(/(http|https):\/\//g, "")
   .replace(":3000", "");
 

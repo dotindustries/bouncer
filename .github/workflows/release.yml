@@ -5,46 +5,44 @@ on: [push]
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+
     steps:
       - uses: actions/checkout@v2
-
-      - name: Prepare repository
-        run: git fetch --unshallow --tags
-
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v2.0.1
-        name: Install pnpm
-        id: pnpm-install
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          version: 7
-          run_install: false
+          node-version: ${{ matrix.node-version }}
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
+      - name: 📥 Monorepo install
+        uses: ./.github/actions/yarn-nm-install
+
+      - name: Extract out parent branch
         shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+        run: echo "##[set-output name=parent_branch;]$(git show-branch -a | grep '\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//')"
+        id: extract_parent_branch
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Build packages
+      - name: Install and build (push)
+        if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          pnpm i
-          pnpm build --filter=!api
+        run: yarn turbo run build --since=${{ steps.extract_parent_branch.outputs.parent_branch }} --filter=!api
+
+      - name: Install and build packages (pull request)
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn turbo run build --since=origin/${{ github.base_ref }} --filter=!api
 
       - name: Create Release
         env:

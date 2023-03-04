@@ -1,4 +1,5 @@
 import { signIn, useSession } from "@dotinc/bouncer-auth";
+import { Loader } from "@dotinc/bouncer-ui";
 import { useRouter } from "next/router";
 
 export const Authenticated: React.FC<React.PropsWithChildren> = ({
@@ -11,6 +12,10 @@ export const Authenticated: React.FC<React.PropsWithChildren> = ({
       return signIn();
     },
   });
+
+  if (status === "loading") {
+    return <Loader />;
+  }
 
   if (status === "authenticated") {
     return <>{children}</>;

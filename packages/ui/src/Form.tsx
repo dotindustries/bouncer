@@ -1,4 +1,5 @@
 import { ZodSchema } from "zod";
+/* @ts-ignore */
 import { zodResolver, zodFieldResolver } from "@saas-ui/forms/zod";
 import { Form, FormDialog } from "@saas-ui/react";
 

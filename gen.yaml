@@ -1,0 +1,17 @@
+management:
+    openapi-checksum: 3a9fec97e819d93774f7b5e99eb1cc65
+    openapi-version: 1.0.0
+    speakeasy-version: 1.0.0
+go:
+    version: 0.1.0
+    packagename: dot.industries/bouncer-sdk
+typescript:
+    version: 0.1.0
+    packagename: '@dotinc/bouncer-sdk'
+python:
+    version: 0.1.0
+    packagename: bouncer-client-sdk
+java:
+    version: 0.1.0
+    packagename: industries.dot.bouncer
+    projectname: bouncer-client-sdk

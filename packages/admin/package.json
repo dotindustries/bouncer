@@ -1,5 +1,6 @@
 {
   "name": "@dotinc/bouncer-admin",
+  "private": true,
   "version": "0.1.0",
   "description": "Bouncer Admin UI",
   "keywords": [
@@ -11,18 +12,7 @@
     "typescript"
   ],
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.js"
-    },
-    "./backend": {
-      "types": "./dist/backend/index.d.ts",
-      "require": "./dist/backend/index.cjs",
-      "default": "./dist/backend/index.js"
-    }
-  },
+  "main": "src/index.ts",
   "scripts": {
     "prebuild": "npm run clean",
     "dev": "tsup --entry src/index.ts --entry src/backend/index.ts --format esm,cjs --dts --watch",
@@ -43,33 +33,42 @@
     "@dotinc/bouncer-auth": "workspace:*",
     "@dotinc/bouncer-core": "workspace:*",
     "@dotinc/bouncer-ui": "workspace:*",
-    "@tanstack/react-query": "4.22.0",
-    "@zodios/core": "10.3.1",
-    "@zodios/react": "10.3.3",
-    "axios": "1.1.3",
-    "react-icons": "^4.7.1"
+    "@hookform/resolvers": "^2.9.11",
+    "axios": "1.3.4",
+    "react-icons": "^4.7.1",
+    "slug": "^8.2.2",
+    "svix-react": "^1.5.0"
   },
   "peerDependencies": {
+    "@tanstack/react-query": "4.24.10",
+    "@trpc/client": "^10.12.0",
+    "@trpc/next": "^10.12.0",
+    "@trpc/react-query": "^10.12.0",
+    "@trpc/server": "^10.12.0",
     "next": ">=12",
+    "next-auth": "^4.18.8",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "zod": "^3.19.1"
+    "zod": "^3.20.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@types/react": "^18.0.24",
-    "next": "13.1.4",
+    "@babel/core": "^7.21.0",
+    "@tanstack/react-query": "4.24.10",
+    "@trpc/client": "^10.12.0",
+    "@trpc/next": "^10.12.0",
+    "@trpc/react-query": "^10.12.0",
+    "@trpc/server": "^10.12.0",
+    "@types/react": "^18.0.28",
+    "@types/slug": "^5.0.3",
+    "next": "13.2.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.1.2",
     "ts-toolbelt": "^9.6.0",
-    "tsc-alias": "^1.7.0",
-    "tslib": "^2.4.0",
-    "tsup": "^6.3.0",
-    "typescript": "^4.8.4",
-    "zod": "^3.19.1"
-  },
-  "publishConfig": {
-    "access": "public"
+    "tsc-alias": "^1.8.2",
+    "tslib": "^2.5.0",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5",
+    "zod": "^3.20.6"
   }
 }

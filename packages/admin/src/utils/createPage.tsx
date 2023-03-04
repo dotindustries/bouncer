@@ -23,6 +23,7 @@ export interface NavigateOptions {
 export interface PageProps {
   query: Record<string, any>;
   locale?: string;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 /**

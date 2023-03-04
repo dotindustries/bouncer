@@ -29,6 +29,7 @@ export const serverSchema = z.object({
   ),
   EMAIL_SERVER: z.string(),
   EMAIL_FROM: z.string(),
+  SPEAKEASY_WORKSPACE_ID: z.string().optional(),
 });
 
 /**

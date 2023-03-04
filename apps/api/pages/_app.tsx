@@ -1,14 +1,15 @@
-import type { AppProps } from "next/app";
+import type { AppType } from "next/app";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
-
-import { AppProvider, AuthProvider, Layout } from "@dotinc/bouncer-admin";
-
+import { AppProvider, Layout, api } from "@dotinc/bouncer-admin";
 import { env } from "~/env/client.mjs";
 import Script from "next/script";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getServerSession } from "@dotinc/bouncer-auth/src/server";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
   return (
     <>
       {/* Google tag (gtag.js) - Google Analytics */}
@@ -35,16 +36,18 @@ function MyApp({ Component, pageProps }: AppProps) {
         </>
       )}
 
-      <AuthProvider session={pageProps.session}>
+      <SessionProvider session={session}>
         <AppProvider>
           <Layout>
+            {/* TODO: Speakeasy login redirect should display product selector modal if we got here from speakeasy */}
+            {/* <SpeakeasyLoginRedirect /> */}
             <Component {...pageProps} />
             <Analytics />
           </Layout>
         </AppProvider>
-      </AuthProvider>
+      </SessionProvider>
     </>
   );
-}
+};
 
-export default MyApp;
+export default api.withTRPC(MyApp);
